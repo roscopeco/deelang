@@ -18,8 +18,8 @@ public class CompilerFuncTestBase {
   void runCodeComparisonTest(String code, byte[] expected) throws CompilerError {
     byte[] bcode = runTest(code).getCode();
     
-    assertThat(bcode.length, is(expected.length));
-    assertEquals(Arrays.toString(bcode), Arrays.toString(expected));
+    assertThat("Incorrect code length", bcode.length, is(expected.length));
+    assertEquals("Code doesn't match", Arrays.toString(bcode), Arrays.toString(expected));
   }
   
   void runCodeAndPoolComparisonTest(String code, 
@@ -28,10 +28,26 @@ public class CompilerFuncTestBase {
       throws CompilerError {
     CompiledScript script = Compiler.staticCompile(code);
     
-    assertThat(script.getCode().length, is(expectedCode.length));
-    assertThat(script.getConstPool().length, is(expectedPool.length));
+    assertThat("Incorrect code length", script.getCode().length, is(expectedCode.length));
+    assertThat("Incorrect constpool length", script.getConstPool().length, is(expectedPool.length));
     
-    assertEquals(Arrays.toString(expectedCode), Arrays.toString(script.getCode()));
-    assertEquals(Arrays.toString(expectedPool), Arrays.toString(script.getConstPool()));
+    assertEquals("Code doesn't match", Arrays.toString(expectedCode), Arrays.toString(script.getCode()));
+    assertEquals("Pool doesn't match", Arrays.toString(expectedPool), Arrays.toString(script.getConstPool()));
+  }
+
+  void runCodeLocalsAndPoolComparisonTest(String code, 
+                                          byte[] expectedCode,
+                                          String[] expectedLocals,
+                                          CompiledScript.ConstPoolEntry[] expectedPool)
+          throws CompilerError {
+    CompiledScript script = Compiler.staticCompile(code);
+    
+    assertThat("Incorrect code length", script.getCode().length, is(expectedCode.length));
+    assertThat("Incorrect locals length", script.getLocalsTable().length, is(expectedLocals.length));
+    assertThat("Incorrect constpool length", script.getConstPool().length, is(expectedPool.length));
+    
+    assertEquals("Code doesn't match", Arrays.toString(expectedCode), Arrays.toString(script.getCode()));
+    assertEquals("LocalsTable doesn't match", Arrays.toString(expectedLocals), Arrays.toString(script.getLocalsTable()));
+    assertEquals("Pool doesn't match", Arrays.toString(expectedPool), Arrays.toString(script.getConstPool()));
   }
 }
