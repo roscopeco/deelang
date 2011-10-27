@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="doc">
+  <target name="doc">
+    <javadoc access="protected" 
+             author="true" 
+    	       destdir="doc" 
+    	       doctitle="DeeLang API" 
+    	       nodeprecated="false" 
+    	       nodeprecatedlist="false" 
+    	       noindex="false" 
+    	       nonavbar="false" 
+    	       notree="false" 
+    	       overview="README.html" 
+    	       source="1.5" 
+    	       sourcepath="src" 
+    	       splitindex="true" 
+    	       stylesheetfile="doc_src/doc.css" 
+    	       use="true" 
+    	       version="true"/>
+      <copy file="doc_src/javadoc.jpg" todir="doc"/>
+    </target>
+	
+	  <target name="jar">
+	  	<jar destfile="deelang.jar" basedir="bin/main" includes="**/*.class"/>
+	  </target>
+</project>

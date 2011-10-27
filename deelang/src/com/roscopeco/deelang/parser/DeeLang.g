@@ -1,0 +1,329 @@
+/* DeeLang.g - ANTLR Combined grammar for DeeLang.
+ *
+ * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License. 
+ */
+
+grammar DeeLang;
+
+options {
+    output=AST;
+    ASTLabelType=CommonTree; // type of $stat.tree ref etc...
+    backtrack=true;
+    memoize=true;     // TODO is this really wanted in Android environment (uses more mem...)?
+}
+
+tokens {
+  ASSIGN;
+  METHOD_CALL;
+  ARGS;
+  BLOCK;
+  ORBLOCK;
+  SELF;
+  ASSIGN_RECEIVER;
+  ASSIGN_LOCAL;
+  FIELD_ACCESS;
+  LVALUE;
+}
+
+@parser::header {
+  package com.roscopeco.deelang.parser;
+
+  /* ******** GENERATED FILE - DO NOT EDIT! ********* */
+	/* Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
+	 *
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *      http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License. 
+	 */
+  
+  import org.antlr.runtime.Parser;  
+}
+
+@lexer::header {
+  package com.roscopeco.deelang.parser;
+
+  /* ******** GENERATED FILE - DO NOT EDIT! ********* */  
+  /* Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
+   *
+   *  Licensed under the Apache License, Version 2.0 (the "License");
+   *  you may not use this file except in compliance with the License.
+   *  You may obtain a copy of the License at
+   *
+   *      http://www.apache.org/licenses/LICENSE-2.0
+   *
+   *  Unless required by applicable law or agreed to in writing, software
+   *  distributed under the License is distributed on an "AS IS" BASIS,
+   *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   *  See the License for the specific language governing permissions and
+   *  limitations under the License. 
+   */
+}
+
+@parser::members {
+  /* throw exceptions rather than silently failing... */
+	protected void mismatch(IntStream input, int ttype, BitSet follow)
+	  throws RecognitionException
+	{
+	  throw new MismatchedTokenException(ttype, input);
+	}
+
+	@Override
+	public Object recoverFromMismatchedSet(IntStream input, RecognitionException e, BitSet follow)
+	  throws RecognitionException
+	{
+	  throw e;
+	}
+	
+	@Override 
+	protected Object recoverFromMismatchedToken(IntStream input, int 
+	ttype, BitSet follow) throws RecognitionException { 
+	    if (ttype == RPAREN) { 
+	        throw new UnwantedTokenException(); // ("Invalid input in argument list"); 
+	    } 
+	    return super.recoverFromMismatchedToken(input, ttype, follow); 
+	} 
+
+}
+
+@rulecatch {
+	// throw exceptions rather than silently failing...
+	catch (RecognitionException e) {
+	  throw e;
+	}
+}
+
+start_rule
+  :   script
+  ;
+
+script
+  :   statement+
+  |   EOF!
+  ;
+
+statement
+  :   expr terminator!
+  ;
+    
+expr
+  :   assign_expr
+  |   math_expr
+  ;
+  
+assign_expr
+@init {boolean explicitReceiver=false;}
+  :   (rec=IDENTIFIER DOT {explicitReceiver=true;})? id=IDENTIFIER ASSIGN expr -> {explicitReceiver}? ^(ASSIGN ASSIGN_RECEIVER[$rec.getText()] LVALUE[$id.getText()] expr) -> ^(ASSIGN ASSIGN_LOCAL LVALUE[$id.getText()] expr)
+  ;
+
+math_expr
+  :   mult_expr ((ADD^|SUB^) mult_expr)*
+  ; 
+
+mult_expr
+  :   pow_expr ((MUL^|DIV^|MOD^) pow_expr)*
+  ; 
+    
+pow_expr
+  :   unary_expr ((POW^) unary_expr)*
+  ;
+  
+unary_expr
+  :   NOT? atom
+  ;
+
+meth_call
+@init {boolean explicitReceiver=false;}
+  :   (IDENTIFIER DOT {explicitReceiver=true;})? func_call_expr -> {explicitReceiver}? ^(METHOD_CALL IDENTIFIER func_call_expr) -> ^(METHOD_CALL SELF func_call_expr) 
+  |   literal DOT func_call_expr -> ^(METHOD_CALL literal func_call_expr) 
+  ;
+
+fragment
+func_call_expr
+  :   IDENTIFIER^ argument_list block? orblock? 
+  ; 
+       
+fragment
+block
+  :   LCURLY TERMINATOR? statement* RCURLY -> ^(BLOCK statement*)
+  ;
+  
+fragment
+orblock
+  :   OR LCURLY TERMINATOR? statement* RCURLY -> ^(ORBLOCK statement*)
+  ;
+  
+fragment
+argument_list
+  :   LPAREN (expr (COMMA expr)*)? RPAREN -> ^(ARGS expr expr*)?
+  ;
+  
+class_identifier
+  :     rec=IDENTIFIER DOT id=IDENTIFIER -> ^(FIELD_ACCESS $rec $id)
+  ;
+
+literal
+  :     DECIMAL_LITERAL
+  |     OCTAL_LITERAL
+  |     HEX_LITERAL
+  |     FLOATING_POINT_LITERAL
+//  |     REGEXP_LITERAL
+  |     STRING_LITERAL
+  |     CHARACTER_LITERAL
+  ;
+  
+atom
+  :     literal
+  |     meth_call
+  |     IDENTIFIER
+  |     class_identifier
+  |     LPAREN! expr RPAREN!
+  ;
+  
+terminator
+  :     TERMINATOR
+  |     EOF
+  ;
+
+OR  :   'or';
+
+POW :   '^' ;
+MOD :   '%' ;
+ADD :   '+' ;
+SUB :   '-' ;
+DIV :   '/' ;
+MUL :   '*' ;
+NOT :   '!' ;
+
+ASSIGN
+    :   '='
+    ;
+    
+LPAREN
+    :   '('
+    ;
+    
+RPAREN
+    :   ')'
+    ;
+    
+LCURLY
+    :   '{'
+    ;
+    
+RCURLY
+    :   '}'
+    ;
+    
+COMMA
+    :   ','
+    ;
+    
+DOT :   '.' ;
+
+IDENTIFIER
+  : ID_LETTER (ID_LETTER|'0'..'9')*
+  ;
+  
+fragment
+ID_LETTER
+  : '$'
+  | 'A'..'Z'
+  | 'a'..'z'
+  | '_'
+  ;
+
+CHARACTER_LITERAL
+    :   '\'' ( EscapeSequence | ~('\''|'\\') ) '\''
+    ;
+
+STRING_LITERAL
+    :  '"' ( EscapeSequence | ~('\\'|'"') )* '"'
+    ;
+
+/*
+REGEXP_LITERAL
+    :  '/' ( EscapeSequence | ~('\\'|'"') )* '/'
+    ;
+*/
+
+HEX_LITERAL : '0' ('x'|'X') HexDigit+ IntegerTypeSuffix? ;
+
+DECIMAL_LITERAL : ('0' | '1'..'9' '0'..'9'*) IntegerTypeSuffix? ;
+
+OCTAL_LITERAL : '0' ('0'..'7')+ IntegerTypeSuffix? ;
+
+fragment
+HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
+
+fragment
+IntegerTypeSuffix
+  : ('l'|'L')
+  | ('u'|'U')  ('l'|'L')?
+  ;
+
+FLOATING_POINT_LITERAL
+    :   ('0'..'9')+ '.' ('0'..'9')* Exponent? FloatTypeSuffix?
+    |   '.' ('0'..'9')+ Exponent? FloatTypeSuffix?
+    |   ('0'..'9')+ Exponent? FloatTypeSuffix?
+  ;
+
+fragment
+Exponent : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
+
+fragment
+FloatTypeSuffix : ('f'|'F'|'d'|'D') ;
+
+fragment
+EscapeSequence
+    :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\'|'/')
+    |   OctalEscape
+    |   UnicodeEscape
+    ;
+
+fragment
+OctalEscape
+    :   '\\' ('0'..'3') ('0'..'7') ('0'..'7')
+    |   '\\' ('0'..'7') ('0'..'7')
+    |   '\\' ('0'..'7')
+    ;
+
+fragment
+UnicodeEscape
+    :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
+    ;
+COMMENT
+    :   '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
+    ;
+
+LINE_COMMENT
+    : '//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;}
+    ;
+        
+TERMINATOR 
+  : '\r'? '\n' 
+  | ';'
+  ;
+
+WS  :  (' '|'\r'|'\t'|'\u000C') {$channel=HIDDEN;}
+    |  '...' '\r'? '\n'  {$channel=HIDDEN;}
+    ;
