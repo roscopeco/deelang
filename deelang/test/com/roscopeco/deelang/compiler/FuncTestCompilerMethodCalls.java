@@ -70,4 +70,76 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         new CompiledScript.ConstPoolInt(2)
     });
   }
+  
+  @Test
+  public void testBasicMethCallNoArgs() throws CompilerError {
+    runCodeLocalsAndPoolComparisonTest("foo.bar()", new byte[] {
+        Opcodes.LOAD,               0,
+        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 0  
+    }, new String[] {
+        "foo"
+    },  new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar")
+    });
+  }
+
+  @Test
+  public void testBasicMethCallOneArg() throws CompilerError {
+    runCodeLocalsAndPoolComparisonTest("foo.bar(1)", new byte[] {
+        Opcodes.LOAD,               0,
+        Opcodes.IPUSHCONST,         0, 0, 0, 1,
+        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 1  
+    }, new String[] {
+        "foo"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+        new CompiledScript.ConstPoolInt(1)
+    });
+  }
+
+  @Test
+  public void testBasicMethCallTwoArgs() throws CompilerError {
+    runCodeLocalsAndPoolComparisonTest("foo.bar(1,2)", new byte[] {
+        Opcodes.LOAD,               0,
+        Opcodes.IPUSHCONST,         0, 0, 0, 1,
+        Opcodes.IPUSHCONST,         0, 0, 0, 2,
+        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 2  
+    }, new String[] {
+        "foo"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+        new CompiledScript.ConstPoolInt(1),
+        new CompiledScript.ConstPoolInt(2)
+    });
+  }
+
+  @Test
+  public void testNestedMethToFuncCallOneArg() throws CompilerError {
+    runCodeLocalsAndPoolComparisonTest("foo.bar(quux(1))", new byte[] {
+        Opcodes.LOAD,               0,
+        Opcodes.IPUSHCONST,         0, 0, 0, 2,
+        Opcodes.INVOKESELF,         0, 0, 0, 1, 1,
+        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 1  
+    }, new String[] {
+        "foo"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+        new CompiledScript.ConstPoolMethod("quux"),
+        new CompiledScript.ConstPoolInt(1)
+    });
+  }
+
+  @Test
+  public void testChainedMethodCall() throws CompilerError {
+    runCodeLocalsAndPoolComparisonTest("Foo.bar().baz()", new byte[] {
+        Opcodes.LOAD,               0,
+        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 0,
+        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 1, 0
+    }, new String[] {
+        "Foo"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+        new CompiledScript.ConstPoolMethod("baz")
+    });
+  }
 }

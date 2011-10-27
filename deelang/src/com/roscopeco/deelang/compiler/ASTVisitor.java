@@ -43,6 +43,8 @@ public abstract class ASTVisitor {
   protected abstract void visitStringLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
   protected abstract void visitRegexpLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
   
+  protected abstract void visitChain(DataOutputStream strm, Tree ast) throws CompilerError;
+
   protected abstract void visitAssign(DataOutputStream strm, Tree ast) throws CompilerError;
   protected abstract void visitIdentifier(DataOutputStream strm, Tree ast) throws CompilerError;
   protected abstract void visitFieldAccess(DataOutputStream strm, Tree ast) throws CompilerError;

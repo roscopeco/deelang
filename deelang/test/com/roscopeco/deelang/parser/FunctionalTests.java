@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
   FuncTestParserAssignment.class,
   FuncTestParserMemberAssignment.class,
   FuncTestParserFunctionCalls.class,
-  FuncTestParserMethodCalls.class
+  FuncTestParserMethodCalls.class,
+  FuncTestParserCombinedFieldMethodChaining.class
 })
 public class FunctionalTests { }

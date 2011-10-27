@@ -180,4 +180,19 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
   public void testChokesWhenNotLValue() throws RecognitionException {
     runTest("(a+b)=c");
   }
+  
+  @Test
+  public void testChainedLValueAllFieldsAssignment() throws RecognitionException {
+    runTest("foo.bar.baz = 2");
+  }
+
+  @Test
+  public void testChainedLValueWithMethodsAssignment() throws RecognitionException {
+    runTest("foo.bar().baz = 2");
+  }
+
+  @Test(expected = RecognitionException.class)
+  public void testChainedLValueWithoutFieldAtEndChokesAssignment() throws RecognitionException {
+    runTest("foo.bar().baz() = 2");
+  }
 }

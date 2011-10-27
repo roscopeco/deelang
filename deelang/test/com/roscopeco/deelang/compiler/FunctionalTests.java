@@ -10,5 +10,6 @@ import org.junit.runner.RunWith;
   FuncTestCompilerArithmetic.class,
   FuncTestCompilerAssignment.class,
   FuncTestCompilerMethodCalls.class,
+  FuncTestCompilerCombinedFieldMethodChaining.class
 })
 public class FunctionalTests { }

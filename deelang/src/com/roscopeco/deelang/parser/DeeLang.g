@@ -21,7 +21,7 @@ options {
     output=AST;
     ASTLabelType=CommonTree; // type of $stat.tree ref etc...
     backtrack=true;
-    memoize=true;     // TODO is this really wanted in Android environment (uses more mem...)?
+    memoize=true;     // TODO is this really wanted in embedded environment (uses more mem...)?
 }
 
 tokens {
@@ -31,6 +31,7 @@ tokens {
   BLOCK;
   ORBLOCK;
   SELF;
+  CHAIN;
   ASSIGN_RECEIVER;
   ASSIGN_LOCAL;
   FIELD_ACCESS;
@@ -124,6 +125,10 @@ script
 statement
   :   expr terminator!
   ;
+  
+block_statement
+  :   expr
+  ;
     
 expr
   :   assign_expr
@@ -156,20 +161,36 @@ meth_call
   :   (IDENTIFIER DOT {explicitReceiver=true;})? func_call_expr -> {explicitReceiver}? ^(METHOD_CALL IDENTIFIER func_call_expr) -> ^(METHOD_CALL SELF func_call_expr) 
   |   literal DOT func_call_expr -> ^(METHOD_CALL literal func_call_expr) 
   ;
+  
+fragment
+chained_call_or_field_expr
+    : chained_field_expr
+    | chained_meth_call_expr
+    ;
+    
+fragment
+chained_meth_call_expr
+  	:	DOT func_call_expr -> ^(METHOD_CALL CHAIN func_call_expr)
+	;
+	
+fragment
+chained_field_expr
+    : DOT IDENTIFIER -> ^(FIELD_ACCESS CHAIN IDENTIFIER)
+    ;
 
 fragment
 func_call_expr
-  :   IDENTIFIER^ argument_list block? orblock? 
+  :   IDENTIFIER^ argument_list block? orblock?
   ; 
        
 fragment
 block
-  :   LCURLY TERMINATOR? statement* RCURLY -> ^(BLOCK statement*)
+  :   LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? RCURLY -> ^(BLOCK (block_statement (TERMINATOR block_statement)*)?)
   ;
   
 fragment
 orblock
-  :   OR LCURLY TERMINATOR? statement* RCURLY -> ^(ORBLOCK statement*)
+  :   OR LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? RCURLY -> ^(ORBLOCK (block_statement (TERMINATOR block_statement)*)?)
   ;
   
 fragment
@@ -193,9 +214,9 @@ literal
   
 atom
   :     literal
-  |     meth_call
   |     IDENTIFIER
-  |     class_identifier
+  |     class_identifier (chained_call_or_field_expr)*
+  |     meth_call (chained_call_or_field_expr)*
   |     LPAREN! expr RPAREN!
   ;
   

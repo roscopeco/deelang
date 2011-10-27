@@ -419,6 +419,11 @@ public class Compiler {
     }
 
     @Override
+    protected void visitChain(DataOutputStream strm, Tree ast) throws CompilerError {
+      // Do nothing - receiver is already on stack
+    }
+
+    @Override
     protected void visitAssign(DataOutputStream strm, Tree ast) throws CompilerError {
       Tree receiver = ast.getChild(0);
       Tree lvalue = ast.getChild(1);
@@ -426,6 +431,7 @@ public class Compiler {
         throw new IllegalLValueException("Unrecognised LVALUE type in assignment: " + lvalue.getType());
       }
       
+      // TODO refactor this to use backpass data...
       if (receiver.getType() == DeeLangParser.ASSIGN_LOCAL) {
           visit(strm,this,ast.getChild(2));        
           try {
@@ -434,7 +440,7 @@ public class Compiler {
             throw new OutputError(e);
           }
       } else if (receiver.getType() == DeeLangParser.ASSIGN_RECEIVER) {
-        visitIdentifier(strm, receiver);
+        visit(strm, this, receiver);
         visit(strm, this, ast.getChild(2));
         try {
           strm.writeByte(Opcodes.PUTFIELD);
@@ -462,7 +468,7 @@ public class Compiler {
     protected void visitFieldAccess(DataOutputStream strm, Tree ast)
         throws CompilerError {
       try {
-        visitIdentifier(strm, ast.getChild(0));
+        visit(strm, this, ast.getChild(0));
         strm.writeByte(Opcodes.GETFIELD);
         strm.writeInt(getOrAllocConstPoolIndex(ast.getChild(1).getText(), CompiledScript.CONST_POOL_FIELD));
       } catch (IOException e) {
@@ -548,7 +554,7 @@ public class Compiler {
       MethCallBackPassData mcbpd = ((MethCallBackPassData)backPassData.peekFirst().data);
       mcbpd.selfCall = true;
     }
-
+    
     @Override
     protected void visitArgs(DataOutputStream strm, Tree ast) throws CompilerError {
       /* method args - put count in backpass data and visit kids... */  
@@ -769,6 +775,12 @@ public class Compiler {
       return;
     case DeeLangParser.STRING_LITERAL:
       unit.visitStringLiteral(strm, ast);
+      return;
+      
+      
+    /* ********** SPECIAL TOKEN FOR VAR AND METHOD ******* */
+    case DeeLangParser.CHAIN:
+      unit.visitChain(strm, ast);
       return;
       
       
