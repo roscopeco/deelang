@@ -1,4 +1,4 @@
-// $ANTLR 3.4 C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g 2011-10-27 23:15:10
+// $ANTLR 3.4 C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g 2011-10-28 20:58:45
 
   package com.roscopeco.deelang.parser;
 
@@ -30,8 +30,8 @@ public class DeeLangLexer extends Lexer {
     public static final int ADD=4;
     public static final int ARGS=5;
     public static final int ASSIGN=6;
-    public static final int ASSIGN_LOCAL=7;
-    public static final int ASSIGN_RECEIVER=8;
+    public static final int ASSIGN_FIELD=7;
+    public static final int ASSIGN_LOCAL=8;
     public static final int BLOCK=9;
     public static final int CHAIN=10;
     public static final int CHARACTER_LITERAL=11;
@@ -53,24 +53,23 @@ public class DeeLangLexer extends Lexer {
     public static final int LCURLY=27;
     public static final int LINE_COMMENT=28;
     public static final int LPAREN=29;
-    public static final int LVALUE=30;
-    public static final int METHOD_CALL=31;
-    public static final int MOD=32;
-    public static final int MUL=33;
-    public static final int NOT=34;
-    public static final int OCTAL_LITERAL=35;
-    public static final int OR=36;
-    public static final int ORBLOCK=37;
-    public static final int OctalEscape=38;
-    public static final int POW=39;
-    public static final int RCURLY=40;
-    public static final int RPAREN=41;
-    public static final int SELF=42;
-    public static final int STRING_LITERAL=43;
-    public static final int SUB=44;
-    public static final int TERMINATOR=45;
-    public static final int UnicodeEscape=46;
-    public static final int WS=47;
+    public static final int METHOD_CALL=30;
+    public static final int MOD=31;
+    public static final int MUL=32;
+    public static final int NOT=33;
+    public static final int OCTAL_LITERAL=34;
+    public static final int OR=35;
+    public static final int ORBLOCK=36;
+    public static final int OctalEscape=37;
+    public static final int POW=38;
+    public static final int RCURLY=39;
+    public static final int RPAREN=40;
+    public static final int SELF=41;
+    public static final int STRING_LITERAL=42;
+    public static final int SUB=43;
+    public static final int TERMINATOR=44;
+    public static final int UnicodeEscape=45;
+    public static final int WS=46;
 
     // delegates
     // delegators
@@ -92,8 +91,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = OR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:228:5: ( 'or' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:228:9: 'or'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:230:5: ( 'or' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:230:9: 'or'
             {
             match("or"); 
 
@@ -115,8 +114,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = POW;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:230:5: ( '^' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:230:9: '^'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:232:5: ( '^' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:232:9: '^'
             {
             match('^'); 
 
@@ -136,8 +135,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = MOD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:231:5: ( '%' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:231:9: '%'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:233:5: ( '%' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:233:9: '%'
             {
             match('%'); 
 
@@ -157,8 +156,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = ADD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:232:5: ( '+' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:232:9: '+'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:234:5: ( '+' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:234:9: '+'
             {
             match('+'); 
 
@@ -178,8 +177,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = SUB;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:233:5: ( '-' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:233:9: '-'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:235:5: ( '-' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:235:9: '-'
             {
             match('-'); 
 
@@ -199,8 +198,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = DIV;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:234:5: ( '/' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:234:9: '/'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:236:5: ( '/' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:236:9: '/'
             {
             match('/'); 
 
@@ -220,8 +219,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = MUL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:235:5: ( '*' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:235:9: '*'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:237:5: ( '*' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:237:9: '*'
             {
             match('*'); 
 
@@ -241,8 +240,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:236:5: ( '!' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:236:9: '!'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:238:5: ( '!' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:238:9: '!'
             {
             match('!'); 
 
@@ -262,8 +261,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = ASSIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:239:5: ( '=' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:239:9: '='
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:241:5: ( '=' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:241:9: '='
             {
             match('='); 
 
@@ -283,8 +282,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:243:5: ( '(' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:243:9: '('
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:245:5: ( '(' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:245:9: '('
             {
             match('('); 
 
@@ -304,8 +303,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:247:5: ( ')' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:247:9: ')'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:249:5: ( ')' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:249:9: ')'
             {
             match(')'); 
 
@@ -325,8 +324,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = LCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:251:5: ( '{' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:251:9: '{'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:253:5: ( '{' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:253:9: '{'
             {
             match('{'); 
 
@@ -346,8 +345,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = RCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:255:5: ( '}' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:255:9: '}'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:257:5: ( '}' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:257:9: '}'
             {
             match('}'); 
 
@@ -367,8 +366,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:259:5: ( ',' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:259:9: ','
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:261:5: ( ',' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:261:9: ','
             {
             match(','); 
 
@@ -388,8 +387,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:262:5: ( '.' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:262:9: '.'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:264:5: ( '.' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:264:9: '.'
             {
             match('.'); 
 
@@ -409,13 +408,13 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:265:3: ( ID_LETTER ( ID_LETTER | '0' .. '9' )* )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:265:5: ID_LETTER ( ID_LETTER | '0' .. '9' )*
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:267:3: ( ID_LETTER ( ID_LETTER | '0' .. '9' )* )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:267:5: ID_LETTER ( ID_LETTER | '0' .. '9' )*
             {
             mID_LETTER(); 
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:265:15: ( ID_LETTER | '0' .. '9' )*
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:267:15: ( ID_LETTER | '0' .. '9' )*
             loop1:
             do {
                 int alt1=2;
@@ -463,7 +462,7 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "ID_LETTER"
     public final void mID_LETTER() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:271:3: ( '$' | 'A' .. 'Z' | 'a' .. 'z' | '_' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:273:3: ( '$' | 'A' .. 'Z' | 'a' .. 'z' | '_' )
             // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -491,12 +490,12 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = CHARACTER_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:277:5: ( '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:277:9: '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\''
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:279:5: ( '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:279:9: '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\''
             {
             match('\''); 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:277:14: ( EscapeSequence |~ ( '\\'' | '\\\\' ) )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:279:14: ( EscapeSequence |~ ( '\\'' | '\\\\' ) )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -515,7 +514,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:277:16: EscapeSequence
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:279:16: EscapeSequence
                     {
                     mEscapeSequence(); 
 
@@ -523,7 +522,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:277:33: ~ ( '\\'' | '\\\\' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:279:33: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                         input.consume();
@@ -559,12 +558,12 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = STRING_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:281:5: ( '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:281:8: '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:283:5: ( '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:283:8: '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:281:12: ( EscapeSequence |~ ( '\\\\' | '\"' ) )*
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:283:12: ( EscapeSequence |~ ( '\\\\' | '\"' ) )*
             loop3:
             do {
                 int alt3=3;
@@ -580,7 +579,7 @@ public class DeeLangLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:281:14: EscapeSequence
+            	    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:283:14: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
@@ -588,7 +587,7 @@ public class DeeLangLexer extends Lexer {
             	    }
             	    break;
             	case 2 :
-            	    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:281:31: ~ ( '\\\\' | '\"' )
+            	    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:283:31: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '!')||(input.LA(1) >= '#' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
@@ -627,8 +626,8 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = HEX_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:290:13: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:290:15: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:13: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:15: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
 
@@ -642,7 +641,7 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:290:29: ( HexDigit )+
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:29: ( HexDigit )+
             int cnt4=0;
             loop4:
             do {
@@ -681,7 +680,7 @@ public class DeeLangLexer extends Lexer {
             } while (true);
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:290:39: ( IntegerTypeSuffix )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:39: ( IntegerTypeSuffix )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -690,7 +689,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:290:39: IntegerTypeSuffix
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:39: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -717,10 +716,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = DECIMAL_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:17: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:19: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:17: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:19: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
             {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:19: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:19: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -739,18 +738,18 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:20: '0'
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:20: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:26: '1' .. '9' ( '0' .. '9' )*
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:26: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:35: ( '0' .. '9' )*
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:35: ( '0' .. '9' )*
                     loop6:
                     do {
                         int alt6=2;
@@ -790,7 +789,7 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:46: ( IntegerTypeSuffix )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:46: ( IntegerTypeSuffix )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -799,7 +798,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt8) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:292:46: IntegerTypeSuffix
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:46: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -826,12 +825,12 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = OCTAL_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:15: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:17: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:296:15: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:296:17: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:21: ( '0' .. '7' )+
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:296:21: ( '0' .. '7' )+
             int cnt9=0;
             loop9:
             do {
@@ -870,7 +869,7 @@ public class DeeLangLexer extends Lexer {
             } while (true);
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:33: ( IntegerTypeSuffix )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:296:33: ( IntegerTypeSuffix )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -879,7 +878,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:294:33: IntegerTypeSuffix
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:296:33: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -904,7 +903,7 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:298:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:300:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
             // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
@@ -930,7 +929,7 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "IntegerTypeSuffix"
     public final void mIntegerTypeSuffix() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:302:3: ( ( 'l' | 'L' ) | ( 'u' | 'U' ) ( 'l' | 'L' )? )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:304:3: ( ( 'l' | 'L' ) | ( 'u' | 'U' ) ( 'l' | 'L' )? )
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -949,7 +948,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:302:5: ( 'l' | 'L' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:304:5: ( 'l' | 'L' )
                     {
                     if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                         input.consume();
@@ -964,7 +963,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:303:5: ( 'u' | 'U' ) ( 'l' | 'L' )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:305:5: ( 'u' | 'U' ) ( 'l' | 'L' )?
                     {
                     if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
                         input.consume();
@@ -976,7 +975,7 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:303:16: ( 'l' | 'L' )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:305:16: ( 'l' | 'L' )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -1020,14 +1019,14 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = FLOATING_POINT_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? )
             int alt23=3;
             alt23 = dfa23.predict(input);
             switch (alt23) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:9: ( '0' .. '9' )+
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:9: ( '0' .. '9' )+
                     int cnt13=0;
                     loop13:
                     do {
@@ -1068,7 +1067,7 @@ public class DeeLangLexer extends Lexer {
 
                     match('.'); 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:25: ( '0' .. '9' )*
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:25: ( '0' .. '9' )*
                     loop14:
                     do {
                         int alt14=2;
@@ -1102,7 +1101,7 @@ public class DeeLangLexer extends Lexer {
                     } while (true);
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:37: ( Exponent )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:37: ( Exponent )?
                     int alt15=2;
                     int LA15_0 = input.LA(1);
 
@@ -1111,7 +1110,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     switch (alt15) {
                         case 1 :
-                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:37: Exponent
+                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:37: Exponent
                             {
                             mExponent(); 
 
@@ -1122,7 +1121,7 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:306:47: ( FloatTypeSuffix )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:47: ( FloatTypeSuffix )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -1152,11 +1151,11 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:307:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:309:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
                     match('.'); 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:307:13: ( '0' .. '9' )+
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:309:13: ( '0' .. '9' )+
                     int cnt17=0;
                     loop17:
                     do {
@@ -1195,7 +1194,7 @@ public class DeeLangLexer extends Lexer {
                     } while (true);
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:307:25: ( Exponent )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:309:25: ( Exponent )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -1204,7 +1203,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     switch (alt18) {
                         case 1 :
-                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:307:25: Exponent
+                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:309:25: Exponent
                             {
                             mExponent(); 
 
@@ -1215,7 +1214,7 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:307:35: ( FloatTypeSuffix )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:309:35: ( FloatTypeSuffix )?
                     int alt19=2;
                     int LA19_0 = input.LA(1);
 
@@ -1245,9 +1244,9 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:9: ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:310:9: ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:9: ( '0' .. '9' )+
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:310:9: ( '0' .. '9' )+
                     int cnt20=0;
                     loop20:
                     do {
@@ -1286,7 +1285,7 @@ public class DeeLangLexer extends Lexer {
                     } while (true);
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:21: ( Exponent )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:310:21: ( Exponent )?
                     int alt21=2;
                     int LA21_0 = input.LA(1);
 
@@ -1295,7 +1294,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     switch (alt21) {
                         case 1 :
-                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:21: Exponent
+                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:310:21: Exponent
                             {
                             mExponent(); 
 
@@ -1306,7 +1305,7 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:308:31: ( FloatTypeSuffix )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:310:31: ( FloatTypeSuffix )?
                     int alt22=2;
                     int LA22_0 = input.LA(1);
 
@@ -1349,8 +1348,8 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:313:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:313:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:315:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:315:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -1362,7 +1361,7 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:313:22: ( '+' | '-' )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:315:22: ( '+' | '-' )?
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -1389,7 +1388,7 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:313:33: ( '0' .. '9' )+
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:315:33: ( '0' .. '9' )+
             int cnt25=0;
             loop25:
             do {
@@ -1441,7 +1440,7 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "FloatTypeSuffix"
     public final void mFloatTypeSuffix() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:316:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:318:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
             // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
@@ -1467,7 +1466,7 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:320:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' ) | OctalEscape | UnicodeEscape )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:322:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' ) | OctalEscape | UnicodeEscape )
             int alt26=3;
             int LA26_0 = input.LA(1);
 
@@ -1521,7 +1520,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt26) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:320:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:322:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' )
                     {
                     match('\\'); 
 
@@ -1538,7 +1537,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:321:9: OctalEscape
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:323:9: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -1546,7 +1545,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:322:9: UnicodeEscape
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:324:9: UnicodeEscape
                     {
                     mUnicodeEscape(); 
 
@@ -1566,7 +1565,7 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:327:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:329:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt27=3;
             int LA27_0 = input.LA(1);
 
@@ -1617,7 +1616,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt27) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:327:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:329:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1654,7 +1653,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:328:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:330:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1681,7 +1680,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:329:9: '\\\\' ( '0' .. '7' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:331:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1710,8 +1709,8 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:334:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:334:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:336:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:336:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
 
@@ -1744,14 +1743,14 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:336:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:336:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:338:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:338:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:336:14: ( options {greedy=false; } : . )*
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:338:14: ( options {greedy=false; } : . )*
             loop28:
             do {
                 int alt28=2;
@@ -1776,7 +1775,7 @@ public class DeeLangLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:336:42: .
+            	    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:338:42: .
             	    {
             	    matchAny(); 
 
@@ -1811,14 +1810,14 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:340:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:340:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:342:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:342:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:340:12: (~ ( '\\n' | '\\r' ) )*
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:342:12: (~ ( '\\n' | '\\r' ) )*
             loop29:
             do {
                 int alt29=2;
@@ -1852,7 +1851,7 @@ public class DeeLangLexer extends Lexer {
             } while (true);
 
 
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:340:26: ( '\\r' )?
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:342:26: ( '\\r' )?
             int alt30=2;
             int LA30_0 = input.LA(1);
 
@@ -1861,7 +1860,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt30) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:340:26: '\\r'
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:342:26: '\\r'
                     {
                     match('\r'); 
 
@@ -1891,7 +1890,7 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = TERMINATOR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:344:3: ( ( '\\r' )? '\\n' | ';' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:346:3: ( ( '\\r' )? '\\n' | ';' )
             int alt32=2;
             int LA32_0 = input.LA(1);
 
@@ -1910,9 +1909,9 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt32) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:344:5: ( '\\r' )? '\\n'
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:346:5: ( '\\r' )? '\\n'
                     {
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:344:5: ( '\\r' )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:346:5: ( '\\r' )?
                     int alt31=2;
                     int LA31_0 = input.LA(1);
 
@@ -1921,7 +1920,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     switch (alt31) {
                         case 1 :
-                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:344:5: '\\r'
+                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:346:5: '\\r'
                             {
                             match('\r'); 
 
@@ -1936,7 +1935,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:345:5: ';'
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:347:5: ';'
                     {
                     match(';'); 
 
@@ -1958,7 +1957,7 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:348:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' ) | '...' ( '\\r' )? '\\n' )
+            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:350:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' ) | '...' ( '\\r' )? '\\n' )
             int alt34=2;
             int LA34_0 = input.LA(1);
 
@@ -1977,7 +1976,7 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt34) {
                 case 1 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:348:8: ( ' ' | '\\r' | '\\t' | '\\u000C' )
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:350:8: ( ' ' | '\\r' | '\\t' | '\\u000C' )
                     {
                     if ( input.LA(1)=='\t'||(input.LA(1) >= '\f' && input.LA(1) <= '\r')||input.LA(1)==' ' ) {
                         input.consume();
@@ -1994,13 +1993,13 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:349:8: '...' ( '\\r' )? '\\n'
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:351:8: '...' ( '\\r' )? '\\n'
                     {
                     match("..."); 
 
 
 
-                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:349:14: ( '\\r' )?
+                    // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:351:14: ( '\\r' )?
                     int alt33=2;
                     int LA33_0 = input.LA(1);
 
@@ -2009,7 +2008,7 @@ public class DeeLangLexer extends Lexer {
                     }
                     switch (alt33) {
                         case 1 :
-                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:349:14: '\\r'
+                            // C:\\Users\\chantelle\\workspace\\deelang\\src\\com\\roscopeco\\deelang\\parser\\DeeLang.g:351:14: '\\r'
                             {
                             match('\r'); 
 
@@ -2307,7 +2306,7 @@ public class DeeLangLexer extends Lexer {
             this.transition = DFA23_transition;
         }
         public String getDescription() {
-            return "305:1: FLOATING_POINT_LITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? );";
+            return "307:1: FLOATING_POINT_LITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? );";
         }
     }
     static final String DFA35_eotS =

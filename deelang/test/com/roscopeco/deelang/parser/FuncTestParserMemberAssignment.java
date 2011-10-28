@@ -14,20 +14,24 @@ public class FuncTestParserMemberAssignment extends ParserFuncTestBase {
   public void testBasicMemberAssignment() throws RecognitionException {
     CommonTree tree = runTest("Foo.a=b");
 
-    assertThat(tree.getText(), is("="));
-    assertThat(tree.getType(), is(DeeLangParser.ASSIGN));
-    assertThat(tree.getChildCount(), is(3));
+    assertNull(tree.getText());
+    assertThat(tree.getType(), is(0));
+    assertThat(tree.getChildCount(), is(2));
 
     assertThat(tree.getChild(0).getText(), is("Foo"));
-    assertThat(tree.getChild(0).getType(), is(DeeLangParser.ASSIGN_RECEIVER));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
     assertThat(tree.getChild(0).getChildCount(), is(0));
 
-    assertThat(tree.getChild(1).getText(), is("a"));
-    assertThat(tree.getChild(1).getType(), is(DeeLangParser.LVALUE));
-    assertThat(tree.getChild(1).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getText(), is("ASSIGN_FIELD"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.ASSIGN_FIELD));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
 
-    assertThat(tree.getChild(2).getText(), is("b"));
-    assertThat(tree.getChild(2).getType(), is(DeeLangParser.IDENTIFIER));
-    assertThat(tree.getChild(2).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getText(), is("a"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("b"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(0));
   }
 }

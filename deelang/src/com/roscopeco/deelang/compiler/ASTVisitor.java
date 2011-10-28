@@ -45,8 +45,10 @@ public abstract class ASTVisitor {
   
   protected abstract void visitChain(DataOutputStream strm, Tree ast) throws CompilerError;
 
-  protected abstract void visitAssign(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitAssignLocal(DataOutputStream strm, Tree ast) throws CompilerError;
   protected abstract void visitIdentifier(DataOutputStream strm, Tree ast) throws CompilerError;
+
+  protected abstract void visitAssignField(DataOutputStream strm, Tree ast) throws CompilerError;
   protected abstract void visitFieldAccess(DataOutputStream strm, Tree ast) throws CompilerError;
   
   protected abstract void visitMethodCall(DataOutputStream strm, Tree ast) throws CompilerError;

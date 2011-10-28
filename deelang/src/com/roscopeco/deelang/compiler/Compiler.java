@@ -424,41 +424,33 @@ public class Compiler {
     }
 
     @Override
-    protected void visitAssign(DataOutputStream strm, Tree ast) throws CompilerError {
-      Tree receiver = ast.getChild(0);
-      Tree lvalue = ast.getChild(1);
-      if (lvalue.getType() != DeeLangParser.LVALUE) {
-        throw new IllegalLValueException("Unrecognised LVALUE type in assignment: " + lvalue.getType());
-      }
-      
-      // TODO refactor this to use backpass data...
-      if (receiver.getType() == DeeLangParser.ASSIGN_LOCAL) {
-          visit(strm,this,ast.getChild(2));        
-          try {
-            strm.write(new byte[] { Opcodes.STORE, getOrAllocLocalSlot(lvalue.getText()) });
-          } catch (IOException e) {
-            throw new OutputError(e);
-          }
-      } else if (receiver.getType() == DeeLangParser.ASSIGN_RECEIVER) {
-        visit(strm, this, receiver);
-        visit(strm, this, ast.getChild(2));
-        try {
-          strm.writeByte(Opcodes.PUTFIELD);
-          strm.writeInt(getOrAllocConstPoolIndex(lvalue.getText(), CompiledScript.CONST_POOL_FIELD));
-        } catch (IOException e) {
-          throw new OutputError(e);
-        }
-      } else {
-        throw new IllegalAssignmentException("Unrecognised receiver in assignment: " + receiver.getType());
+    protected void visitAssignLocal(DataOutputStream strm, Tree ast) throws CompilerError {
+      String name = ast.getChild(0).getText();
+      visit(strm, this, ast.getChild(1));
+      try {
+        strm.write(new byte[] { Opcodes.STORE, getOrAllocLocalSlot(name) });
+      } catch (IOException e) {
+        throw new OutputError(e);
       }
     }
 
     @Override
     protected void visitIdentifier(DataOutputStream strm, Tree ast) throws CompilerError {
-      // NOTE: this could be a var or an assignment/member access receiver!
       byte slot = getOrAllocLocalSlot(ast.getText());
       try {
         strm.write(new byte[] { Opcodes.LOAD, slot });
+      } catch (IOException e) {
+        throw new OutputError(e);
+      }
+    }
+    
+    @Override
+    protected void visitAssignField(DataOutputStream strm, Tree ast) throws CompilerError {
+      String name = ast.getChild(0).getText();
+      visit(strm, this, ast.getChild(1));
+      try {
+        strm.writeByte(Opcodes.PUTFIELD);
+        strm.writeInt(getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -785,8 +777,12 @@ public class Compiler {
       
       
     /* ********** VARIABLES ********** */
-    case DeeLangParser.ASSIGN:
-      unit.visitAssign(strm, ast);
+    case DeeLangParser.ASSIGN_FIELD:
+      unit.visitAssignField(strm, ast);
+      return;
+      
+    case DeeLangParser.ASSIGN_LOCAL:
+      unit.visitAssignLocal(strm, ast);
       return;
       
     case DeeLangParser.IDENTIFIER:

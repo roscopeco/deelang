@@ -32,10 +32,9 @@ tokens {
   ORBLOCK;
   SELF;
   CHAIN;
-  ASSIGN_RECEIVER;
+  ASSIGN_FIELD;
   ASSIGN_LOCAL;
   FIELD_ACCESS;
-  LVALUE;
 }
 
 @parser::header {
@@ -136,8 +135,11 @@ expr
   ;
   
 assign_expr
-@init {boolean explicitReceiver=false;}
-  :   (rec=IDENTIFIER DOT {explicitReceiver=true;})? id=IDENTIFIER ASSIGN expr -> {explicitReceiver}? ^(ASSIGN ASSIGN_RECEIVER[$rec.getText()] LVALUE[$id.getText()] expr) -> ^(ASSIGN ASSIGN_LOCAL LVALUE[$id.getText()] expr)
+  :   class_identifier chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN expr -> class_identifier chained_call_or_field_expr* ^(ASSIGN_FIELD $id expr)
+  |   ci = class_identifier ASSIGN expr -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^(ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr)
+  |   meth_call chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN expr -> meth_call chained_call_or_field_expr* ^(ASSIGN_FIELD $id expr)
+  |   LPAREN e1=expr RPAREN chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN e2=expr -> $e1 chained_call_or_field_expr* ^(ASSIGN_FIELD $id $e2)
+  |   id=IDENTIFIER ASSIGN expr -> ^(ASSIGN_LOCAL IDENTIFIER expr)
   ;
 
 math_expr
