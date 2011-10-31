@@ -11,7 +11,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   @Test
   public void testBasicFuncCallNoArgs() throws CompilerError {
     runCodeAndPoolComparisonTest("foo()", new byte[] {
-        Opcodes.INVOKESELF,         0, 0, 0, 0, 0  
+        Opcodes.INVOKESELF_B,       0, 0  
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolMethod("foo")
     });
@@ -20,8 +20,8 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   @Test
   public void testBasicFuncCallOneArg() throws CompilerError {
     runCodeAndPoolComparisonTest("foo(1)", new byte[] {
-        Opcodes.IPUSHCONST,         0, 0, 0, 1,
-        Opcodes.INVOKESELF,         0, 0, 0, 0, 1  
+        Opcodes.IPUSHCONST_B,       1,
+        Opcodes.INVOKESELF_B,       0, 1  
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolMethod("foo"),
         new CompiledScript.ConstPoolInt(1)
@@ -31,9 +31,9 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   @Test
   public void testBasicFuncCallTwoArgs() throws CompilerError {
     runCodeAndPoolComparisonTest("foo(1,2)", new byte[] {
-        Opcodes.IPUSHCONST,         0, 0, 0, 1,
-        Opcodes.IPUSHCONST,         0, 0, 0, 2,
-        Opcodes.INVOKESELF,         0, 0, 0, 0, 2  
+        Opcodes.IPUSHCONST_B,       1,
+        Opcodes.IPUSHCONST_B,       2,
+        Opcodes.INVOKESELF_B,       0, 2  
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolMethod("foo"),
         new CompiledScript.ConstPoolInt(1),
@@ -44,9 +44,9 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   @Test
   public void testNestedFuncCallOneArg() throws CompilerError {
     runCodeAndPoolComparisonTest("foo(bar(1))", new byte[] {
-        Opcodes.IPUSHCONST,         0, 0, 0, 2,
-        Opcodes.INVOKESELF,         0, 0, 0, 1, 1,
-        Opcodes.INVOKESELF,         0, 0, 0, 0, 1  
+        Opcodes.IPUSHCONST_B,       2,
+        Opcodes.INVOKESELF_B,       1, 1,
+        Opcodes.INVOKESELF_B,       0, 1  
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolMethod("foo"),
         new CompiledScript.ConstPoolMethod("bar"),
@@ -57,11 +57,11 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   @Test
   public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArg() throws CompilerError {
     runCodeAndPoolComparisonTest("foo(bar(1, baz(2)))", new byte[] {
-        Opcodes.IPUSHCONST,         0, 0, 0, 2,
-        Opcodes.IPUSHCONST,         0, 0, 0, 4,
-        Opcodes.INVOKESELF,         0, 0, 0, 3, 1,
-        Opcodes.INVOKESELF,         0, 0, 0, 1, 2,  
-        Opcodes.INVOKESELF,         0, 0, 0, 0, 1  
+        Opcodes.IPUSHCONST_B,       2,
+        Opcodes.IPUSHCONST_B,       4,
+        Opcodes.INVOKESELF_B,       3, 1,
+        Opcodes.INVOKESELF_B,       1, 2,  
+        Opcodes.INVOKESELF_B,       0, 1  
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolMethod("foo"),
         new CompiledScript.ConstPoolMethod("bar"),
@@ -75,7 +75,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallNoArgs() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("foo.bar()", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 0  
+        Opcodes.INVOKEDYNAMIC_B,    0, 0  
     }, new String[] {
         "foo"
     },  new CompiledScript.ConstPoolEntry[] {
@@ -87,8 +87,8 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallOneArg() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("foo.bar(1)", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.IPUSHCONST,         0, 0, 0, 1,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 1  
+        Opcodes.IPUSHCONST_B,       1,
+        Opcodes.INVOKEDYNAMIC_B,    0, 1  
     }, new String[] {
         "foo"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -101,9 +101,9 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallTwoArgs() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("foo.bar(1,2)", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.IPUSHCONST,         0, 0, 0, 1,
-        Opcodes.IPUSHCONST,         0, 0, 0, 2,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 2  
+        Opcodes.IPUSHCONST_B,       1,
+        Opcodes.IPUSHCONST_B,       2,
+        Opcodes.INVOKEDYNAMIC_B,    0, 2  
     }, new String[] {
         "foo"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -117,9 +117,9 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testNestedMethToFuncCallOneArg() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("foo.bar(quux(1))", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.IPUSHCONST,         0, 0, 0, 2,
-        Opcodes.INVOKESELF,         0, 0, 0, 1, 1,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 1  
+        Opcodes.IPUSHCONST_B,       2,
+        Opcodes.INVOKESELF_B,       1, 1,
+        Opcodes.INVOKEDYNAMIC_B,    0, 1  
     }, new String[] {
         "foo"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -133,8 +133,8 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testChainedMethodCall() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("Foo.bar().baz()", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 0,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 1, 0
+        Opcodes.INVOKEDYNAMIC_B,    0, 0,
+        Opcodes.INVOKEDYNAMIC_B,    1, 0
     }, new String[] {
         "Foo"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -148,7 +148,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   @Test
   public void testMethodCallNoArgsWithEmptyBlockGetsOptimizedAway() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("bar() { }", new byte[] {
-        Opcodes.INVOKESELF,           0, 0, 0, 0, 0
+        Opcodes.INVOKESELF_B,         0, 0
     }, new String[] {
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolMethod("bar"),
@@ -159,7 +159,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testMethodCallNoArgsWithSingleInsnBlock() throws CompilerError {
     // TODO eventually we'll optimize empty blocks out, so this won't work!
     runCodeLocalsAndPoolComparisonTest("bar() { baz }", new byte[] {
-        Opcodes.INVOKESELF,           0, 0, 0, 0, 0,
+        Opcodes.INVOKESELF_B,         0, 0,
         Opcodes.JUMP_B,               4,
         Opcodes.ENTERBLOCK_B,         2,
         Opcodes.LOAD,                 0
@@ -174,7 +174,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testMethodCallNoArgsWithTwoInsnBlock() throws CompilerError {
     // TODO eventually we'll optimize empty blocks out, so this won't work!
     runCodeLocalsAndPoolComparisonTest("bar() { baz; bee; }", new byte[] {
-        Opcodes.INVOKESELF,           0, 0, 0, 0, 0,
+        Opcodes.INVOKESELF_B,         0, 0,
         Opcodes.JUMP_B,               6,
         Opcodes.ENTERBLOCK_B,         4,
         Opcodes.LOAD,                 0,
@@ -191,7 +191,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testMethodCallNoArgsWithMoreThanTwoInsnBlock() throws CompilerError {
     // TODO eventually we'll optimize empty blocks out, so this won't work!
     runCodeLocalsAndPoolComparisonTest("bar() { baz; bee; foo; quux; qix }", new byte[] {
-        Opcodes.INVOKESELF,           0, 0, 0, 0, 0,
+        Opcodes.INVOKESELF_B,         0, 0,
         Opcodes.JUMP_B,               12,
         Opcodes.ENTERBLOCK_B,         10,
         Opcodes.LOAD,                 0,

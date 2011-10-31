@@ -345,12 +345,52 @@ public class Compiler {
     /* ********************************* */
     /* * VISITOR METHODS               * */
     /* ********************************* */
+    private void writeSizedNoExtra(DataOutputStream strm, byte byteSize, byte wordSize, byte longSize, int index) throws IOException, CompilerError {
+      if (index <= Integer.MAX_VALUE) {
+        if (index <= Short.MAX_VALUE) {
+          if (index <= Byte.MAX_VALUE) {
+            strm.writeByte(byteSize);
+            strm.writeByte(index);
+          } else {
+            strm.writeByte(wordSize);
+            strm.writeShort(index);
+          }
+        } else {
+          strm.writeByte(longSize);
+          strm.writeInt(index);
+        }
+      } else {
+        throw new MaxConstPoolSizeExceededException("Constant pool cannot contain more than " + Integer.MAX_VALUE + " entries!");
+      }      
+    }
+    
+    private void writeSizedOneExtra(DataOutputStream strm, byte byteSize, byte wordSize, byte longSize, int index, byte extra) throws IOException, CompilerError {
+      if (index <= Integer.MAX_VALUE) {
+        if (index <= Short.MAX_VALUE) {
+          if (index <= Byte.MAX_VALUE) {
+            strm.writeByte(byteSize);
+            strm.writeByte(index);
+            strm.writeByte(extra);
+          } else {
+            strm.writeByte(wordSize);
+            strm.writeShort(index);
+            strm.writeByte(extra);
+          }
+        } else {
+          strm.writeByte(longSize);
+          strm.writeInt(index);
+          strm.writeByte(extra);
+        }
+      } else {
+        throw new MaxConstPoolSizeExceededException("Constant pool cannot contain more than " + Integer.MAX_VALUE + " entries!");
+      }      
+    }
+    
     @Override
     protected void visitDecimalLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
       int index = getOrAllocConstPoolIndex(Integer.parseInt(ast.getText()), CompiledScript.CONST_POOL_INT);
       try {
-        strm.writeByte(Opcodes.IPUSHCONST);
-        strm.writeInt(index);
+        writeSizedNoExtra(strm, Opcodes.IPUSHCONST_B, Opcodes.IPUSHCONST_W, Opcodes.IPUSHCONST_L, index);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -363,8 +403,7 @@ public class Compiler {
       int index = getOrAllocConstPoolIndex(Integer.parseInt(value, 16), CompiledScript.CONST_POOL_INT);
       
       try {
-        strm.writeByte(Opcodes.IPUSHCONST);
-        strm.writeInt(index);
+        writeSizedNoExtra(strm, Opcodes.IPUSHCONST_B, Opcodes.IPUSHCONST_W, Opcodes.IPUSHCONST_L, index);
       } catch (IOException e) {
         throw new OutputError(e);
       } 
@@ -375,8 +414,7 @@ public class Compiler {
       int index = getOrAllocConstPoolIndex(Integer.parseInt(ast.getText(), 8), CompiledScript.CONST_POOL_INT);
       
       try {
-        strm.writeByte(Opcodes.IPUSHCONST);
-        strm.writeInt(index);
+        writeSizedNoExtra(strm, Opcodes.IPUSHCONST_B, Opcodes.IPUSHCONST_W, Opcodes.IPUSHCONST_L, index);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -387,8 +425,7 @@ public class Compiler {
       int index = getOrAllocConstPoolIndex(Double.parseDouble(ast.getText()), CompiledScript.CONST_POOL_FLOAT);
       
       try {
-        strm.writeByte(Opcodes.FPUSHCONST);
-        strm.writeInt(index);
+        writeSizedNoExtra(strm, Opcodes.FPUSHCONST_B, Opcodes.FPUSHCONST_W, Opcodes.FPUSHCONST_L, index);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -406,8 +443,7 @@ public class Compiler {
       int index = getOrAllocConstPoolIndex(value, CompiledScript.CONST_POOL_STRING);
       
       try {
-        strm.writeByte(Opcodes.SPUSHCONST);
-        strm.writeInt(index);
+        writeSizedNoExtra(strm, Opcodes.SPUSHCONST_B, Opcodes.SPUSHCONST_W, Opcodes.SPUSHCONST_L, index);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -449,8 +485,8 @@ public class Compiler {
       String name = ast.getChild(0).getText();
       visit(strm, this, ast.getChild(1));
       try {
-        strm.writeByte(Opcodes.PUTFIELD);
-        strm.writeInt(getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
+        writeSizedNoExtra(strm, Opcodes.PUTFIELD_B, Opcodes.PUTFIELD_W, Opcodes.PUTFIELD_L, 
+            getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -459,10 +495,10 @@ public class Compiler {
     @Override
     protected void visitFieldAccess(DataOutputStream strm, Tree ast)
         throws CompilerError {
+      visit(strm, this, ast.getChild(0));
       try {
-        visit(strm, this, ast.getChild(0));
-        strm.writeByte(Opcodes.GETFIELD);
-        strm.writeInt(getOrAllocConstPoolIndex(ast.getChild(1).getText(), CompiledScript.CONST_POOL_FIELD));
+        writeSizedNoExtra(strm, Opcodes.GETFIELD_B, Opcodes.GETFIELD_W, Opcodes.GETFIELD_L, 
+            getOrAllocConstPoolIndex(ast.getChild(1).getText(), CompiledScript.CONST_POOL_FIELD));
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -521,17 +557,20 @@ public class Compiler {
       MethCallBackPassData bpd = (MethCallBackPassData)kidData.data;
       
       try {
-        strm.writeByte(bpd.selfCall ? Opcodes.INVOKESELF : Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(index);
-        strm.writeByte(bpd.argc);
-        
+        if (bpd.selfCall) {
+          writeSizedOneExtra(strm, Opcodes.INVOKESELF_B, Opcodes.INVOKESELF_W, Opcodes.INVOKESELF_L,
+              index, bpd.argc);
+        } else {
+          writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L,
+              index, bpd.argc);
+        }
+       
         writeBlock(strm, bpd.block);
         
         byte[] orblock;
         if ((orblock = bpd.orBlock).length > 0) {
-          strm.writeByte(Opcodes.INVOKESELF);
-          strm.writeInt(getOrAllocConstPoolIndex("or", CompiledScript.CONST_POOL_METHOD));
-          strm.writeByte(0);
+          writeSizedOneExtra(strm, Opcodes.INVOKESELF_B, Opcodes.INVOKESELF_W, Opcodes.INVOKESELF_L,
+              getOrAllocConstPoolIndex("or", CompiledScript.CONST_POOL_METHOD), (byte)0);
           writeBlock(strm, orblock);
         }
       } catch (IOException e) {
@@ -593,9 +632,8 @@ public class Compiler {
       visit(strm, this, ast.getChild(1));
       
       try {
-        strm.writeByte(Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(getOrAllocConstPoolIndex("__opADD", CompiledScript.CONST_POOL_METHOD));
-        strm.writeByte(1);
+        writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
+            getOrAllocConstPoolIndex("__opADD", CompiledScript.CONST_POOL_METHOD), (byte)1);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -608,9 +646,8 @@ public class Compiler {
       visit(strm, this, ast.getChild(1));
       
       try {
-        strm.writeByte(Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(getOrAllocConstPoolIndex("__opSUB", CompiledScript.CONST_POOL_METHOD));
-        strm.writeByte(1);
+        writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
+            getOrAllocConstPoolIndex("__opSUB", CompiledScript.CONST_POOL_METHOD), (byte)1);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -622,9 +659,8 @@ public class Compiler {
       visit(strm, this, ast.getChild(1));
       
       try {
-        strm.writeByte(Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(getOrAllocConstPoolIndex("__opMUL", CompiledScript.CONST_POOL_METHOD));
-        strm.writeByte(1);
+        writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
+            getOrAllocConstPoolIndex("__opMUL", CompiledScript.CONST_POOL_METHOD), (byte)1);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -636,9 +672,8 @@ public class Compiler {
       visit(strm, this, ast.getChild(1));
       
       try {
-        strm.writeByte(Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(getOrAllocConstPoolIndex("__opDIV", CompiledScript.CONST_POOL_METHOD));
-        strm.writeByte(1);
+        writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
+            getOrAllocConstPoolIndex("__opDIV", CompiledScript.CONST_POOL_METHOD), (byte)1);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -650,9 +685,8 @@ public class Compiler {
       visit(strm, this, ast.getChild(1));
       
       try {
-        strm.writeByte(Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(getOrAllocConstPoolIndex("__opMOD", CompiledScript.CONST_POOL_METHOD));
-        strm.writeByte(1);
+        writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
+            getOrAllocConstPoolIndex("__opMOD", CompiledScript.CONST_POOL_METHOD), (byte)1);
       } catch (IOException e) {
         throw new OutputError(e);
       }
@@ -664,9 +698,8 @@ public class Compiler {
       visit(strm, this, ast.getChild(1));
       
       try {
-        strm.writeByte(Opcodes.INVOKEDYNAMIC);
-        strm.writeInt(getOrAllocConstPoolIndex("__opPOW", CompiledScript.CONST_POOL_METHOD));
-        strm.writeByte(1);
+        writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
+            getOrAllocConstPoolIndex("__opPOW", CompiledScript.CONST_POOL_METHOD), (byte)1);
       } catch (IOException e) {
         throw new OutputError(e);
       }

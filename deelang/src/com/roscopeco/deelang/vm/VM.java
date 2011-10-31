@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.CompiledScript;
+import com.roscopeco.deelang.runtime.DeeLangFloat;
 import com.roscopeco.deelang.runtime.DeeLangInteger;
 import com.roscopeco.deelang.runtime.DeeLangString;
 
@@ -74,6 +75,106 @@ public class VM {
   public void step(Context ctx) throws RuntimeError {
     step(ctx, ctx.codeStrm);
   }
+  
+  /**
+   * Handle PUTFIELD_x instructions. 
+   * 
+   * @param ctx The context.
+   * @param index Index in the const pool of the CONST_POOL_FIELD to set.
+   */
+  private final void doPutField(Context ctx, int index) {
+    Object value = ctx.stack.removeFirst();
+    Object receiver = ctx.stack.removeFirst();
+    try {
+      Field f = receiver.getClass().getDeclaredField((String)ctx.pool[index].getValue());
+      f.set(receiver, value);
+    } catch (NoSuchFieldException e) {
+      throw new NoSuchFieldError("No such field '" + ctx.pool[index].getValue() + "' on object '" + receiver + "'");
+    } catch (IllegalAccessException e) {
+      throw new ReflectiveAccessError(e);
+    }
+  }
+  
+  /**
+   * Handle GETFIELD_x instructions. 
+   * 
+   * @param ctx The context.
+   * @param index Index in the const pool of the CONST_POOL_FIELD to get.
+   */
+  private final void doGetField(Context ctx, int index) {
+    Object receiver = ctx.stack.removeFirst();
+    try {
+      Field f = receiver.getClass().getDeclaredField((String)ctx.pool[index].getValue());
+      ctx.stack.addFirst(f.get(receiver));
+    } catch (NoSuchFieldException e) {
+      throw new NoSuchFieldError("No such field '" + ctx.pool[index].getValue() + "' on object '" + receiver + "'");
+    } catch (IllegalAccessException e) {
+      throw new ReflectiveAccessError(e);
+    }    
+  }
+
+  /**
+   * Handle method invocation. Handles both DYNAMIC and SELF invokes.
+   * 
+   * @param ctx The context.
+   * @param op The opcode (determines invocation type).
+   * @param index The index in the const pool of the CONST_POOL_METHOD to invoke. 
+   * @param argc The argument count.
+   * @param errorWasSet True if errorFlag was set at end of previous instruction (used for 'or' invocation)
+   */
+  private final void doInvoke(Context ctx, byte op, int index, byte argc, boolean errorWasSet) {
+    Object args[] = new Object[argc];
+    
+    for (int i = argc - 1; i > -1; i--) {
+      args[i] = ctx.stack.removeFirst();
+    }
+    
+    String name = (String)ctx.pool[index].getValue();
+    
+    Object receiver;
+    if (op == Opcodes.INVOKESELF_B || op == Opcodes.INVOKESELF_W || op == Opcodes.INVOKESELF_L) {
+      receiver = ctx.self;
+    } else {
+      receiver = ctx.stack.removeFirst();
+    }
+    
+    // special handling for 'or' - put errorFlag value back
+    if ("or".equals(name)) {
+      ctx.errorFlag = errorWasSet;
+    }
+
+    assert debug("Invoking method '" + name + "' on " + receiver);
+    
+    Method m = findMethodForArgs(receiver, name, args);
+    if (m == null) {
+      String argTypes;
+      if (args.length > 0) {
+        StringBuffer sb = new StringBuffer();
+        for (Object arg : args) {
+          sb.append(arg.getClass());
+          sb.append(", ");
+        }
+        argTypes = sb.toString();
+      } else {
+        argTypes = "<void>";
+      }
+      throw new NoSuchMethodError("Method '" + receiver.getClass().getSimpleName() + '.' + name + "' not found for these argument types: (" + argTypes + ")");
+    } else {
+      Object retval;
+      
+      try {
+        retval = m.invoke(receiver, args);
+        assert debug("Method '" + name + "' returned '" + retval + "'");
+      } catch (InvocationTargetException e) {
+        throw new JavaMethodError(e);              
+      } catch (IllegalAccessException e) {
+        throw new ReflectiveAccessError(e);
+      }
+      if (!m.getReturnType().equals(void.class)) {
+        ctx.stack.addFirst(retval);
+      }
+    }
+  }
 
   @SuppressWarnings("deprecation")
   /**
@@ -103,24 +204,52 @@ public class VM {
       if (strm.available() > 0) {
         byte op = strm.readByte();
         int intOper;
-        byte byteOper;
         
         switch (op) {
         case Opcodes.NOP:
           return;
         case Opcodes.IPUSH:
+          ctx.stack.addFirst(new DeeLangInteger(ctx, strm.readInt()));
+          return;
         case Opcodes.FPUSH:
+          ctx.stack.addFirst(new DeeLangFloat(ctx, strm.readDouble()));
+          return;
         case Opcodes.SPUSH:
-          throw new UnsupportedOperationError("IPUSH is no longer supported");
-        case Opcodes.IPUSHCONST:
+          ctx.stack.addFirst(new DeeLangString(ctx, strm.readUTF()));
+          return;
+        case Opcodes.IPUSHCONST_B:
+          intOper = strm.readByte();
+          ctx.stack.addFirst(new DeeLangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
+          return;
+        case Opcodes.FPUSHCONST_B:
+          intOper = strm.readByte();
+          ctx.stack.addFirst(ctx.pool[intOper].getValue());
+          return;
+        case Opcodes.SPUSHCONST_B:
+          intOper = strm.readByte();
+          ctx.stack.addFirst(new DeeLangString(ctx, (String)ctx.pool[intOper].getValue()));
+          return;
+        case Opcodes.IPUSHCONST_W:
+          intOper = strm.readShort();
+          ctx.stack.addFirst(new DeeLangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
+          return;
+        case Opcodes.FPUSHCONST_W:
+          intOper = strm.readShort();
+          ctx.stack.addFirst(ctx.pool[intOper].getValue());
+          return;
+        case Opcodes.SPUSHCONST_W:
+          intOper = strm.readShort();
+          ctx.stack.addFirst(new DeeLangString(ctx, (String)ctx.pool[intOper].getValue()));
+          return;
+        case Opcodes.IPUSHCONST_L:
           intOper = strm.readInt();
           ctx.stack.addFirst(new DeeLangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
           return;
-        case Opcodes.FPUSHCONST:
+        case Opcodes.FPUSHCONST_L:
           intOper = strm.readInt();
           ctx.stack.addFirst(ctx.pool[intOper].getValue());
           return;
-        case Opcodes.SPUSHCONST:
+        case Opcodes.SPUSHCONST_L:
           intOper = strm.readInt();
           ctx.stack.addFirst(new DeeLangString(ctx, (String)ctx.pool[intOper].getValue()));
           return;
@@ -135,30 +264,23 @@ public class VM {
           intOper = strm.readByte();
           ctx.stack.addFirst(ctx.locals[intOper]);
           return;
-        case Opcodes.PUTFIELD:
-          intOper = strm.readInt();
-          Object value = ctx.stack.removeFirst();
-          Object receiver = ctx.stack.removeFirst();
-          try {
-            Field f = receiver.getClass().getDeclaredField((String)ctx.pool[intOper].getValue());
-            f.set(receiver, value);
-          } catch (NoSuchFieldException e) {
-            throw new NoSuchFieldError("No such field '" + ctx.pool[intOper].getValue() + "' on object '" + receiver + "'");
-          } catch (IllegalAccessException e) {
-            throw new ReflectiveAccessError(e);
-          }
+        case Opcodes.PUTFIELD_B:
+          doPutField(ctx, strm.readByte());
           return;
-        case Opcodes.GETFIELD:
-          intOper = strm.readInt();
-          receiver = ctx.stack.removeFirst();
-          try {
-            Field f = receiver.getClass().getDeclaredField((String)ctx.pool[intOper].getValue());
-            ctx.stack.addFirst(f.get(receiver));
-          } catch (NoSuchFieldException e) {
-            throw new NoSuchFieldError("No such field '" + ctx.pool[intOper].getValue() + "' on object '" + receiver + "'");
-          } catch (IllegalAccessException e) {
-            throw new ReflectiveAccessError(e);
-          }
+        case Opcodes.GETFIELD_B:
+          doGetField(ctx, strm.readByte());
+          return;
+        case Opcodes.PUTFIELD_W:
+          doPutField(ctx, strm.readShort());
+          return;
+        case Opcodes.GETFIELD_W:
+          doGetField(ctx, strm.readShort());
+          return;
+        case Opcodes.PUTFIELD_L:
+          doPutField(ctx, strm.readInt());
+          return;
+        case Opcodes.GETFIELD_L:
+          doGetField(ctx, strm.readInt());
           return;
         case Opcodes.ADD:
         case Opcodes.SUB:
@@ -169,56 +291,17 @@ public class VM {
           throw new UnsupportedOperationError("Static arithmetic is not supported");
         case Opcodes.INVOKESTATIC:
           throw new UnsupportedOperationError("Static dispatch is no longer supported");
-        case Opcodes.INVOKESELF:
-        case Opcodes.INVOKEDYNAMIC:
-          intOper = strm.readInt();     // index of method name
-          byteOper = strm.readByte();   // argc
-          
-          Object args[] = new Object[byteOper];
-          
-          for (int i = byteOper - 1; i > -1; i--) {
-            args[i] = ctx.stack.removeFirst();
-          }
-          
-          String name = (String)ctx.pool[intOper].getValue();
-          receiver = (op == Opcodes.INVOKESELF) ? ctx.self : ctx.stack.removeFirst();
-          
-          // special handling for 'or' - put errorFlag value back
-          if ("or".equals(name)) {
-            ctx.errorFlag = errorWasSet;
-          }
-
-          assert debug("Invoking method '" + name + "' on " + receiver);
-          
-          Method m = findMethodForArgs(receiver, name, args);
-          if (m == null) {
-            String argTypes;
-            if (args.length > 0) {
-              StringBuffer sb = new StringBuffer();
-              for (Object arg : args) {
-                sb.append(arg.getClass());
-                sb.append(", ");
-              }
-              argTypes = sb.toString();
-            } else {
-              argTypes = "<void>";
-            }
-            throw new NoSuchMethodError("Method '" + receiver.getClass().getSimpleName() + '.' + name + "' not found for these argument types: (" + argTypes + ")");
-          } else {
-            Object retval;
-            
-            try {
-              retval = m.invoke(receiver, args);
-              assert debug("Method '" + name + "' returned '" + retval + "'");
-            } catch (InvocationTargetException e) {
-              throw new JavaMethodError(e);              
-            } catch (IllegalAccessException e) {
-              throw new ReflectiveAccessError(e);
-            }
-            if (!m.getReturnType().equals(void.class)) {
-              ctx.stack.addFirst(retval);
-            }
-          }
+        case Opcodes.INVOKESELF_B:
+        case Opcodes.INVOKEDYNAMIC_B:
+          doInvoke(ctx, op, strm.readByte(), strm.readByte(), errorWasSet);
+          return;
+        case Opcodes.INVOKESELF_W:
+        case Opcodes.INVOKEDYNAMIC_W:
+          doInvoke(ctx, op, strm.readShort(), strm.readByte(), errorWasSet);
+          return;
+        case Opcodes.INVOKESELF_L:
+        case Opcodes.INVOKEDYNAMIC_L:
+          doInvoke(ctx, op, strm.readInt(), strm.readByte(), errorWasSet);
           return;
         case Opcodes.BLOCKRETURN:
           throw new UnsupportedOperationError("BLOCKRETURN is no longer supported");

@@ -16,9 +16,9 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   
   private void runComparison(String sumCode, String expMethod) throws RecognitionException, CompilerError {
     runCodeAndPoolComparisonTest(sumCode, new byte[] {
-        Opcodes.IPUSHCONST, 0, 0, 0, 0,
-        Opcodes.IPUSHCONST, 0, 0, 0, 1,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 2, 1
+        Opcodes.IPUSHCONST_B, 0,
+        Opcodes.IPUSHCONST_B, 1,
+        Opcodes.INVOKEDYNAMIC_B, 2, 1
     }, new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolInt(1),
         new CompiledScript.ConstPoolInt(2),
@@ -60,11 +60,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralLiteralSum() throws RecognitionException, CompilerError {
     runCodeAndPoolComparisonTest("1+2-3", new byte[] {
-        Opcodes.IPUSHCONST, 0, 0, 0, 0,
-        Opcodes.IPUSHCONST, 0, 0, 0, 1,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 2, 1,
-        Opcodes.IPUSHCONST, 0, 0, 0, 3,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 4, 1
+        Opcodes.IPUSHCONST_B, 0,
+        Opcodes.IPUSHCONST_B, 1,
+        Opcodes.INVOKEDYNAMIC_B, 2, 1,
+        Opcodes.IPUSHCONST_B, 3,
+        Opcodes.INVOKEDYNAMIC_B, 4, 1
     },
     new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolInt(1),
@@ -78,11 +78,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralLiteralMulAddSum() throws RecognitionException, CompilerError {
     runCodeAndPoolComparisonTest("1+2*3", new byte[] {
-        Opcodes.IPUSHCONST, 0, 0, 0, 0,
-        Opcodes.IPUSHCONST, 0, 0, 0, 1,
-        Opcodes.IPUSHCONST, 0, 0, 0, 2,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 3, 1,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 4, 1
+        Opcodes.IPUSHCONST_B, 0,
+        Opcodes.IPUSHCONST_B, 1,
+        Opcodes.IPUSHCONST_B, 2,
+        Opcodes.INVOKEDYNAMIC_B, 3, 1,
+        Opcodes.INVOKEDYNAMIC_B, 4, 1
     },
     new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolInt(1),
@@ -96,11 +96,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralLiteralMulAddSumExplicitPrecedence() throws RecognitionException, CompilerError {
     runCodeAndPoolComparisonTest("(1+2)*3", new byte[] {
-        Opcodes.IPUSHCONST, 0, 0, 0, 0,
-        Opcodes.IPUSHCONST, 0, 0, 0, 1,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 2, 1,
-        Opcodes.IPUSHCONST, 0, 0, 0, 3,
-        Opcodes.INVOKEDYNAMIC, 0, 0, 0, 4, 1
+        Opcodes.IPUSHCONST_B, 0,
+        Opcodes.IPUSHCONST_B, 1,
+        Opcodes.INVOKEDYNAMIC_B, 2, 1,
+        Opcodes.IPUSHCONST_B, 3,
+        Opcodes.INVOKEDYNAMIC_B, 4, 1
     },
     new CompiledScript.ConstPoolEntry[] {
         new CompiledScript.ConstPoolInt(1),

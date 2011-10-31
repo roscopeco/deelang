@@ -60,22 +60,40 @@ public class ScriptDumper {
           sb.append("[NOP]\n");
           break;
         case Opcodes.IPUSH:
-          sb.append("[IPUSH            " + strm.readInt() + "]\n");
+          sb.append("[**IPUSH          " + strm.readInt() + "]\n");
           break;
         case Opcodes.FPUSH:
-          sb.append("[FPUSH            " + strm.readDouble() + "]\n");
+          sb.append("[**FPUSH          " + strm.readDouble() + "]\n");
           break;
         case Opcodes.SPUSH:
-          sb.append("[SPUSH            " + strm.readUTF() + "]\n");
+          sb.append("[**SPUSH          " + strm.readUTF() + "]\n");
           break;
-        case Opcodes.IPUSHCONST:
-          sb.append("[IPUSHCONST       " + strm.readInt() + "]\n");
+        case Opcodes.IPUSHCONST_B:
+          sb.append("[IPUSHCONST_B     " + strm.readByte() + "]\n");
           break;
-        case Opcodes.FPUSHCONST:
-          sb.append("[FPUSHCONST       " + strm.readInt() + "]\n");
+        case Opcodes.FPUSHCONST_B:
+          sb.append("[FPUSHCONST_B     " + strm.readByte() + "]\n");
           break;
-        case Opcodes.SPUSHCONST:
-          sb.append("[SPUSHCONST       " + strm.readInt() + "]\n");
+        case Opcodes.SPUSHCONST_B:
+          sb.append("[SPUSHCONST_B     " + strm.readByte() + "]\n");
+          break;
+        case Opcodes.IPUSHCONST_W:
+          sb.append("[IPUSHCONST_W     " + strm.readShort() + "]\n");
+          break;
+        case Opcodes.FPUSHCONST_W:
+          sb.append("[FPUSHCONST_W     " + strm.readShort() + "]\n");
+          break;
+        case Opcodes.SPUSHCONST_W:
+          sb.append("[SPUSHCONST_W     " + strm.readShort() + "]\n");
+          break;
+        case Opcodes.IPUSHCONST_L:
+          sb.append("[IPUSHCONST_L     " + strm.readInt() + "]\n");
+          break;
+        case Opcodes.FPUSHCONST_L:
+          sb.append("[FPUSHCONST_L     " + strm.readInt() + "]\n");
+          break;
+        case Opcodes.SPUSHCONST_L:
+          sb.append("[SPUSHCONST_L     " + strm.readInt() + "]\n");
           break;
         case Opcodes.STORE:
           sb.append("[STORE            " + strm.readByte() + "]\n");
@@ -83,23 +101,47 @@ public class ScriptDumper {
         case Opcodes.LOAD:
           sb.append("[LOAD             " + strm.readByte() + "]\n");
           break;
-        case Opcodes.PUTFIELD:
-          sb.append("[PUTFIELD         " + strm.readInt() + "]\n");
+        case Opcodes.PUTFIELD_B:
+          sb.append("[PUTFIELD_B       " + strm.readByte() + "]\n");
           break;
-        case Opcodes.GETFIELD:
-          sb.append("[GETFIELD         " + strm.readInt() + "]\n");
+        case Opcodes.GETFIELD_B:
+          sb.append("[GETFIELD_B       " + strm.readByte() + "]\n");
           break;
-        case Opcodes.INVOKEDYNAMIC:
-          sb.append("[INVOKEDYNAMIC    " + strm.readInt() + ", " + strm.readByte() + "]\n");
+        case Opcodes.PUTFIELD_W:
+          sb.append("[PUTFIELD_W       " + strm.readShort() + "]\n");
+          break;
+        case Opcodes.GETFIELD_W:
+          sb.append("[GETFIELD_W       " + strm.readShort() + "]\n");
+          break;
+        case Opcodes.PUTFIELD_L:
+          sb.append("[PUTFIELD_L       " + strm.readInt() + "]\n");
+          break;
+        case Opcodes.GETFIELD_L:
+          sb.append("[GETFIELD_L       " + strm.readInt() + "]\n");
           break;
         case Opcodes.INVOKESTATIC:
-          sb.append("[INVOKESTATIC     " + strm.readInt() + ", " + strm.readByte() + "]\n");
+          sb.append("[**INVOKESTATIC   " + strm.readInt() + ", " + strm.readByte() + "]\n");
           break;
-        case Opcodes.INVOKESELF:
-          sb.append("[INVOKESELF       " + strm.readInt() + ", " + strm.readByte() + "]\n");
+        case Opcodes.INVOKEDYNAMIC_B:
+          sb.append("[INVOKEDYNAMIC_B  " + strm.readByte() + ", " + strm.readByte() + "]\n");
+          break;
+        case Opcodes.INVOKESELF_B:
+          sb.append("[INVOKESELF_B     " + strm.readByte() + ", " + strm.readByte() + "]\n");
+          break;
+        case Opcodes.INVOKEDYNAMIC_W:
+          sb.append("[INVOKEDYNAMIC_W  " + strm.readShort() + ", " + strm.readByte() + "]\n");
+          break;
+        case Opcodes.INVOKESELF_W:
+          sb.append("[INVOKESELF_W     " + strm.readShort() + ", " + strm.readByte() + "]\n");
+          break;
+        case Opcodes.INVOKEDYNAMIC_L:
+          sb.append("[INVOKEDYNAMIC_L  " + strm.readInt() + ", " + strm.readByte() + "]\n");
+          break;
+        case Opcodes.INVOKESELF_L:
+          sb.append("[INVOKESELF_L     " + strm.readInt() + ", " + strm.readByte() + "]\n");
           break;
         case Opcodes.BLOCKRETURN:
-          sb.append("[BLOCKRETURN]\n");
+          sb.append("[**BLOCKRETURN]\n");
           break;
         case Opcodes.ENTERBLOCK_B:
           sb.append("[ENTERBLOCK_B     " + strm.readByte() + "]\n");
@@ -120,22 +162,22 @@ public class ScriptDumper {
           sb.append("[JUMP_L           " + strm.readInt() + "]\n");
           break;
         case Opcodes.ADD:
-          sb.append("[ADD]\n");
+          sb.append("[**ADD]\n");
           break;
         case Opcodes.SUB:
-          sb.append("[SUB]\n");
+          sb.append("[**SUB]\n");
           break;
         case Opcodes.MUL:
-          sb.append("[MUL]\n");
+          sb.append("[**MUL]\n");
           break;
         case Opcodes.DIV:
-          sb.append("[DIV]\n");
+          sb.append("[**DIV]\n");
           break;
         case Opcodes.MOD:
-          sb.append("[MOD]\n");
+          sb.append("[**MOD]\n");
           break;
         case Opcodes.POW:
-          sb.append("[POW]\n");
+          sb.append("[**POW]\n");
           break;
         default:
           sb.append("[UNKNOWN]");

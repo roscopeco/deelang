@@ -9,8 +9,8 @@ public class FuncTestCompilerCombinedFieldMethodChaining extends CompilerFuncTes
   public void testMemberAccessAfterMethod() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("Quux.qix().baz", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 0,
-        Opcodes.GETFIELD,           0, 0, 0, 1
+        Opcodes.INVOKEDYNAMIC_B,    0, 0,
+        Opcodes.GETFIELD_B,         1
     }, new String[] {
         "Quux"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -23,8 +23,8 @@ public class FuncTestCompilerCombinedFieldMethodChaining extends CompilerFuncTes
   public void testMethodAfterMemberAccess() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("Quux.baz.qix()", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.GETFIELD,           0, 0, 0, 0,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 1, 0
+        Opcodes.GETFIELD_B,         0,
+        Opcodes.INVOKEDYNAMIC_B,    1, 0
     }, new String[] {
         "Quux"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -37,9 +37,9 @@ public class FuncTestCompilerCombinedFieldMethodChaining extends CompilerFuncTes
   public void testMethodAfterMemberAccessAfterMethod() throws CompilerError {
     runCodeLocalsAndPoolComparisonTest("Quux.qix().baz.beez()", new byte[] {
         Opcodes.LOAD,               0,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 0, 0,
-        Opcodes.GETFIELD,           0, 0, 0, 1,
-        Opcodes.INVOKEDYNAMIC,      0, 0, 0, 2, 0
+        Opcodes.INVOKEDYNAMIC_B,    0, 0,
+        Opcodes.GETFIELD_B,         1,
+        Opcodes.INVOKEDYNAMIC_B,    2, 0
     }, new String[] {
         "Quux"
     }, new CompiledScript.ConstPoolEntry[] {

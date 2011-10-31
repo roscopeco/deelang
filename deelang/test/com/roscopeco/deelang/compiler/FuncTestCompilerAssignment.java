@@ -22,7 +22,7 @@ public class FuncTestCompilerAssignment extends CompilerFuncTestBase {
   @Test
   public void testLocalAssignment() throws Throwable {
     runCodeComparisonTest("a=1", new byte[] {
-        Opcodes.IPUSHCONST, 0, 0, 0, 0,
+        Opcodes.IPUSHCONST_B, 0,
         Opcodes.STORE,      0
     });
   }
@@ -30,9 +30,9 @@ public class FuncTestCompilerAssignment extends CompilerFuncTestBase {
   @Test
   public void testFieldFromLocalReceiverAssignment() throws Throwable {
     runCodeLocalsAndPoolComparisonTest("Foo.a=1", new byte[] {
-        Opcodes.LOAD,       0,
-        Opcodes.IPUSHCONST, 0, 0, 0, 0,
-        Opcodes.PUTFIELD,   0, 0, 0, 1
+        Opcodes.LOAD,         0,
+        Opcodes.IPUSHCONST_B, 0,
+        Opcodes.PUTFIELD_B,   1
     }, new String[] {
         "Foo"
     }, new CompiledScript.ConstPoolEntry[] {
@@ -44,9 +44,9 @@ public class FuncTestCompilerAssignment extends CompilerFuncTestBase {
   @Test
   public void testFieldFromMethodResultReceiverAssignment() throws Throwable {
     runCodeLocalsAndPoolComparisonTest("foo().a=1", new byte[] {
-        Opcodes.INVOKESELF, 0, 0, 0, 0, 0,
-        Opcodes.IPUSHCONST, 0, 0, 0, 1,
-        Opcodes.PUTFIELD,   0, 0, 0, 2
+        Opcodes.INVOKESELF_B, 0, 0,
+        Opcodes.IPUSHCONST_B, 1,
+        Opcodes.PUTFIELD_B,   2
     }, new String[] {
         
     }, new CompiledScript.ConstPoolEntry[] {
@@ -59,11 +59,11 @@ public class FuncTestCompilerAssignment extends CompilerFuncTestBase {
   @Test
   public void testFieldFromChainedCallAssignment() throws Throwable {
     runCodeLocalsAndPoolComparisonTest("foo().bar.baz().a=1", new byte[] {
-        Opcodes.INVOKESELF,     0, 0, 0, 0, 0,
-        Opcodes.GETFIELD,       0, 0, 0, 1,
-        Opcodes.INVOKEDYNAMIC,  0, 0, 0, 2, 0,
-        Opcodes.IPUSHCONST,     0, 0, 0, 3,
-        Opcodes.PUTFIELD,       0, 0, 0, 4
+        Opcodes.INVOKESELF_B,     0, 0,
+        Opcodes.GETFIELD_B,       1,
+        Opcodes.INVOKEDYNAMIC_B,  2, 0,
+        Opcodes.IPUSHCONST_B,     3,
+        Opcodes.PUTFIELD_B,       4
     }, new String[] {
         
     }, new CompiledScript.ConstPoolEntry[] {

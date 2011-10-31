@@ -23,6 +23,8 @@ import java.util.HashMap;
 
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.CompiledScript;
+import com.roscopeco.deelang.runtime.DeeLangFloat;
+import com.roscopeco.deelang.runtime.DeeLangInteger;
 import com.roscopeco.deelang.runtime.DeeLangObject;
 
 /**
@@ -34,6 +36,11 @@ import com.roscopeco.deelang.runtime.DeeLangObject;
  * @created 16 Oct 2011
  */
 public class Context {
+  // TODO don't like this, highly couples vm and runtime...
+  
+  public final DeeLangInteger ZERO = new DeeLangInteger(this, 0);
+  public final DeeLangFloat FZERO = new DeeLangFloat(this, 0d);
+  
   final VM vm;
   final CompiledScript script;
   final byte[] code;
@@ -58,7 +65,7 @@ public class Context {
     codeStrm = new DataInputStream(bcis = new BytecodeInputStream(code));
     this.pool = script.getConstPool();
   }
-  
+
   public DeeLangObject getSelf() {
     return self;
   }
