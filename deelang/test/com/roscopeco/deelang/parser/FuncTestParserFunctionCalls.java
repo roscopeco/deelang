@@ -492,8 +492,297 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
 
     assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getText(), is("2"));
     assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
-    
-    // TODO test blocks
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getChildCount(), is(0));    
+  }
+  
+  /* ******** BLOCKS ******* */
+  @Test
+  public void testBasicFuncCallNoArgsWithEmptyBlock() throws RecognitionException {
+    CommonTree tree = runTest("foo() { }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(0));
+  }
+
+  @Test
+  public void testBasicFuncCallNoArgsWithEmptyBlockNewline() throws RecognitionException {
+    CommonTree tree = runTest("foo() {\n}");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(0));
+  }
+
+  @Test
+  public void testBasicFuncCallOneArgWithEmptyBlock() throws RecognitionException {
+    CommonTree tree = runTest("foo(1) { }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(0));
+  }
+
+  @Test
+  public void testBasicFuncCallOneArgWithSingleInstructionNoNewline() throws RecognitionException {
+    CommonTree tree = runTest("foo(1) { bee }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getText(), is("bee"));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getChildCount(), is(0));
+  }
+
+  @Test
+  public void testBasicFuncCallOneArgWithSingleInstructionWithNewlines() throws RecognitionException {
+    CommonTree tree = runTest("foo(1) { bee\n }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getText(), is("bee"));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getChildCount(), is(0));
+
+    tree = runTest("foo(1) { \nbee\n }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getText(), is("bee"));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getChildCount(), is(0));
+  }
+  
+  @Test
+  public void testBasicFuncCallOneArgWithTwoInstructionsNewlines() throws RecognitionException {
+    CommonTree tree = runTest("foo(1) { \nbee\nbar\n }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getText(), is("bee"));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getText(), is("bar"));
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getChildCount(), is(0));
+  }
+  
+  @Test
+  public void testBasicFuncCallOneArgWithTwoInstructionsSeparator() throws RecognitionException {
+    CommonTree tree = runTest("foo(1) { \nbee; bar\n }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getText(), is("bee"));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getText(), is("bar"));
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getChildCount(), is(0));
+  }
+
+  @Test
+  public void testBasicFuncCallOneArgWithMoreThanTwoInstructionsMixedNewlineAndSeparator() throws RecognitionException {
+    CommonTree tree = runTest("foo(1) { \nbee; bar\nbaz\nquux;qix }");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
+    assertThat(tree.getChild(1).getChild(1).getChildCount(), is(5));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getText(), is("bee"));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getText(), is("bar"));
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(1).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(2).getText(), is("baz"));
+    assertThat(tree.getChild(1).getChild(1).getChild(2).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(2).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(3).getText(), is("quux"));
+    assertThat(tree.getChild(1).getChild(1).getChild(3).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(3).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(1).getChild(4).getText(), is("qix"));
+    assertThat(tree.getChild(1).getChild(1).getChild(4).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(1).getChild(4).getChildCount(), is(0));
   }
 }

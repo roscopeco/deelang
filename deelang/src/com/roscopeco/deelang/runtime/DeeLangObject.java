@@ -95,7 +95,6 @@ public class DeeLangObject {
   public void or() {
     if (context.isErrorFlagSet()) {
       callBlock();
-      if (!callBlock()) { System.out.println("Second callblock failed"); }
     }
   }
   

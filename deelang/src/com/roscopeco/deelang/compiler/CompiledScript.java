@@ -124,7 +124,7 @@ public class CompiledScript {
     public final int getType() { return CONST_POOL_FIELD; }
     public final Object getValue() { return value; }
     final void store(DataOutputStream os) throws IOException { os.writeUTF(value); }
-    public final String toString() { return "[CONST_POOL_FIELD " + value + "]"; }
+    public final String toString() { return "[CONST_POOL_FIELD  " + value + "]"; }
   }
   
   /* 
@@ -176,7 +176,7 @@ public class CompiledScript {
     public final int getType() { return CONST_POOL_STRING; }
     public final Object getValue() { return value; }
     final void store(DataOutputStream os) throws IOException { os.writeUTF(value); }
-    public final String toString() { return "[CONST_POOL_STRING " + value + "]"; }
+    public final String toString() { return "[CONST_POOL_STRING \"" + value + "\"]"; }
   }
   
   /**

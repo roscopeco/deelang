@@ -32,14 +32,4 @@ public class UnitTestCompiledScript {
     assertArrayEquals(p, s.getConstPool());
     assertArrayEquals(l, s.getLocalsTable());
   }
-
-  @Test
-  public void testLoad() {
-    fail("Not yet implemented"); // TODO
-  }
-
-  @Test
-  public void testStore() {
-    fail("Not yet implemented"); // TODO
-  }
 }

@@ -142,4 +142,71 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         new CompiledScript.ConstPoolMethod("baz")
     });
   }
+  
+  /* ******** BLOCKS ******* */
+  /* NOTE: The following test makes sure empty blocks are optimized out */
+  @Test
+  public void testMethodCallNoArgsWithEmptyBlockGetsOptimizedAway() throws CompilerError {
+    runCodeLocalsAndPoolComparisonTest("bar() { }", new byte[] {
+        Opcodes.INVOKESELF,           0, 0, 0, 0, 0
+    }, new String[] {
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+    });
+  }
+
+  @Test
+  public void testMethodCallNoArgsWithSingleInsnBlock() throws CompilerError {
+    // TODO eventually we'll optimize empty blocks out, so this won't work!
+    runCodeLocalsAndPoolComparisonTest("bar() { baz }", new byte[] {
+        Opcodes.INVOKESELF,           0, 0, 0, 0, 0,
+        Opcodes.JUMP_B,               4,
+        Opcodes.ENTERBLOCK_B,         2,
+        Opcodes.LOAD,                 0
+    }, new String[] {
+        "baz"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+    });
+  }
+
+  @Test
+  public void testMethodCallNoArgsWithTwoInsnBlock() throws CompilerError {
+    // TODO eventually we'll optimize empty blocks out, so this won't work!
+    runCodeLocalsAndPoolComparisonTest("bar() { baz; bee; }", new byte[] {
+        Opcodes.INVOKESELF,           0, 0, 0, 0, 0,
+        Opcodes.JUMP_B,               6,
+        Opcodes.ENTERBLOCK_B,         4,
+        Opcodes.LOAD,                 0,
+        Opcodes.LOAD,                 1
+    }, new String[] {
+        "baz",
+        "bee"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+    });
+  }
+
+  @Test
+  public void testMethodCallNoArgsWithMoreThanTwoInsnBlock() throws CompilerError {
+    // TODO eventually we'll optimize empty blocks out, so this won't work!
+    runCodeLocalsAndPoolComparisonTest("bar() { baz; bee; foo; quux; qix }", new byte[] {
+        Opcodes.INVOKESELF,           0, 0, 0, 0, 0,
+        Opcodes.JUMP_B,               12,
+        Opcodes.ENTERBLOCK_B,         10,
+        Opcodes.LOAD,                 0,
+        Opcodes.LOAD,                 1,
+        Opcodes.LOAD,                 2,
+        Opcodes.LOAD,                 3,
+        Opcodes.LOAD,                 4,
+    }, new String[] {
+        "baz",
+        "bee",
+        "foo",
+        "quux",
+        "qix"
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("bar"),
+    });
+  }
 }

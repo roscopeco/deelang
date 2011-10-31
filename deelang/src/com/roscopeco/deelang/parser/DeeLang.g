@@ -187,12 +187,12 @@ func_call_expr
        
 fragment
 block
-  :   LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? RCURLY -> ^(BLOCK (block_statement (TERMINATOR block_statement)*)?)
+  :   LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? TERMINATOR* RCURLY -> ^(BLOCK block_statement*)
   ;
   
 fragment
 orblock
-  :   OR LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? RCURLY -> ^(ORBLOCK (block_statement (TERMINATOR block_statement)*)?)
+  :   OR LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? TERMINATOR* RCURLY -> ^(ORBLOCK block_statement*)
   ;
   
 fragment
