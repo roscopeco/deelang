@@ -44,10 +44,6 @@ public class DeeLangFloat extends DeeLangObject {
     return dbl;
   }
   
-  public void setDouble(Double dbl) {
-    this.dbl = dbl;
-  }
-  
   @Override
   public String toString() {
     return dbl.toString();
@@ -117,5 +113,15 @@ public class DeeLangFloat extends DeeLangObject {
   public DeeLangObject __opPOW(DeeLangObject other) {
     // TODO look at this... 
     throw new ArithmeticException();
+  }
+  
+  @Override
+  public DeeLangInteger toI() {
+    return new DeeLangInteger(context, this.dbl.intValue());
+  }
+  
+  @Override
+  public DeeLangFloat toF() {
+    return this;
   }
 }

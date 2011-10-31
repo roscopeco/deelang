@@ -43,10 +43,6 @@ public class DeeLangInteger extends DeeLangObject {
     return integer;
   }
   
-  public void setInteger(Integer integer) {
-    this.integer = integer;
-  }
-
   @Override
   public String toString() {
     return integer.toString();
@@ -130,5 +126,15 @@ public class DeeLangInteger extends DeeLangObject {
       // TODO more type coercion...
       throw new ArithmeticException();
     }
+  }
+
+  @Override
+  public DeeLangInteger toI() {
+    return this;
+  }
+  
+  @Override
+  public DeeLangFloat toF() {
+    return new DeeLangFloat(context, this.integer.doubleValue());
   }
 }
