@@ -17,7 +17,8 @@
     	       stylesheetfile="doc_src/doc.css" 
     	       use="true" 
     	       version="true"/>
-      <copy file="doc_src/javadoc.jpg" todir="doc"/>
+    <copy file="doc_src/javadoc.jpg" todir="doc"/>
+    <copy file="LICENSE.html" todir="doc"/>
     </target>
 	
 	  <target name="jar">
