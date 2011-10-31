@@ -39,14 +39,11 @@ import com.roscopeco.deelang.vm.VM;
 public class Main {  
   static String code =
         "Quux.qix = 42\n" +
-  		"Quux.foo(Quux.qix, bar(3+4), beezum) {\n" +
+        "Quux.foo(Quux.qix, bar(3+4), beezum) {\n" +
         "  booze() or {\n" +
-  		"    puts(\"hello in orblock\")\n" +
+        "    puts(\"hello in orblock\")\n" +
         "  }\n" +
-  		"}\n" + 
-        "3.times() {\n" +
-  		"  puts(\"Hello out of block\")\n"+
-        "}\n";
+  		"}\n";
   
   public static class BarObj extends DeeLangObject {
     public BarObj(Context ctx) {
@@ -55,6 +52,10 @@ public class Main {
     
     public DeeLangString bar(DeeLangInteger i) {
       return new DeeLangString(getContext(), "BAR " + i);
+    }
+    
+    public void puts(DeeLangString s) {
+      super.puts("BarObj.puts: " + s.getString());
     }
   }
   
@@ -127,33 +128,22 @@ public class Main {
       return;  
     }
         
-    try {       
+    try {
+      FooObj foo;
       VM vm = new VM();
       Context ctx = vm.createContext(script);
       ctx.setSelf(new BarObj(ctx));
-      ctx.setLocal("Quux", new FooObj(ctx));
+      ctx.setLocal("Quux", foo = new FooObj(ctx));
       ctx.setLocal("beezum", new DeeLangInteger(ctx, 10));
       vm.run(ctx);
       
-      System.out.println("Finished exec: FooObj's qix field now = '" + ((FooObj)ctx.getLocal("Quux")).qix + "'");
+      System.out.println("Finished exec: FooObj's qix field now = '" + foo.qix + "'");
     } catch (RuntimeError e) {
       System.err.println("DeeLang runtime exception: " + e);
       e.printStackTrace(System.err);
       Runtime.getRuntime().exit(-3);
       return;
     }
-    
-    /*
-    try {
-      result = Interpreter.staticInterpret(codeAST);
-    } catch (DroidLangThrowable e) {
-      System.err.println("DeeLang Runtime Exception: " + e);
-      e.printStackTrace(System.err);
-      Runtime.getRuntime().exit(-3);
-      return;
-    }
-    */
-    //System.out.println("Normal termination; Result = " + result);
   }
 }
  
