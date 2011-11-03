@@ -17,6 +17,7 @@
 package com.roscopeco.deelang.vm;
 
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -191,7 +192,11 @@ public class Context {
         strm.reset();
         return false;
       }
+    } catch (EOFException e) {
+      // no block, got EOF - return false
+      return false;
     } catch (IOException e) {
+      // General IOE - throw
       throw new InputError(e);
     }    
   }
