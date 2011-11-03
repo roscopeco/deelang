@@ -43,7 +43,8 @@ public class Main {
         "  booze() or {\n" +
         "    puts(\"hello in orblock\")\n" +
         "  }\n" +
-  		"}\n";
+  		"}\n" + 
+  		"3.times() { puts(\"Hello\") }\n";
   
   public static class BarObj extends DeeLangObject {
     public BarObj(Context ctx) {
