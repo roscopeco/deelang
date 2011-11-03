@@ -16,13 +16,13 @@
  */
 package com.roscopeco.deelang;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
+import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.runtime.DeeLangInteger;
 import com.roscopeco.deelang.runtime.DeeLangObject;
 import com.roscopeco.deelang.runtime.DeeLangString;
@@ -111,7 +111,7 @@ public class Main {
     
     try {
       codeAST = Parser.staticParse(code);
-    } catch (RecognitionException e) {
+    } catch (ParserError e) {
       System.err.println("DeeLang Parser Exception: " + e);
       e.printStackTrace(System.err);
       Runtime.getRuntime().exit(-1);

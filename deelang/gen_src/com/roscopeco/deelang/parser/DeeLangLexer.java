@@ -1,6 +1,6 @@
-// $ANTLR 3.4 DeeLang.g 2011-10-30 18:26:13
+// $ANTLR 3.4 /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g 2011-11-03 17:28:42
 
-  package com.roscopeco.deelang.parser;
+package com.roscopeco.deelang.parser;
 
   /* ******** GENERATED FILE - DO NOT EDIT! ********* */  
   /* Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
@@ -16,13 +16,19 @@
    *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    *  See the License for the specific language governing permissions and
    *  limitations under the License. 
+   *
+	 * PORTIONS OF THIS LEXER ARE ADAPTED FROM THE JAVAFX LEXER GRAMMAR. 
+	 * Portions copyright 2007-2009 Sun Microsystems, Inc.  All Rights Reserved.
    */
+   import java.util.ArrayList;
 
 
 import org.antlr.runtime.*;
 import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class DeeLangLexer extends Lexer {
@@ -40,16 +46,16 @@ public class DeeLangLexer extends Lexer {
     public static final int DECIMAL_LITERAL=14;
     public static final int DIV=15;
     public static final int DOT=16;
-    public static final int EscapeSequence=17;
-    public static final int Exponent=18;
-    public static final int FIELD_ACCESS=19;
-    public static final int FLOATING_POINT_LITERAL=20;
-    public static final int FloatTypeSuffix=21;
-    public static final int HEX_LITERAL=22;
-    public static final int HexDigit=23;
-    public static final int IDENTIFIER=24;
-    public static final int ID_LETTER=25;
-    public static final int IntegerTypeSuffix=26;
+    public static final int DOTDOT=17;
+    public static final int Digits=18;
+    public static final int EscapeSequence=19;
+    public static final int Exponent=20;
+    public static final int FIELD_ACCESS=21;
+    public static final int FLOATING_POINT_LITERAL=22;
+    public static final int HEX_LITERAL=23;
+    public static final int HexDigit=24;
+    public static final int IDENTIFIER=25;
+    public static final int ID_LETTER=26;
     public static final int LCURLY=27;
     public static final int LINE_COMMENT=28;
     public static final int LPAREN=29;
@@ -68,8 +74,88 @@ public class DeeLangLexer extends Lexer {
     public static final int STRING_LITERAL=42;
     public static final int SUB=43;
     public static final int TERMINATOR=44;
-    public static final int UnicodeEscape=45;
-    public static final int WS=46;
+    public static final int TIME_LITERAL=45;
+    public static final int UnicodeEscape=46;
+    public static final int WS=47;
+
+    public static final String MESSAGE_DLEXER_MALFORMED_HEX = "Malformed hex literal";
+    public static final String MESSAGE_DLEXER_HEX_FLOAT = "Hex literals cannot be floating point";
+    public static final String MESSAGE_DLEXER_HEX_MISSING = "Incomplete hex literal";
+    public static final String MESSAGE_DLEXER_MALFORMED_OCTAL = "Malformed octal literal";
+    public static final String MESSAGE_DLEXER_OCTAL_FLOAT = "Octal literals cannot be floating point";
+    public static final String MESSAGE_DLEXER_MALFORMED_EXPONENT = "Malformed floating-point exponent";
+    public static final String MESSAGE_DLEXER_LITERAL_OUT_OF_RANGE = "Number out of range";
+
+    Log log = new Log();
+
+    public static class Log {
+      public static class Error { public int pos; public String error; }
+      
+      private ArrayList<Error> errors = new ArrayList<Error>();
+      
+      public boolean hasErrors() { return !errors.isEmpty(); }
+      public Error getError(int i) { return errors.get(i); }
+    	public final void error(int pos, String msg, Object... args) {
+    		System.err.println(String.format("" + pos + ": " + msg, args));
+    	}
+    }
+
+    public static int string2int(String s, int radix) throws NumberFormatException {
+    	if (radix == 10) {
+    		return Integer.parseInt(s, radix);
+    	} else {
+    		char[] cs = s.toCharArray();
+    		int limit = Integer.MAX_VALUE / (radix / 2);
+    		int n = 0;
+    		for (int i = 0; i < cs.length; i++) {
+    			int d = Character.digit(cs[i], radix);
+    			if (n < 0 || n > limit || n * radix > Integer.MAX_VALUE - d)
+    				throw new NumberFormatException();
+    			n = n * radix + d;
+    		}
+    		return n;
+    	}
+    }
+
+    protected boolean checkIntLiteralRange(String text, int pos, int radix,
+    		boolean negative) {
+
+    	// Value in terms of a long
+    	//
+    	long value = 0;
+
+    	// Correct start position for error display
+    	//
+    	pos = pos - text.length() - (negative ? 1 : 0);
+
+    	try {
+
+    		// See if we can make a value out of this, however if this is a HEX literal then
+    		// we want to coerce the value int o a negative integer of the top bit is set. So
+    		// we use string2int rather than string2long.
+    		//
+    		value = string2int(text, radix);
+
+    	} catch (Exception e) {
+
+    		// Number form was too outrageous even for the converter
+    		//
+    		if (negative) {
+
+    			log.error(pos, MESSAGE_DLEXER_LITERAL_OUT_OF_RANGE,
+    					"small", new String("-" + text));
+
+    		} else {
+    			log.error(pos, MESSAGE_DLEXER_LITERAL_OUT_OF_RANGE, "big",
+    					text);
+    		}
+
+    		return false;
+    	}
+
+    	return true;
+    }
+
 
     // delegates
     // delegators
@@ -84,17 +170,17 @@ public class DeeLangLexer extends Lexer {
     public DeeLangLexer(CharStream input, RecognizerSharedState state) {
         super(input,state);
     }
-    public String getGrammarFileName() { return "DeeLang.g"; }
+    public String getGrammarFileName() { return "/home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g"; }
 
     // $ANTLR start "OR"
     public final void mOR() throws RecognitionException {
         try {
             int _type = OR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:230:5: ( 'or' )
-            // DeeLang.g:230:9: 'or'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:385:3: ( 'or' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:386:3: 'or'
             {
-            match("or"); 
+            match("or"); if (state.failed) return ;
 
 
 
@@ -114,10 +200,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = POW;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:232:5: ( '^' )
-            // DeeLang.g:232:9: '^'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:390:3: ( '^' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:391:3: '^'
             {
-            match('^'); 
+            match('^'); if (state.failed) return ;
 
             }
 
@@ -135,10 +221,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = MOD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:233:5: ( '%' )
-            // DeeLang.g:233:9: '%'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:395:3: ( '%' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:396:3: '%'
             {
-            match('%'); 
+            match('%'); if (state.failed) return ;
 
             }
 
@@ -156,10 +242,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = ADD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:234:5: ( '+' )
-            // DeeLang.g:234:9: '+'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:400:3: ( '+' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:401:3: '+'
             {
-            match('+'); 
+            match('+'); if (state.failed) return ;
 
             }
 
@@ -177,10 +263,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = SUB;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:235:5: ( '-' )
-            // DeeLang.g:235:9: '-'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:405:3: ( '-' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:406:3: '-'
             {
-            match('-'); 
+            match('-'); if (state.failed) return ;
 
             }
 
@@ -198,10 +284,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = DIV;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:236:5: ( '/' )
-            // DeeLang.g:236:9: '/'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:410:3: ( '/' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:411:3: '/'
             {
-            match('/'); 
+            match('/'); if (state.failed) return ;
 
             }
 
@@ -219,10 +305,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = MUL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:237:5: ( '*' )
-            // DeeLang.g:237:9: '*'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:415:3: ( '*' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:416:3: '*'
             {
-            match('*'); 
+            match('*'); if (state.failed) return ;
 
             }
 
@@ -240,10 +326,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:238:5: ( '!' )
-            // DeeLang.g:238:9: '!'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:420:3: ( '!' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:421:3: '!'
             {
-            match('!'); 
+            match('!'); if (state.failed) return ;
 
             }
 
@@ -261,10 +347,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = ASSIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:241:5: ( '=' )
-            // DeeLang.g:241:9: '='
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:425:3: ( '=' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:426:3: '='
             {
-            match('='); 
+            match('='); if (state.failed) return ;
 
             }
 
@@ -282,10 +368,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:245:5: ( '(' )
-            // DeeLang.g:245:9: '('
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:430:3: ( '(' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:431:3: '('
             {
-            match('('); 
+            match('('); if (state.failed) return ;
 
             }
 
@@ -303,10 +389,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:249:5: ( ')' )
-            // DeeLang.g:249:9: ')'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:435:3: ( ')' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:436:3: ')'
             {
-            match(')'); 
+            match(')'); if (state.failed) return ;
 
             }
 
@@ -324,10 +410,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = LCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:253:5: ( '{' )
-            // DeeLang.g:253:9: '{'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:440:3: ( '{' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:441:3: '{'
             {
-            match('{'); 
+            match('{'); if (state.failed) return ;
 
             }
 
@@ -345,10 +431,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = RCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:257:5: ( '}' )
-            // DeeLang.g:257:9: '}'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:445:3: ( '}' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:446:3: '}'
             {
-            match('}'); 
+            match('}'); if (state.failed) return ;
 
             }
 
@@ -366,10 +452,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:261:5: ( ',' )
-            // DeeLang.g:261:9: ','
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:450:3: ( ',' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:451:3: ','
             {
-            match(','); 
+            match(','); if (state.failed) return ;
 
             }
 
@@ -387,10 +473,10 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:264:5: ( '.' )
-            // DeeLang.g:264:9: '.'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:455:3: ( '.' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:456:3: '.'
             {
-            match('.'); 
+            match('.'); if (state.failed) return ;
 
             }
 
@@ -403,18 +489,41 @@ public class DeeLangLexer extends Lexer {
     }
     // $ANTLR end "DOT"
 
+    // $ANTLR start "DOTDOT"
+    public final void mDOTDOT() throws RecognitionException {
+        try {
+            int _type = DOTDOT;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:460:3: ( '..' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:461:3: '..'
+            {
+            match(".."); if (state.failed) return ;
+
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "DOTDOT"
+
     // $ANTLR start "IDENTIFIER"
     public final void mIDENTIFIER() throws RecognitionException {
         try {
             int _type = IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:267:3: ( ID_LETTER ( ID_LETTER | '0' .. '9' )* )
-            // DeeLang.g:267:5: ID_LETTER ( ID_LETTER | '0' .. '9' )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:465:3: ( ID_LETTER ( ID_LETTER | '0' .. '9' )* )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:466:3: ID_LETTER ( ID_LETTER | '0' .. '9' )*
             {
-            mID_LETTER(); 
+            mID_LETTER(); if (state.failed) return ;
 
 
-            // DeeLang.g:267:15: ( ID_LETTER | '0' .. '9' )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:467:3: ( ID_LETTER | '0' .. '9' )*
             loop1:
             do {
                 int alt1=2;
@@ -427,12 +536,14 @@ public class DeeLangLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // DeeLang.g:
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
             	    {
             	    if ( input.LA(1)=='$'||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
             	        input.consume();
+            	        state.failed=false;
             	    }
             	    else {
+            	        if (state.backtracking>0) {state.failed=true; return ;}
             	        MismatchedSetException mse = new MismatchedSetException(null,input);
             	        recover(mse);
             	        throw mse;
@@ -462,13 +573,15 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "ID_LETTER"
     public final void mID_LETTER() throws RecognitionException {
         try {
-            // DeeLang.g:273:3: ( '$' | 'A' .. 'Z' | 'a' .. 'z' | '_' )
-            // DeeLang.g:
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:476:3: ( '$' | 'A' .. 'Z' | 'a' .. 'z' | '_' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
+                state.failed=false;
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
                 throw mse;
@@ -490,12 +603,12 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = CHARACTER_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:279:5: ( '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // DeeLang.g:279:9: '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\''
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:483:3: ( '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:484:3: '\\'' ( EscapeSequence |~ ( '\\'' | '\\\\' ) ) '\\''
             {
-            match('\''); 
+            match('\''); if (state.failed) return ;
 
-            // DeeLang.g:279:14: ( EscapeSequence |~ ( '\\'' | '\\\\' ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:485:3: ( EscapeSequence |~ ( '\\'' | '\\\\' ) )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -506,6 +619,7 @@ public class DeeLangLexer extends Lexer {
                 alt2=2;
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 NoViableAltException nvae =
                     new NoViableAltException("", 2, 0, input);
 
@@ -514,20 +628,22 @@ public class DeeLangLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // DeeLang.g:279:16: EscapeSequence
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:486:5: EscapeSequence
                     {
-                    mEscapeSequence(); 
+                    mEscapeSequence(); if (state.failed) return ;
 
 
                     }
                     break;
                 case 2 :
-                    // DeeLang.g:279:33: ~ ( '\\'' | '\\\\' )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:488:5: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -540,7 +656,7 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            match('\''); 
+            match('\''); if (state.failed) return ;
 
             }
 
@@ -558,12 +674,12 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = STRING_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:283:5: ( '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"' )
-            // DeeLang.g:283:8: '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:497:3: ( '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:498:3: '\"' ( EscapeSequence |~ ( '\\\\' | '\"' ) )* '\"'
             {
-            match('\"'); 
+            match('\"'); if (state.failed) return ;
 
-            // DeeLang.g:283:12: ( EscapeSequence |~ ( '\\\\' | '\"' ) )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:499:3: ( EscapeSequence |~ ( '\\\\' | '\"' ) )*
             loop3:
             do {
                 int alt3=3;
@@ -579,20 +695,22 @@ public class DeeLangLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // DeeLang.g:283:14: EscapeSequence
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:500:5: EscapeSequence
             	    {
-            	    mEscapeSequence(); 
+            	    mEscapeSequence(); if (state.failed) return ;
 
 
             	    }
             	    break;
             	case 2 :
-            	    // DeeLang.g:283:31: ~ ( '\\\\' | '\"' )
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:502:5: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '!')||(input.LA(1) >= '#' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
+            	        state.failed=false;
             	    }
             	    else {
+            	        if (state.backtracking>0) {state.failed=true; return ;}
             	        MismatchedSetException mse = new MismatchedSetException(null,input);
             	        recover(mse);
             	        throw mse;
@@ -608,7 +726,7 @@ public class DeeLangLexer extends Lexer {
             } while (true);
 
 
-            match('\"'); 
+            match('\"'); if (state.failed) return ;
 
             }
 
@@ -621,198 +739,31 @@ public class DeeLangLexer extends Lexer {
     }
     // $ANTLR end "STRING_LITERAL"
 
-    // $ANTLR start "HEX_LITERAL"
-    public final void mHEX_LITERAL() throws RecognitionException {
+    // $ANTLR start "TIME_LITERAL"
+    public final void mTIME_LITERAL() throws RecognitionException {
         try {
-            int _type = HEX_LITERAL;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:292:13: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
-            // DeeLang.g:292:15: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:548:13: ()
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:548:15: 
             {
-            match('0'); 
-
-            if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
-                input.consume();
-            }
-            else {
-                MismatchedSetException mse = new MismatchedSetException(null,input);
-                recover(mse);
-                throw mse;
             }
 
 
-            // DeeLang.g:292:29: ( HexDigit )+
-            int cnt4=0;
-            loop4:
-            do {
-                int alt4=2;
-                int LA4_0 = input.LA(1);
-
-                if ( ((LA4_0 >= '0' && LA4_0 <= '9')||(LA4_0 >= 'A' && LA4_0 <= 'F')||(LA4_0 >= 'a' && LA4_0 <= 'f')) ) {
-                    alt4=1;
-                }
-
-
-                switch (alt4) {
-            	case 1 :
-            	    // DeeLang.g:
-            	    {
-            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
-            	        input.consume();
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;
-            	    }
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt4 >= 1 ) break loop4;
-                        EarlyExitException eee =
-                            new EarlyExitException(4, input);
-                        throw eee;
-                }
-                cnt4++;
-            } while (true);
-
-
-            // DeeLang.g:292:39: ( IntegerTypeSuffix )?
-            int alt5=2;
-            int LA5_0 = input.LA(1);
-
-            if ( (LA5_0=='L'||LA5_0=='U'||LA5_0=='l'||LA5_0=='u') ) {
-                alt5=1;
-            }
-            switch (alt5) {
-                case 1 :
-                    // DeeLang.g:292:39: IntegerTypeSuffix
-                    {
-                    mIntegerTypeSuffix(); 
-
-
-                    }
-                    break;
-
-            }
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
         }
         finally {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "HEX_LITERAL"
+    // $ANTLR end "TIME_LITERAL"
 
     // $ANTLR start "DECIMAL_LITERAL"
     public final void mDECIMAL_LITERAL() throws RecognitionException {
         try {
-            int _type = DECIMAL_LITERAL;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:294:17: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
-            // DeeLang.g:294:19: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:558:16: ()
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:558:18: 
             {
-            // DeeLang.g:294:19: ( '0' | '1' .. '9' ( '0' .. '9' )* )
-            int alt7=2;
-            int LA7_0 = input.LA(1);
-
-            if ( (LA7_0=='0') ) {
-                alt7=1;
-            }
-            else if ( ((LA7_0 >= '1' && LA7_0 <= '9')) ) {
-                alt7=2;
-            }
-            else {
-                NoViableAltException nvae =
-                    new NoViableAltException("", 7, 0, input);
-
-                throw nvae;
-
-            }
-            switch (alt7) {
-                case 1 :
-                    // DeeLang.g:294:20: '0'
-                    {
-                    match('0'); 
-
-                    }
-                    break;
-                case 2 :
-                    // DeeLang.g:294:26: '1' .. '9' ( '0' .. '9' )*
-                    {
-                    matchRange('1','9'); 
-
-                    // DeeLang.g:294:35: ( '0' .. '9' )*
-                    loop6:
-                    do {
-                        int alt6=2;
-                        int LA6_0 = input.LA(1);
-
-                        if ( ((LA6_0 >= '0' && LA6_0 <= '9')) ) {
-                            alt6=1;
-                        }
-
-
-                        switch (alt6) {
-                    	case 1 :
-                    	    // DeeLang.g:
-                    	    {
-                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-                    	        input.consume();
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;
-                    	    }
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    break loop6;
-                        }
-                    } while (true);
-
-
-                    }
-                    break;
-
             }
 
 
-            // DeeLang.g:294:46: ( IntegerTypeSuffix )?
-            int alt8=2;
-            int LA8_0 = input.LA(1);
-
-            if ( (LA8_0=='L'||LA8_0=='U'||LA8_0=='l'||LA8_0=='u') ) {
-                alt8=1;
-            }
-            switch (alt8) {
-                case 1 :
-                    // DeeLang.g:294:46: IntegerTypeSuffix
-                    {
-                    mIntegerTypeSuffix(); 
-
-
-                    }
-                    break;
-
-            }
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
         }
         finally {
         	// do for sure before leaving
@@ -823,76 +774,12 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "OCTAL_LITERAL"
     public final void mOCTAL_LITERAL() throws RecognitionException {
         try {
-            int _type = OCTAL_LITERAL;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:296:15: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
-            // DeeLang.g:296:17: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:565:14: ()
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:565:16: 
             {
-            match('0'); 
-
-            // DeeLang.g:296:21: ( '0' .. '7' )+
-            int cnt9=0;
-            loop9:
-            do {
-                int alt9=2;
-                int LA9_0 = input.LA(1);
-
-                if ( ((LA9_0 >= '0' && LA9_0 <= '7')) ) {
-                    alt9=1;
-                }
-
-
-                switch (alt9) {
-            	case 1 :
-            	    // DeeLang.g:
-            	    {
-            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
-            	        input.consume();
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;
-            	    }
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt9 >= 1 ) break loop9;
-                        EarlyExitException eee =
-                            new EarlyExitException(9, input);
-                        throw eee;
-                }
-                cnt9++;
-            } while (true);
-
-
-            // DeeLang.g:296:33: ( IntegerTypeSuffix )?
-            int alt10=2;
-            int LA10_0 = input.LA(1);
-
-            if ( (LA10_0=='L'||LA10_0=='U'||LA10_0=='l'||LA10_0=='u') ) {
-                alt10=1;
-            }
-            switch (alt10) {
-                case 1 :
-                    // DeeLang.g:296:33: IntegerTypeSuffix
-                    {
-                    mIntegerTypeSuffix(); 
-
-
-                    }
-                    break;
-
             }
 
 
-            }
-
-            state.type = _type;
-            state.channel = _channel;
         }
         finally {
         	// do for sure before leaving
@@ -900,22 +787,12 @@ public class DeeLangLexer extends Lexer {
     }
     // $ANTLR end "OCTAL_LITERAL"
 
-    // $ANTLR start "HexDigit"
-    public final void mHexDigit() throws RecognitionException {
+    // $ANTLR start "HEX_LITERAL"
+    public final void mHEX_LITERAL() throws RecognitionException {
         try {
-            // DeeLang.g:300:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // DeeLang.g:
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:575:12: ()
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:575:14: 
             {
-            if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
-                input.consume();
-            }
-            else {
-                MismatchedSetException mse = new MismatchedSetException(null,input);
-                recover(mse);
-                throw mse;
-            }
-
-
             }
 
 
@@ -924,223 +801,547 @@ public class DeeLangLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "HexDigit"
-
-    // $ANTLR start "IntegerTypeSuffix"
-    public final void mIntegerTypeSuffix() throws RecognitionException {
-        try {
-            // DeeLang.g:304:3: ( ( 'l' | 'L' ) | ( 'u' | 'U' ) ( 'l' | 'L' )? )
-            int alt12=2;
-            int LA12_0 = input.LA(1);
-
-            if ( (LA12_0=='L'||LA12_0=='l') ) {
-                alt12=1;
-            }
-            else if ( (LA12_0=='U'||LA12_0=='u') ) {
-                alt12=2;
-            }
-            else {
-                NoViableAltException nvae =
-                    new NoViableAltException("", 12, 0, input);
-
-                throw nvae;
-
-            }
-            switch (alt12) {
-                case 1 :
-                    // DeeLang.g:304:5: ( 'l' | 'L' )
-                    {
-                    if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
-                        input.consume();
-                    }
-                    else {
-                        MismatchedSetException mse = new MismatchedSetException(null,input);
-                        recover(mse);
-                        throw mse;
-                    }
-
-
-                    }
-                    break;
-                case 2 :
-                    // DeeLang.g:305:5: ( 'u' | 'U' ) ( 'l' | 'L' )?
-                    {
-                    if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
-                        input.consume();
-                    }
-                    else {
-                        MismatchedSetException mse = new MismatchedSetException(null,input);
-                        recover(mse);
-                        throw mse;
-                    }
-
-
-                    // DeeLang.g:305:16: ( 'l' | 'L' )?
-                    int alt11=2;
-                    int LA11_0 = input.LA(1);
-
-                    if ( (LA11_0=='L'||LA11_0=='l') ) {
-                        alt11=1;
-                    }
-                    switch (alt11) {
-                        case 1 :
-                            // DeeLang.g:
-                            {
-                            if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
-                                input.consume();
-                            }
-                            else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;
-                            }
-
-
-                            }
-                            break;
-
-                    }
-
-
-                    }
-                    break;
-
-            }
-
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "IntegerTypeSuffix"
+    // $ANTLR end "HEX_LITERAL"
 
     // $ANTLR start "FLOATING_POINT_LITERAL"
     public final void mFLOATING_POINT_LITERAL() throws RecognitionException {
         try {
             int _type = FLOATING_POINT_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:308:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? )
-            int alt23=3;
-            alt23 = dfa23.predict(input);
-            switch (alt23) {
+
+            // Indicates out of range digit
+            //
+            boolean rangeError = false;
+
+            // First character of rule
+            //
+            int sPos = getCharIndex();
+
+            // Is this going to be a negative numeric?
+            //
+            boolean negative = input.LT(-1) == '-';
+
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:604:3: ( '0' ( ( 'x' | 'X' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+ |) | ( '0' .. '7' | '8' .. '9' )+ | ( 'm' ( 's' )? | 's' | 'h' ) |{...}? => '.' ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |) |) | ( '1' .. '9' ) ( Digits )? ({...}? => ( ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )=> '.' ( Digits )? ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |) | ( ( 'm' ( 's' )? | 's' | 'h' ) | Exponent |) ) | '.' ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) | '.' |) )
+            int alt31=3;
+            switch ( input.LA(1) ) {
+            case '0':
+                {
+                alt31=1;
+                }
+                break;
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                {
+                alt31=2;
+                }
+                break;
+            case '.':
+                {
+                alt31=3;
+                }
+                break;
+            default:
+                if (state.backtracking>0) {state.failed=true; return ;}
+                NoViableAltException nvae =
+                    new NoViableAltException("", 31, 0, input);
+
+                throw nvae;
+
+            }
+
+            switch (alt31) {
                 case 1 :
-                    // DeeLang.g:308:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:610:3: '0' ( ( 'x' | 'X' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+ |) | ( '0' .. '7' | '8' .. '9' )+ | ( 'm' ( 's' )? | 's' | 'h' ) |{...}? => '.' ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |) |)
                     {
-                    // DeeLang.g:308:9: ( '0' .. '9' )+
-                    int cnt13=0;
-                    loop13:
-                    do {
-                        int alt13=2;
-                        int LA13_0 = input.LA(1);
+                    match('0'); if (state.failed) return ;
 
-                        if ( ((LA13_0 >= '0' && LA13_0 <= '9')) ) {
-                            alt13=1;
-                        }
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:611:3: ( ( 'x' | 'X' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+ |) | ( '0' .. '7' | '8' .. '9' )+ | ( 'm' ( 's' )? | 's' | 'h' ) |{...}? => '.' ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |) |)
+                    int alt14=5;
+                    int LA14_0 = input.LA(1);
 
-
-                        switch (alt13) {
-                    	case 1 :
-                    	    // DeeLang.g:
-                    	    {
-                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-                    	        input.consume();
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;
-                    	    }
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    if ( cnt13 >= 1 ) break loop13;
-                                EarlyExitException eee =
-                                    new EarlyExitException(13, input);
-                                throw eee;
-                        }
-                        cnt13++;
-                    } while (true);
-
-
-                    match('.'); 
-
-                    // DeeLang.g:308:25: ( '0' .. '9' )*
-                    loop14:
-                    do {
-                        int alt14=2;
-                        int LA14_0 = input.LA(1);
-
-                        if ( ((LA14_0 >= '0' && LA14_0 <= '9')) ) {
-                            alt14=1;
-                        }
-
-
-                        switch (alt14) {
-                    	case 1 :
-                    	    // DeeLang.g:
-                    	    {
-                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-                    	        input.consume();
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;
-                    	    }
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    break loop14;
-                        }
-                    } while (true);
-
-
-                    // DeeLang.g:308:37: ( Exponent )?
-                    int alt15=2;
-                    int LA15_0 = input.LA(1);
-
-                    if ( (LA15_0=='E'||LA15_0=='e') ) {
-                        alt15=1;
+                    if ( (LA14_0=='X'||LA14_0=='x') ) {
+                        alt14=1;
                     }
-                    switch (alt15) {
+                    else if ( ((LA14_0 >= '0' && LA14_0 <= '9')) ) {
+                        alt14=2;
+                    }
+                    else if ( (LA14_0=='h'||LA14_0=='m'||LA14_0=='s') ) {
+                        alt14=3;
+                    }
+                    else if ( (LA14_0=='.') && ((input.LA(2) != '.'))) {
+                        alt14=4;
+                    }
+                    else {
+                        alt14=5;
+                    }
+                    switch (alt14) {
                         case 1 :
-                            // DeeLang.g:308:37: Exponent
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:612:5: ( 'x' | 'X' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+ |)
                             {
-                            mExponent(); 
-
-
-                            }
-                            break;
-
-                    }
-
-
-                    // DeeLang.g:308:47: ( FloatTypeSuffix )?
-                    int alt16=2;
-                    int LA16_0 = input.LA(1);
-
-                    if ( (LA16_0=='D'||LA16_0=='F'||LA16_0=='d'||LA16_0=='f') ) {
-                        alt16=1;
-                    }
-                    switch (alt16) {
-                        case 1 :
-                            // DeeLang.g:
-                            {
-                            if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
+                            if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
                                 input.consume();
+                                state.failed=false;
                             }
                             else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
                                 MismatchedSetException mse = new MismatchedSetException(null,input);
                                 recover(mse);
                                 throw mse;
                             }
 
+
+                            if ( state.backtracking==0 ) {
+                                 // Always set the type, so the parser is not confused
+                                 //
+                                 _type = HEX_LITERAL;
+                                }
+
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:622:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+ |)
+                            int alt5=2;
+                            int LA5_0 = input.LA(1);
+
+                            if ( ((LA5_0 >= '0' && LA5_0 <= '9')||(LA5_0 >= 'A' && LA5_0 <= 'Z')||(LA5_0 >= 'a' && LA5_0 <= 'z')) ) {
+                                alt5=1;
+                            }
+                            else {
+                                alt5=2;
+                            }
+                            switch (alt5) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:625:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+
+                                    {
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:625:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) | ( 'g' .. 'z' | 'G' .. 'Z' ) )+
+                                    int cnt4=0;
+                                    loop4:
+                                    do {
+                                        int alt4=3;
+                                        int LA4_0 = input.LA(1);
+
+                                        if ( ((LA4_0 >= '0' && LA4_0 <= '9')||(LA4_0 >= 'A' && LA4_0 <= 'F')||(LA4_0 >= 'a' && LA4_0 <= 'f')) ) {
+                                            alt4=1;
+                                        }
+                                        else if ( ((LA4_0 >= 'G' && LA4_0 <= 'Z')||(LA4_0 >= 'g' && LA4_0 <= 'z')) ) {
+                                            alt4=2;
+                                        }
+
+
+                                        switch (alt4) {
+                                    	case 1 :
+                                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:626:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                                    	    {
+                                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
+                                    	        input.consume();
+                                    	        state.failed=false;
+                                    	    }
+                                    	    else {
+                                    	        if (state.backtracking>0) {state.failed=true; return ;}
+                                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                                    	        recover(mse);
+                                    	        throw mse;
+                                    	    }
+
+
+                                    	    }
+                                    	    break;
+                                    	case 2 :
+                                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:632:9: ( 'g' .. 'z' | 'G' .. 'Z' )
+                                    	    {
+                                    	    if ( (input.LA(1) >= 'G' && input.LA(1) <= 'Z')||(input.LA(1) >= 'g' && input.LA(1) <= 'z') ) {
+                                    	        input.consume();
+                                    	        state.failed=false;
+                                    	    }
+                                    	    else {
+                                    	        if (state.backtracking>0) {state.failed=true; return ;}
+                                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                                    	        recover(mse);
+                                    	        throw mse;
+                                    	    }
+
+
+                                    	    if ( state.backtracking==0 ) {
+                                    	             rangeError = true; // Signal at least one bad digit
+                                    	            }
+
+                                    	    }
+                                    	    break;
+
+                                    	default :
+                                    	    if ( cnt4 >= 1 ) break loop4;
+                                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                                                EarlyExitException eee =
+                                                    new EarlyExitException(4, input);
+                                                throw eee;
+                                        }
+                                        cnt4++;
+                                    } while (true);
+
+
+                                    if ( state.backtracking==0 ) {
+                                           setText(getText().substring(2, getText().length()));
+                                           if (rangeError) {
+                                           	// Error - malformed hex constant
+                                           	//
+                                           	log.error(sPos, MESSAGE_DLEXER_MALFORMED_HEX);
+                                           	setText("0");
+                                           } else {
+                                           	if (!checkIntLiteralRange(getText(), getCharIndex(), 16, negative)) {
+                                           		setText("0");
+                                           	}
+                                           }
+                                          }
+
+                                    }
+                                    break;
+                                case 2 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:688:7: 
+                                    {
+                                    if ( state.backtracking==0 ) {
+                                            log.error(getCharIndex() - 1, MESSAGE_DLEXER_HEX_MISSING);
+                                            setText("0");
+                                           }
+
+                                    }
+                                    break;
+
+                            }
+
+
+                            }
+                            break;
+                        case 2 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:701:5: ( '0' .. '7' | '8' .. '9' )+
+                            {
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:701:5: ( '0' .. '7' | '8' .. '9' )+
+                            int cnt6=0;
+                            loop6:
+                            do {
+                                int alt6=3;
+                                int LA6_0 = input.LA(1);
+
+                                if ( ((LA6_0 >= '0' && LA6_0 <= '7')) ) {
+                                    alt6=1;
+                                }
+                                else if ( ((LA6_0 >= '8' && LA6_0 <= '9')) ) {
+                                    alt6=2;
+                                }
+
+
+                                switch (alt6) {
+                            	case 1 :
+                            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:702:7: '0' .. '7'
+                            	    {
+                            	    matchRange('0','7'); if (state.failed) return ;
+
+                            	    }
+                            	    break;
+                            	case 2 :
+                            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:703:9: '8' .. '9'
+                            	    {
+                            	    matchRange('8','9'); if (state.failed) return ;
+
+                            	    if ( state.backtracking==0 ) {
+                            	                     rangeError = true; // Signal that at least one digit was wrong
+                            	                    }
+
+                            	    }
+                            	    break;
+
+                            	default :
+                            	    if ( cnt6 >= 1 ) break loop6;
+                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                        EarlyExitException eee =
+                                            new EarlyExitException(6, input);
+                                        throw eee;
+                                }
+                                cnt6++;
+                            } while (true);
+
+
+                            if ( state.backtracking==0 ) {
+                                 // Always set the type to octal, so the parser does not see
+                                 // a lexing error, even though the compiler knows there is an
+                                 // error.
+                                 //
+                                 _type = OCTAL_LITERAL;
+                                 
+                                 if (rangeError) {
+                                 	log.error(sPos, MESSAGE_DLEXER_MALFORMED_OCTAL);
+                                 	setText("0");
+                                 } else {
+                                 	if (!checkIntLiteralRange(getText(), getCharIndex(), 8, negative)) {
+                                 		setText("0");
+                                 	}
+                                 }
+                                }
+
+                            }
+                            break;
+                        case 3 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:744:5: ( 'm' ( 's' )? | 's' | 'h' )
+                            {
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:744:5: ( 'm' ( 's' )? | 's' | 'h' )
+                            int alt8=3;
+                            switch ( input.LA(1) ) {
+                            case 'm':
+                                {
+                                alt8=1;
+                                }
+                                break;
+                            case 's':
+                                {
+                                alt8=2;
+                                }
+                                break;
+                            case 'h':
+                                {
+                                alt8=3;
+                                }
+                                break;
+                            default:
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                NoViableAltException nvae =
+                                    new NoViableAltException("", 8, 0, input);
+
+                                throw nvae;
+
+                            }
+
+                            switch (alt8) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:745:7: 'm' ( 's' )?
+                                    {
+                                    match('m'); if (state.failed) return ;
+
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:745:11: ( 's' )?
+                                    int alt7=2;
+                                    int LA7_0 = input.LA(1);
+
+                                    if ( (LA7_0=='s') ) {
+                                        alt7=1;
+                                    }
+                                    switch (alt7) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:745:11: 's'
+                                            {
+                                            match('s'); if (state.failed) return ;
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    }
+                                    break;
+                                case 2 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:746:9: 's'
+                                    {
+                                    match('s'); if (state.failed) return ;
+
+                                    }
+                                    break;
+                                case 3 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:747:9: 'h'
+                                    {
+                                    match('h'); if (state.failed) return ;
+
+                                    }
+                                    break;
+
+                            }
+
+
+                            if ( state.backtracking==0 ) {
+                                 _type = TIME_LITERAL;
+                                }
+
+                            }
+                            break;
+                        case 4 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:757:5: {...}? => '.' ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |)
+                            {
+                            if ( !((input.LA(2) != '.')) ) {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                throw new FailedPredicateException(input, "FLOATING_POINT_LITERAL", "input.LA(2) != '.'");
+                            }
+
+                            match('.'); if (state.failed) return ;
+
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:758:5: ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |)
+                            int alt13=2;
+                            int LA13_0 = input.LA(1);
+
+                            if ( ((LA13_0 >= '0' && LA13_0 <= '9')) ) {
+                                alt13=1;
+                            }
+                            else {
+                                alt13=2;
+                            }
+                            switch (alt13) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:761:7: Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |)
+                                    {
+                                    mDigits(); if (state.failed) return ;
+
+
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:761:14: ( Exponent )?
+                                    int alt9=2;
+                                    int LA9_0 = input.LA(1);
+
+                                    if ( (LA9_0=='E'||LA9_0=='e') ) {
+                                        alt9=1;
+                                    }
+                                    switch (alt9) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:761:14: Exponent
+                                            {
+                                            mExponent(); if (state.failed) return ;
+
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:762:7: ( ( 'm' ( 's' )? | 's' | 'h' ) |)
+                                    int alt12=2;
+                                    int LA12_0 = input.LA(1);
+
+                                    if ( (LA12_0=='h'||LA12_0=='m'||LA12_0=='s') ) {
+                                        alt12=1;
+                                    }
+                                    else {
+                                        alt12=2;
+                                    }
+                                    switch (alt12) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:763:9: ( 'm' ( 's' )? | 's' | 'h' )
+                                            {
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:763:9: ( 'm' ( 's' )? | 's' | 'h' )
+                                            int alt11=3;
+                                            switch ( input.LA(1) ) {
+                                            case 'm':
+                                                {
+                                                alt11=1;
+                                                }
+                                                break;
+                                            case 's':
+                                                {
+                                                alt11=2;
+                                                }
+                                                break;
+                                            case 'h':
+                                                {
+                                                alt11=3;
+                                                }
+                                                break;
+                                            default:
+                                                if (state.backtracking>0) {state.failed=true; return ;}
+                                                NoViableAltException nvae =
+                                                    new NoViableAltException("", 11, 0, input);
+
+                                                throw nvae;
+
+                                            }
+
+                                            switch (alt11) {
+                                                case 1 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:764:11: 'm' ( 's' )?
+                                                    {
+                                                    match('m'); if (state.failed) return ;
+
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:764:15: ( 's' )?
+                                                    int alt10=2;
+                                                    int LA10_0 = input.LA(1);
+
+                                                    if ( (LA10_0=='s') ) {
+                                                        alt10=1;
+                                                    }
+                                                    switch (alt10) {
+                                                        case 1 :
+                                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:764:15: 's'
+                                                            {
+                                                            match('s'); if (state.failed) return ;
+
+                                                            }
+                                                            break;
+
+                                                    }
+
+
+                                                    }
+                                                    break;
+                                                case 2 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:765:13: 's'
+                                                    {
+                                                    match('s'); if (state.failed) return ;
+
+                                                    }
+                                                    break;
+                                                case 3 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:766:13: 'h'
+                                                    {
+                                                    match('h'); if (state.failed) return ;
+
+                                                    }
+                                                    break;
+
+                                            }
+
+
+                                            if ( state.backtracking==0 ) {
+                                                     _type = TIME_LITERAL;
+                                                    }
+
+                                            }
+                                            break;
+                                        case 2 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:776:9: 
+                                            {
+                                            if ( state.backtracking==0 ) {
+                                                      _type = FLOATING_POINT_LITERAL;
+                                                     }
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    }
+                                    break;
+                                case 2 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:784:7: 
+                                    {
+                                    if ( state.backtracking==0 ) {
+                                            _type = FLOATING_POINT_LITERAL;
+                                           }
+
+                                    }
+                                    break;
+
+                            }
+
+
+                            }
+                            break;
+                        case 5 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:793:5: 
+                            {
+                            if ( state.backtracking==0 ) {
+                                  _type = DECIMAL_LITERAL;
+                                  if (!checkIntLiteralRange(getText(), getCharIndex(), 10, negative)) {
+                                  	setText("0");
+                                  }
+                                 }
 
                             }
                             break;
@@ -1151,61 +1352,32 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // DeeLang.g:309:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:805:3: ( '1' .. '9' ) ( Digits )? ({...}? => ( ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )=> '.' ( Digits )? ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |) | ( ( 'm' ( 's' )? | 's' | 'h' ) | Exponent |) )
                     {
-                    match('.'); 
-
-                    // DeeLang.g:309:13: ( '0' .. '9' )+
-                    int cnt17=0;
-                    loop17:
-                    do {
-                        int alt17=2;
-                        int LA17_0 = input.LA(1);
-
-                        if ( ((LA17_0 >= '0' && LA17_0 <= '9')) ) {
-                            alt17=1;
-                        }
-
-
-                        switch (alt17) {
-                    	case 1 :
-                    	    // DeeLang.g:
-                    	    {
-                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-                    	        input.consume();
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;
-                    	    }
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    if ( cnt17 >= 1 ) break loop17;
-                                EarlyExitException eee =
-                                    new EarlyExitException(17, input);
-                                throw eee;
-                        }
-                        cnt17++;
-                    } while (true);
-
-
-                    // DeeLang.g:309:25: ( Exponent )?
-                    int alt18=2;
-                    int LA18_0 = input.LA(1);
-
-                    if ( (LA18_0=='E'||LA18_0=='e') ) {
-                        alt18=1;
+                    if ( (input.LA(1) >= '1' && input.LA(1) <= '9') ) {
+                        input.consume();
+                        state.failed=false;
                     }
-                    switch (alt18) {
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;
+                    }
+
+
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:805:14: ( Digits )?
+                    int alt15=2;
+                    int LA15_0 = input.LA(1);
+
+                    if ( ((LA15_0 >= '0' && LA15_0 <= '9')) ) {
+                        alt15=1;
+                    }
+                    switch (alt15) {
                         case 1 :
-                            // DeeLang.g:309:25: Exponent
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:805:14: Digits
                             {
-                            mExponent(); 
+                            mDigits(); if (state.failed) return ;
 
 
                             }
@@ -1214,24 +1386,350 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    // DeeLang.g:309:35: ( FloatTypeSuffix )?
-                    int alt19=2;
-                    int LA19_0 = input.LA(1);
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:809:3: ({...}? => ( ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )=> '.' ( Digits )? ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |) | ( ( 'm' ( 's' )? | 's' | 'h' ) | Exponent |) )
+                    int alt25=2;
+                    int LA25_0 = input.LA(1);
 
-                    if ( (LA19_0=='D'||LA19_0=='F'||LA19_0=='d'||LA19_0=='f') ) {
-                        alt19=1;
+                    if ( (LA25_0=='.') && ((input.LA(2) != '.'))) {
+                        alt25=1;
                     }
-                    switch (alt19) {
+                    else if ( (LA25_0=='E'||LA25_0=='e'||LA25_0=='h'||LA25_0=='m'||LA25_0=='s') ) {
+                        alt25=2;
+                    }
+                    else if ( ((input.LA(2) != '.')) ) {
+                        alt25=1;
+                    }
+                    else if ( (true) ) {
+                        alt25=2;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        NoViableAltException nvae =
+                            new NoViableAltException("", 25, 0, input);
+
+                        throw nvae;
+
+                    }
+                    switch (alt25) {
                         case 1 :
-                            // DeeLang.g:
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:810:5: {...}? => ( ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )=> '.' ( Digits )? ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |)
                             {
-                            if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
-                                input.consume();
+                            if ( !((input.LA(2) != '.')) ) {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                throw new FailedPredicateException(input, "FLOATING_POINT_LITERAL", "input.LA(2) != '.'");
+                            }
+
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:811:5: ( ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )=> '.' ( Digits )? ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) |)
+                            int alt21=2;
+                            int LA21_0 = input.LA(1);
+
+                            if ( (LA21_0=='.') && (synpred1_DeeLang())) {
+                                alt21=1;
                             }
                             else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;
+                                alt21=2;
+                            }
+                            switch (alt21) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:820:7: ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )=> '.' ( Digits )? ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |)
+                                    {
+                                    match('.'); if (state.failed) return ;
+
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:831:16: ( Digits )?
+                                    int alt16=2;
+                                    int LA16_0 = input.LA(1);
+
+                                    if ( ((LA16_0 >= '0' && LA16_0 <= '9')) ) {
+                                        alt16=1;
+                                    }
+                                    switch (alt16) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:831:16: Digits
+                                            {
+                                            mDigits(); if (state.failed) return ;
+
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:831:24: ( Exponent )?
+                                    int alt17=2;
+                                    int LA17_0 = input.LA(1);
+
+                                    if ( (LA17_0=='E'||LA17_0=='e') ) {
+                                        alt17=1;
+                                    }
+                                    switch (alt17) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:831:24: Exponent
+                                            {
+                                            mExponent(); if (state.failed) return ;
+
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:832:7: ( ( 'm' ( 's' )? | 's' | 'h' ) |)
+                                    int alt20=2;
+                                    int LA20_0 = input.LA(1);
+
+                                    if ( (LA20_0=='h'||LA20_0=='m'||LA20_0=='s') ) {
+                                        alt20=1;
+                                    }
+                                    else {
+                                        alt20=2;
+                                    }
+                                    switch (alt20) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:833:9: ( 'm' ( 's' )? | 's' | 'h' )
+                                            {
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:833:9: ( 'm' ( 's' )? | 's' | 'h' )
+                                            int alt19=3;
+                                            switch ( input.LA(1) ) {
+                                            case 'm':
+                                                {
+                                                alt19=1;
+                                                }
+                                                break;
+                                            case 's':
+                                                {
+                                                alt19=2;
+                                                }
+                                                break;
+                                            case 'h':
+                                                {
+                                                alt19=3;
+                                                }
+                                                break;
+                                            default:
+                                                if (state.backtracking>0) {state.failed=true; return ;}
+                                                NoViableAltException nvae =
+                                                    new NoViableAltException("", 19, 0, input);
+
+                                                throw nvae;
+
+                                            }
+
+                                            switch (alt19) {
+                                                case 1 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:834:11: 'm' ( 's' )?
+                                                    {
+                                                    match('m'); if (state.failed) return ;
+
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:834:15: ( 's' )?
+                                                    int alt18=2;
+                                                    int LA18_0 = input.LA(1);
+
+                                                    if ( (LA18_0=='s') ) {
+                                                        alt18=1;
+                                                    }
+                                                    switch (alt18) {
+                                                        case 1 :
+                                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:834:15: 's'
+                                                            {
+                                                            match('s'); if (state.failed) return ;
+
+                                                            }
+                                                            break;
+
+                                                    }
+
+
+                                                    }
+                                                    break;
+                                                case 2 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:835:13: 's'
+                                                    {
+                                                    match('s'); if (state.failed) return ;
+
+                                                    }
+                                                    break;
+                                                case 3 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:836:13: 'h'
+                                                    {
+                                                    match('h'); if (state.failed) return ;
+
+                                                    }
+                                                    break;
+
+                                            }
+
+
+                                            if ( state.backtracking==0 ) {
+                                                     _type = TIME_LITERAL;
+                                                    }
+
+                                            }
+                                            break;
+                                        case 2 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:846:9: 
+                                            {
+                                            if ( state.backtracking==0 ) {
+                                                      _type = FLOATING_POINT_LITERAL;
+                                                     }
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    }
+                                    break;
+                                case 2 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:853:7: 
+                                    {
+                                    if ( state.backtracking==0 ) {
+                                            _type = DECIMAL_LITERAL;
+                                            if (!checkIntLiteralRange(getText(), getCharIndex(), 10, negative)) {
+                                            	setText("0");
+                                            }
+                                           }
+
+                                    }
+                                    break;
+
+                            }
+
+
+                            }
+                            break;
+                        case 2 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:864:5: ( ( 'm' ( 's' )? | 's' | 'h' ) | Exponent |)
+                            {
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:864:5: ( ( 'm' ( 's' )? | 's' | 'h' ) | Exponent |)
+                            int alt24=3;
+                            switch ( input.LA(1) ) {
+                            case 'h':
+                            case 'm':
+                            case 's':
+                                {
+                                alt24=1;
+                                }
+                                break;
+                            case 'E':
+                            case 'e':
+                                {
+                                alt24=2;
+                                }
+                                break;
+                            default:
+                                alt24=3;
+                            }
+
+                            switch (alt24) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:865:7: ( 'm' ( 's' )? | 's' | 'h' )
+                                    {
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:865:7: ( 'm' ( 's' )? | 's' | 'h' )
+                                    int alt23=3;
+                                    switch ( input.LA(1) ) {
+                                    case 'm':
+                                        {
+                                        alt23=1;
+                                        }
+                                        break;
+                                    case 's':
+                                        {
+                                        alt23=2;
+                                        }
+                                        break;
+                                    case 'h':
+                                        {
+                                        alt23=3;
+                                        }
+                                        break;
+                                    default:
+                                        if (state.backtracking>0) {state.failed=true; return ;}
+                                        NoViableAltException nvae =
+                                            new NoViableAltException("", 23, 0, input);
+
+                                        throw nvae;
+
+                                    }
+
+                                    switch (alt23) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:866:9: 'm' ( 's' )?
+                                            {
+                                            match('m'); if (state.failed) return ;
+
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:866:13: ( 's' )?
+                                            int alt22=2;
+                                            int LA22_0 = input.LA(1);
+
+                                            if ( (LA22_0=='s') ) {
+                                                alt22=1;
+                                            }
+                                            switch (alt22) {
+                                                case 1 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:866:13: 's'
+                                                    {
+                                                    match('s'); if (state.failed) return ;
+
+                                                    }
+                                                    break;
+
+                                            }
+
+
+                                            }
+                                            break;
+                                        case 2 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:867:11: 's'
+                                            {
+                                            match('s'); if (state.failed) return ;
+
+                                            }
+                                            break;
+                                        case 3 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:868:11: 'h'
+                                            {
+                                            match('h'); if (state.failed) return ;
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    if ( state.backtracking==0 ) {
+                                           _type = TIME_LITERAL;
+                                          }
+
+                                    }
+                                    break;
+                                case 2 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:874:9: Exponent
+                                    {
+                                    mExponent(); if (state.failed) return ;
+
+
+                                    if ( state.backtracking==0 ) {
+                                                     _type = FLOATING_POINT_LITERAL;
+                                                    }
+
+                                    }
+                                    break;
+                                case 3 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:882:7: 
+                                    {
+                                    if ( state.backtracking==0 ) {
+                                            _type = DECIMAL_LITERAL;
+                                            if (!checkIntLiteralRange(getText(), getCharIndex(), 10, negative)) {
+                                            	setText("0");
+                                            }
+                                           }
+
+                                    }
+                                    break;
+
                             }
 
 
@@ -1244,87 +1742,187 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // DeeLang.g:310:9: ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:890:5: '.' ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) | '.' |)
                     {
-                    // DeeLang.g:310:9: ( '0' .. '9' )+
-                    int cnt20=0;
-                    loop20:
-                    do {
-                        int alt20=2;
-                        int LA20_0 = input.LA(1);
+                    match('.'); if (state.failed) return ;
 
-                        if ( ((LA20_0 >= '0' && LA20_0 <= '9')) ) {
-                            alt20=1;
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:891:3: ( Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |) | '.' |)
+                    int alt30=3;
+                    switch ( input.LA(1) ) {
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        {
+                        alt30=1;
                         }
-
-
-                        switch (alt20) {
-                    	case 1 :
-                    	    // DeeLang.g:
-                    	    {
-                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-                    	        input.consume();
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;
-                    	    }
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    if ( cnt20 >= 1 ) break loop20;
-                                EarlyExitException eee =
-                                    new EarlyExitException(20, input);
-                                throw eee;
+                        break;
+                    case '.':
+                        {
+                        alt30=2;
                         }
-                        cnt20++;
-                    } while (true);
-
-
-                    // DeeLang.g:310:21: ( Exponent )?
-                    int alt21=2;
-                    int LA21_0 = input.LA(1);
-
-                    if ( (LA21_0=='E'||LA21_0=='e') ) {
-                        alt21=1;
+                        break;
+                    default:
+                        alt30=3;
                     }
-                    switch (alt21) {
+
+                    switch (alt30) {
                         case 1 :
-                            // DeeLang.g:310:21: Exponent
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:893:5: Digits ( Exponent )? ( ( 'm' ( 's' )? | 's' | 'h' ) |)
                             {
-                            mExponent(); 
+                            mDigits(); if (state.failed) return ;
+
+
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:893:12: ( Exponent )?
+                            int alt26=2;
+                            int LA26_0 = input.LA(1);
+
+                            if ( (LA26_0=='E'||LA26_0=='e') ) {
+                                alt26=1;
+                            }
+                            switch (alt26) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:893:12: Exponent
+                                    {
+                                    mExponent(); if (state.failed) return ;
+
+
+                                    }
+                                    break;
+
+                            }
+
+
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:894:5: ( ( 'm' ( 's' )? | 's' | 'h' ) |)
+                            int alt29=2;
+                            int LA29_0 = input.LA(1);
+
+                            if ( (LA29_0=='h'||LA29_0=='m'||LA29_0=='s') ) {
+                                alt29=1;
+                            }
+                            else {
+                                alt29=2;
+                            }
+                            switch (alt29) {
+                                case 1 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:895:7: ( 'm' ( 's' )? | 's' | 'h' )
+                                    {
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:895:7: ( 'm' ( 's' )? | 's' | 'h' )
+                                    int alt28=3;
+                                    switch ( input.LA(1) ) {
+                                    case 'm':
+                                        {
+                                        alt28=1;
+                                        }
+                                        break;
+                                    case 's':
+                                        {
+                                        alt28=2;
+                                        }
+                                        break;
+                                    case 'h':
+                                        {
+                                        alt28=3;
+                                        }
+                                        break;
+                                    default:
+                                        if (state.backtracking>0) {state.failed=true; return ;}
+                                        NoViableAltException nvae =
+                                            new NoViableAltException("", 28, 0, input);
+
+                                        throw nvae;
+
+                                    }
+
+                                    switch (alt28) {
+                                        case 1 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:896:9: 'm' ( 's' )?
+                                            {
+                                            match('m'); if (state.failed) return ;
+
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:896:13: ( 's' )?
+                                            int alt27=2;
+                                            int LA27_0 = input.LA(1);
+
+                                            if ( (LA27_0=='s') ) {
+                                                alt27=1;
+                                            }
+                                            switch (alt27) {
+                                                case 1 :
+                                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:896:13: 's'
+                                                    {
+                                                    match('s'); if (state.failed) return ;
+
+                                                    }
+                                                    break;
+
+                                            }
+
+
+                                            }
+                                            break;
+                                        case 2 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:897:11: 's'
+                                            {
+                                            match('s'); if (state.failed) return ;
+
+                                            }
+                                            break;
+                                        case 3 :
+                                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:898:11: 'h'
+                                            {
+                                            match('h'); if (state.failed) return ;
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                    if ( state.backtracking==0 ) {
+                                           _type = TIME_LITERAL;
+                                          }
+
+                                    }
+                                    break;
+                                case 2 :
+                                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:908:7: 
+                                    {
+                                    if ( state.backtracking==0 ) {
+                                            _type = FLOATING_POINT_LITERAL;
+                                           }
+
+                                    }
+                                    break;
+
+                            }
 
 
                             }
                             break;
-
-                    }
-
-
-                    // DeeLang.g:310:31: ( FloatTypeSuffix )?
-                    int alt22=2;
-                    int LA22_0 = input.LA(1);
-
-                    if ( (LA22_0=='D'||LA22_0=='F'||LA22_0=='d'||LA22_0=='f') ) {
-                        alt22=1;
-                    }
-                    switch (alt22) {
-                        case 1 :
-                            // DeeLang.g:
+                        case 2 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:916:5: '.'
                             {
-                            if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
-                                input.consume();
-                            }
-                            else {
-                                MismatchedSetException mse = new MismatchedSetException(null,input);
-                                recover(mse);
-                                throw mse;
-                            }
+                            match('.'); if (state.failed) return ;
 
+                            if ( state.backtracking==0 ) {
+                                      _type = DOTDOT; // Yes, it was ..
+                                     }
+
+                            }
+                            break;
+                        case 3 :
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:924:5: 
+                            {
+                            if ( state.backtracking==0 ) {
+                                  _type = DOT;
+                                 }
 
                             }
                             break;
@@ -1345,37 +1943,99 @@ public class DeeLangLexer extends Lexer {
     }
     // $ANTLR end "FLOATING_POINT_LITERAL"
 
+    // $ANTLR start "Digits"
+    public final void mDigits() throws RecognitionException {
+        try {
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:933:3: ( ( '0' .. '9' )+ )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:934:3: ( '0' .. '9' )+
+            {
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:934:3: ( '0' .. '9' )+
+            int cnt32=0;
+            loop32:
+            do {
+                int alt32=2;
+                int LA32_0 = input.LA(1);
+
+                if ( ((LA32_0 >= '0' && LA32_0 <= '9')) ) {
+                    alt32=1;
+                }
+
+
+                switch (alt32) {
+            	case 1 :
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
+            	    {
+            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+            	        input.consume();
+            	        state.failed=false;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return ;}
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        recover(mse);
+            	        throw mse;
+            	    }
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt32 >= 1 ) break loop32;
+            	    if (state.backtracking>0) {state.failed=true; return ;}
+                        EarlyExitException eee =
+                            new EarlyExitException(32, input);
+                        throw eee;
+                }
+                cnt32++;
+            } while (true);
+
+
+            }
+
+
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "Digits"
+
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // DeeLang.g:315:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // DeeLang.g:315:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:939:3: ( ( 'e' | 'E' ) ( '+' | '-' )? ( Digits |) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:940:3: ( 'e' | 'E' ) ( '+' | '-' )? ( Digits |)
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
+                state.failed=false;
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
                 throw mse;
             }
 
 
-            // DeeLang.g:315:22: ( '+' | '-' )?
-            int alt24=2;
-            int LA24_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:944:3: ( '+' | '-' )?
+            int alt33=2;
+            int LA33_0 = input.LA(1);
 
-            if ( (LA24_0=='+'||LA24_0=='-') ) {
-                alt24=1;
+            if ( (LA33_0=='+'||LA33_0=='-') ) {
+                alt33=1;
             }
-            switch (alt24) {
+            switch (alt33) {
                 case 1 :
-                    // DeeLang.g:
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1388,43 +2048,37 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            // DeeLang.g:315:33: ( '0' .. '9' )+
-            int cnt25=0;
-            loop25:
-            do {
-                int alt25=2;
-                int LA25_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:948:3: ( Digits |)
+            int alt34=2;
+            int LA34_0 = input.LA(1);
 
-                if ( ((LA25_0 >= '0' && LA25_0 <= '9')) ) {
-                    alt25=1;
-                }
-
-
-                switch (alt25) {
-            	case 1 :
-            	    // DeeLang.g:
-            	    {
-            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-            	        input.consume();
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;
-            	    }
+            if ( ((LA34_0 >= '0' && LA34_0 <= '9')) ) {
+                alt34=1;
+            }
+            else {
+                alt34=2;
+            }
+            switch (alt34) {
+                case 1 :
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:949:5: Digits
+                    {
+                    mDigits(); if (state.failed) return ;
 
 
-            	    }
-            	    break;
+                    }
+                    break;
+                case 2 :
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:951:6: 
+                    {
+                    if ( state.backtracking==0 ) {
+                          log.error(getCharIndex() - 1, MESSAGE_DLEXER_MALFORMED_EXPONENT);
+                          setText("0.0");
+                         }
 
-            	default :
-            	    if ( cnt25 >= 1 ) break loop25;
-                        EarlyExitException eee =
-                            new EarlyExitException(25, input);
-                        throw eee;
-                }
-                cnt25++;
-            } while (true);
+                    }
+                    break;
+
+            }
 
 
             }
@@ -1437,40 +2091,14 @@ public class DeeLangLexer extends Lexer {
     }
     // $ANTLR end "Exponent"
 
-    // $ANTLR start "FloatTypeSuffix"
-    public final void mFloatTypeSuffix() throws RecognitionException {
-        try {
-            // DeeLang.g:318:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
-            // DeeLang.g:
-            {
-            if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
-                input.consume();
-            }
-            else {
-                MismatchedSetException mse = new MismatchedSetException(null,input);
-                recover(mse);
-                throw mse;
-            }
-
-
-            }
-
-
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "FloatTypeSuffix"
-
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // DeeLang.g:322:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' ) | OctalEscape | UnicodeEscape )
-            int alt26=3;
-            int LA26_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:965:3: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' ) | OctalEscape | UnicodeEscape )
+            int alt35=3;
+            int LA35_0 = input.LA(1);
 
-            if ( (LA26_0=='\\') ) {
+            if ( (LA35_0=='\\') ) {
                 switch ( input.LA(2) ) {
                 case '\"':
                 case '\'':
@@ -1482,7 +2110,7 @@ public class DeeLangLexer extends Lexer {
                 case 'r':
                 case 't':
                     {
-                    alt26=1;
+                    alt35=1;
                     }
                     break;
                 case '0':
@@ -1494,17 +2122,18 @@ public class DeeLangLexer extends Lexer {
                 case '6':
                 case '7':
                     {
-                    alt26=2;
+                    alt35=2;
                     }
                     break;
                 case 'u':
                     {
-                    alt26=3;
+                    alt35=3;
                     }
                     break;
                 default:
+                    if (state.backtracking>0) {state.failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 26, 1, input);
+                        new NoViableAltException("", 35, 1, input);
 
                     throw nvae;
 
@@ -1512,22 +2141,25 @@ public class DeeLangLexer extends Lexer {
 
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 26, 0, input);
+                    new NoViableAltException("", 35, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt26) {
+            switch (alt35) {
                 case 1 :
-                    // DeeLang.g:322:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:966:3: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '/' )
                     {
-                    match('\\'); 
+                    match('\\'); if (state.failed) return ;
 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='/'||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1537,17 +2169,17 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // DeeLang.g:323:9: OctalEscape
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:978:5: OctalEscape
                     {
-                    mOctalEscape(); 
+                    mOctalEscape(); if (state.failed) return ;
 
 
                     }
                     break;
                 case 3 :
-                    // DeeLang.g:324:9: UnicodeEscape
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:979:5: UnicodeEscape
                     {
-                    mUnicodeEscape(); 
+                    mUnicodeEscape(); if (state.failed) return ;
 
 
                     }
@@ -1565,65 +2197,69 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // DeeLang.g:329:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
-            int alt27=3;
-            int LA27_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:984:3: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            int alt36=3;
+            int LA36_0 = input.LA(1);
 
-            if ( (LA27_0=='\\') ) {
-                int LA27_1 = input.LA(2);
+            if ( (LA36_0=='\\') ) {
+                int LA36_1 = input.LA(2);
 
-                if ( ((LA27_1 >= '0' && LA27_1 <= '3')) ) {
-                    int LA27_2 = input.LA(3);
+                if ( ((LA36_1 >= '0' && LA36_1 <= '3')) ) {
+                    int LA36_2 = input.LA(3);
 
-                    if ( ((LA27_2 >= '0' && LA27_2 <= '7')) ) {
-                        int LA27_4 = input.LA(4);
+                    if ( ((LA36_2 >= '0' && LA36_2 <= '7')) ) {
+                        int LA36_4 = input.LA(4);
 
-                        if ( ((LA27_4 >= '0' && LA27_4 <= '7')) ) {
-                            alt27=1;
+                        if ( ((LA36_4 >= '0' && LA36_4 <= '7')) ) {
+                            alt36=1;
                         }
                         else {
-                            alt27=2;
+                            alt36=2;
                         }
                     }
                     else {
-                        alt27=3;
+                        alt36=3;
                     }
                 }
-                else if ( ((LA27_1 >= '4' && LA27_1 <= '7')) ) {
-                    int LA27_3 = input.LA(3);
+                else if ( ((LA36_1 >= '4' && LA36_1 <= '7')) ) {
+                    int LA36_3 = input.LA(3);
 
-                    if ( ((LA27_3 >= '0' && LA27_3 <= '7')) ) {
-                        alt27=2;
+                    if ( ((LA36_3 >= '0' && LA36_3 <= '7')) ) {
+                        alt36=2;
                     }
                     else {
-                        alt27=3;
+                        alt36=3;
                     }
                 }
                 else {
+                    if (state.backtracking>0) {state.failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 27, 1, input);
+                        new NoViableAltException("", 36, 1, input);
 
                     throw nvae;
 
                 }
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 27, 0, input);
+                    new NoViableAltException("", 36, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt27) {
+            switch (alt36) {
                 case 1 :
-                    // DeeLang.g:329:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:985:3: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    match('\\'); 
+                    match('\\'); if (state.failed) return ;
 
                     if ( (input.LA(1) >= '0' && input.LA(1) <= '3') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1632,8 +2268,10 @@ public class DeeLangLexer extends Lexer {
 
                     if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1642,8 +2280,10 @@ public class DeeLangLexer extends Lexer {
 
                     if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1653,14 +2293,16 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // DeeLang.g:330:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:986:5: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    match('\\'); 
+                    match('\\'); if (state.failed) return ;
 
                     if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1669,8 +2311,10 @@ public class DeeLangLexer extends Lexer {
 
                     if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1680,14 +2324,16 @@ public class DeeLangLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // DeeLang.g:331:9: '\\\\' ( '0' .. '7' )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:987:5: '\\\\' ( '0' .. '7' )
                     {
-                    match('\\'); 
+                    match('\\'); if (state.failed) return ;
 
                     if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
@@ -1706,26 +2352,54 @@ public class DeeLangLexer extends Lexer {
     }
     // $ANTLR end "OctalEscape"
 
+    // $ANTLR start "HexDigit"
+    public final void mHexDigit() throws RecognitionException {
+        try {
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:992:3: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
+            {
+            if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
+                input.consume();
+                state.failed=false;
+            }
+            else {
+                if (state.backtracking>0) {state.failed=true; return ;}
+                MismatchedSetException mse = new MismatchedSetException(null,input);
+                recover(mse);
+                throw mse;
+            }
+
+
+            }
+
+
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "HexDigit"
+
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // DeeLang.g:336:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // DeeLang.g:336:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1000:3: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1001:3: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
-            match('\\'); 
+            match('\\'); if (state.failed) return ;
 
-            match('u'); 
+            match('u'); if (state.failed) return ;
 
-            mHexDigit(); 
-
-
-            mHexDigit(); 
+            mHexDigit(); if (state.failed) return ;
 
 
-            mHexDigit(); 
+            mHexDigit(); if (state.failed) return ;
 
 
-            mHexDigit(); 
+            mHexDigit(); if (state.failed) return ;
+
+
+            mHexDigit(); if (state.failed) return ;
 
 
             }
@@ -1743,56 +2417,58 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:338:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // DeeLang.g:338:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1004:3: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1005:3: '/*' ( options {greedy=false; } : . )* '*/'
             {
-            match("/*"); 
+            match("/*"); if (state.failed) return ;
 
 
 
-            // DeeLang.g:338:14: ( options {greedy=false; } : . )*
-            loop28:
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1005:8: ( options {greedy=false; } : . )*
+            loop37:
             do {
-                int alt28=2;
-                int LA28_0 = input.LA(1);
+                int alt37=2;
+                int LA37_0 = input.LA(1);
 
-                if ( (LA28_0=='*') ) {
-                    int LA28_1 = input.LA(2);
+                if ( (LA37_0=='*') ) {
+                    int LA37_1 = input.LA(2);
 
-                    if ( (LA28_1=='/') ) {
-                        alt28=2;
+                    if ( (LA37_1=='/') ) {
+                        alt37=2;
                     }
-                    else if ( ((LA28_1 >= '\u0000' && LA28_1 <= '.')||(LA28_1 >= '0' && LA28_1 <= '\uFFFF')) ) {
-                        alt28=1;
+                    else if ( ((LA37_1 >= '\u0000' && LA37_1 <= '.')||(LA37_1 >= '0' && LA37_1 <= '\uFFFF')) ) {
+                        alt37=1;
                     }
 
 
                 }
-                else if ( ((LA28_0 >= '\u0000' && LA28_0 <= ')')||(LA28_0 >= '+' && LA28_0 <= '\uFFFF')) ) {
-                    alt28=1;
+                else if ( ((LA37_0 >= '\u0000' && LA37_0 <= ')')||(LA37_0 >= '+' && LA37_0 <= '\uFFFF')) ) {
+                    alt37=1;
                 }
 
 
-                switch (alt28) {
+                switch (alt37) {
             	case 1 :
-            	    // DeeLang.g:338:42: .
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1005:34: .
             	    {
-            	    matchAny(); 
+            	    matchAny(); if (state.failed) return ;
 
             	    }
             	    break;
 
             	default :
-            	    break loop28;
+            	    break loop37;
                 }
             } while (true);
 
 
-            match("*/"); 
+            match("*/"); if (state.failed) return ;
 
 
 
-            _channel=HIDDEN;
+            if ( state.backtracking==0 ) {
+                                                      _channel = HIDDEN;
+                                                     }
 
             }
 
@@ -1810,32 +2486,34 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:342:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // DeeLang.g:342:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1012:3: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1013:3: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
-            match("//"); 
+            match("//"); if (state.failed) return ;
 
 
 
-            // DeeLang.g:342:12: (~ ( '\\n' | '\\r' ) )*
-            loop29:
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1014:3: (~ ( '\\n' | '\\r' ) )*
+            loop38:
             do {
-                int alt29=2;
-                int LA29_0 = input.LA(1);
+                int alt38=2;
+                int LA38_0 = input.LA(1);
 
-                if ( ((LA29_0 >= '\u0000' && LA29_0 <= '\t')||(LA29_0 >= '\u000B' && LA29_0 <= '\f')||(LA29_0 >= '\u000E' && LA29_0 <= '\uFFFF')) ) {
-                    alt29=1;
+                if ( ((LA38_0 >= '\u0000' && LA38_0 <= '\t')||(LA38_0 >= '\u000B' && LA38_0 <= '\f')||(LA38_0 >= '\u000E' && LA38_0 <= '\uFFFF')) ) {
+                    alt38=1;
                 }
 
 
-                switch (alt29) {
+                switch (alt38) {
             	case 1 :
-            	    // DeeLang.g:
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
             	    {
             	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '\f')||(input.LA(1) >= '\u000E' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
+            	        state.failed=false;
             	    }
             	    else {
+            	        if (state.backtracking>0) {state.failed=true; return ;}
             	        MismatchedSetException mse = new MismatchedSetException(null,input);
             	        recover(mse);
             	        throw mse;
@@ -1846,23 +2524,23 @@ public class DeeLangLexer extends Lexer {
             	    break;
 
             	default :
-            	    break loop29;
+            	    break loop38;
                 }
             } while (true);
 
 
-            // DeeLang.g:342:26: ( '\\r' )?
-            int alt30=2;
-            int LA30_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1018:3: ( '\\r' )?
+            int alt39=2;
+            int LA39_0 = input.LA(1);
 
-            if ( (LA30_0=='\r') ) {
-                alt30=1;
+            if ( (LA39_0=='\r') ) {
+                alt39=1;
             }
-            switch (alt30) {
+            switch (alt39) {
                 case 1 :
-                    // DeeLang.g:342:26: '\\r'
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1018:3: '\\r'
                     {
-                    match('\r'); 
+                    match('\r'); if (state.failed) return ;
 
                     }
                     break;
@@ -1870,9 +2548,11 @@ public class DeeLangLexer extends Lexer {
             }
 
 
-            match('\n'); 
+            match('\n'); if (state.failed) return ;
 
-            _channel=HIDDEN;
+            if ( state.backtracking==0 ) {
+                         _channel = HIDDEN;
+                        }
 
             }
 
@@ -1890,39 +2570,40 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = TERMINATOR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:346:3: ( ( '\\r' )? '\\n' | ';' )
-            int alt32=2;
-            int LA32_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1025:3: ( ( '\\r' )? '\\n' | ';' )
+            int alt41=2;
+            int LA41_0 = input.LA(1);
 
-            if ( (LA32_0=='\n'||LA32_0=='\r') ) {
-                alt32=1;
+            if ( (LA41_0=='\n'||LA41_0=='\r') ) {
+                alt41=1;
             }
-            else if ( (LA32_0==';') ) {
-                alt32=2;
+            else if ( (LA41_0==';') ) {
+                alt41=2;
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 32, 0, input);
+                    new NoViableAltException("", 41, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt32) {
+            switch (alt41) {
                 case 1 :
-                    // DeeLang.g:346:5: ( '\\r' )? '\\n'
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1026:3: ( '\\r' )? '\\n'
                     {
-                    // DeeLang.g:346:5: ( '\\r' )?
-                    int alt31=2;
-                    int LA31_0 = input.LA(1);
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1026:3: ( '\\r' )?
+                    int alt40=2;
+                    int LA40_0 = input.LA(1);
 
-                    if ( (LA31_0=='\r') ) {
-                        alt31=1;
+                    if ( (LA40_0=='\r') ) {
+                        alt40=1;
                     }
-                    switch (alt31) {
+                    switch (alt40) {
                         case 1 :
-                            // DeeLang.g:346:5: '\\r'
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1026:3: '\\r'
                             {
-                            match('\r'); 
+                            match('\r'); if (state.failed) return ;
 
                             }
                             break;
@@ -1930,14 +2611,14 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    match('\n'); 
+                    match('\n'); if (state.failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // DeeLang.g:347:5: ';'
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1027:5: ';'
                     {
-                    match(';'); 
+                    match(';'); if (state.failed) return ;
 
                     }
                     break;
@@ -1957,60 +2638,65 @@ public class DeeLangLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DeeLang.g:350:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' ) | '...' ( '\\r' )? '\\n' )
-            int alt34=2;
-            int LA34_0 = input.LA(1);
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1031:3: ( ( ' ' | '\\r' | '\\t' | '\\u000C' ) | '...' ( '\\r' )? '\\n' )
+            int alt43=2;
+            int LA43_0 = input.LA(1);
 
-            if ( (LA34_0=='\t'||(LA34_0 >= '\f' && LA34_0 <= '\r')||LA34_0==' ') ) {
-                alt34=1;
+            if ( (LA43_0=='\t'||(LA43_0 >= '\f' && LA43_0 <= '\r')||LA43_0==' ') ) {
+                alt43=1;
             }
-            else if ( (LA34_0=='.') ) {
-                alt34=2;
+            else if ( (LA43_0=='.') ) {
+                alt43=2;
             }
             else {
+                if (state.backtracking>0) {state.failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 34, 0, input);
+                    new NoViableAltException("", 43, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt34) {
+            switch (alt43) {
                 case 1 :
-                    // DeeLang.g:350:8: ( ' ' | '\\r' | '\\t' | '\\u000C' )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1032:3: ( ' ' | '\\r' | '\\t' | '\\u000C' )
                     {
                     if ( input.LA(1)=='\t'||(input.LA(1) >= '\f' && input.LA(1) <= '\r')||input.LA(1)==' ' ) {
                         input.consume();
+                        state.failed=false;
                     }
                     else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
                         throw mse;
                     }
 
 
-                    _channel=HIDDEN;
+                    if ( state.backtracking==0 ) {
+                       _channel = HIDDEN;
+                      }
 
                     }
                     break;
                 case 2 :
-                    // DeeLang.g:351:8: '...' ( '\\r' )? '\\n'
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1042:5: '...' ( '\\r' )? '\\n'
                     {
-                    match("..."); 
+                    match("..."); if (state.failed) return ;
 
 
 
-                    // DeeLang.g:351:14: ( '\\r' )?
-                    int alt33=2;
-                    int LA33_0 = input.LA(1);
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1042:11: ( '\\r' )?
+                    int alt42=2;
+                    int LA42_0 = input.LA(1);
 
-                    if ( (LA33_0=='\r') ) {
-                        alt33=1;
+                    if ( (LA42_0=='\r') ) {
+                        alt42=1;
                     }
-                    switch (alt33) {
+                    switch (alt42) {
                         case 1 :
-                            // DeeLang.g:351:14: '\\r'
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1042:11: '\\r'
                             {
-                            match('\r'); 
+                            match('\r'); if (state.failed) return ;
 
                             }
                             break;
@@ -2018,9 +2704,11 @@ public class DeeLangLexer extends Lexer {
                     }
 
 
-                    match('\n'); 
+                    match('\n'); if (state.failed) return ;
 
-                    _channel=HIDDEN;
+                    if ( state.backtracking==0 ) {
+                                         _channel = HIDDEN;
+                                        }
 
                     }
                     break;
@@ -2036,214 +2724,446 @@ public class DeeLangLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // DeeLang.g:1:8: ( OR | POW | MOD | ADD | SUB | DIV | MUL | NOT | ASSIGN | LPAREN | RPAREN | LCURLY | RCURLY | COMMA | DOT | IDENTIFIER | CHARACTER_LITERAL | STRING_LITERAL | HEX_LITERAL | DECIMAL_LITERAL | OCTAL_LITERAL | FLOATING_POINT_LITERAL | COMMENT | LINE_COMMENT | TERMINATOR | WS )
-        int alt35=26;
-        alt35 = dfa35.predict(input);
-        switch (alt35) {
-            case 1 :
-                // DeeLang.g:1:10: OR
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:8: ( OR | POW | MOD | ADD | SUB | DIV | MUL | NOT | ASSIGN | LPAREN | RPAREN | LCURLY | RCURLY | COMMA | DOT | DOTDOT | IDENTIFIER | CHARACTER_LITERAL | STRING_LITERAL | FLOATING_POINT_LITERAL | COMMENT | LINE_COMMENT | TERMINATOR | WS )
+        int alt44=24;
+        switch ( input.LA(1) ) {
+        case 'o':
+            {
+            int LA44_1 = input.LA(2);
+
+            if ( (LA44_1=='r') ) {
+                int LA44_23 = input.LA(3);
+
+                if ( (LA44_23=='$'||(LA44_23 >= '0' && LA44_23 <= '9')||(LA44_23 >= 'A' && LA44_23 <= 'Z')||LA44_23=='_'||(LA44_23 >= 'a' && LA44_23 <= 'z')) ) {
+                    alt44=17;
+                }
+                else {
+                    alt44=1;
+                }
+            }
+            else {
+                alt44=17;
+            }
+            }
+            break;
+        case '^':
+            {
+            alt44=2;
+            }
+            break;
+        case '%':
+            {
+            alt44=3;
+            }
+            break;
+        case '+':
+            {
+            alt44=4;
+            }
+            break;
+        case '-':
+            {
+            alt44=5;
+            }
+            break;
+        case '/':
+            {
+            switch ( input.LA(2) ) {
+            case '*':
                 {
-                mOR(); 
+                alt44=21;
+                }
+                break;
+            case '/':
+                {
+                alt44=22;
+                }
+                break;
+            default:
+                alt44=6;
+            }
+
+            }
+            break;
+        case '*':
+            {
+            alt44=7;
+            }
+            break;
+        case '!':
+            {
+            alt44=8;
+            }
+            break;
+        case '=':
+            {
+            alt44=9;
+            }
+            break;
+        case '(':
+            {
+            alt44=10;
+            }
+            break;
+        case ')':
+            {
+            alt44=11;
+            }
+            break;
+        case '{':
+            {
+            alt44=12;
+            }
+            break;
+        case '}':
+            {
+            alt44=13;
+            }
+            break;
+        case ',':
+            {
+            alt44=14;
+            }
+            break;
+        case '.':
+            {
+            switch ( input.LA(2) ) {
+            case '.':
+                {
+                int LA44_27 = input.LA(3);
+
+                if ( (LA44_27=='.') ) {
+                    alt44=24;
+                }
+                else {
+                    alt44=16;
+                }
+                }
+                break;
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                {
+                alt44=20;
+                }
+                break;
+            default:
+                alt44=15;
+            }
+
+            }
+            break;
+        case '$':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':
+            {
+            alt44=17;
+            }
+            break;
+        case '\'':
+            {
+            alt44=18;
+            }
+            break;
+        case '\"':
+            {
+            alt44=19;
+            }
+            break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            {
+            alt44=20;
+            }
+            break;
+        case '\r':
+            {
+            int LA44_20 = input.LA(2);
+
+            if ( (LA44_20=='\n') ) {
+                alt44=23;
+            }
+            else {
+                alt44=24;
+            }
+            }
+            break;
+        case '\n':
+        case ';':
+            {
+            alt44=23;
+            }
+            break;
+        case '\t':
+        case '\f':
+        case ' ':
+            {
+            alt44=24;
+            }
+            break;
+        default:
+            if (state.backtracking>0) {state.failed=true; return ;}
+            NoViableAltException nvae =
+                new NoViableAltException("", 44, 0, input);
+
+            throw nvae;
+
+        }
+
+        switch (alt44) {
+            case 1 :
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:10: OR
+                {
+                mOR(); if (state.failed) return ;
 
 
                 }
                 break;
             case 2 :
-                // DeeLang.g:1:13: POW
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:13: POW
                 {
-                mPOW(); 
+                mPOW(); if (state.failed) return ;
 
 
                 }
                 break;
             case 3 :
-                // DeeLang.g:1:17: MOD
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:17: MOD
                 {
-                mMOD(); 
+                mMOD(); if (state.failed) return ;
 
 
                 }
                 break;
             case 4 :
-                // DeeLang.g:1:21: ADD
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:21: ADD
                 {
-                mADD(); 
+                mADD(); if (state.failed) return ;
 
 
                 }
                 break;
             case 5 :
-                // DeeLang.g:1:25: SUB
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:25: SUB
                 {
-                mSUB(); 
+                mSUB(); if (state.failed) return ;
 
 
                 }
                 break;
             case 6 :
-                // DeeLang.g:1:29: DIV
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:29: DIV
                 {
-                mDIV(); 
+                mDIV(); if (state.failed) return ;
 
 
                 }
                 break;
             case 7 :
-                // DeeLang.g:1:33: MUL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:33: MUL
                 {
-                mMUL(); 
+                mMUL(); if (state.failed) return ;
 
 
                 }
                 break;
             case 8 :
-                // DeeLang.g:1:37: NOT
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:37: NOT
                 {
-                mNOT(); 
+                mNOT(); if (state.failed) return ;
 
 
                 }
                 break;
             case 9 :
-                // DeeLang.g:1:41: ASSIGN
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:41: ASSIGN
                 {
-                mASSIGN(); 
+                mASSIGN(); if (state.failed) return ;
 
 
                 }
                 break;
             case 10 :
-                // DeeLang.g:1:48: LPAREN
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:48: LPAREN
                 {
-                mLPAREN(); 
+                mLPAREN(); if (state.failed) return ;
 
 
                 }
                 break;
             case 11 :
-                // DeeLang.g:1:55: RPAREN
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:55: RPAREN
                 {
-                mRPAREN(); 
+                mRPAREN(); if (state.failed) return ;
 
 
                 }
                 break;
             case 12 :
-                // DeeLang.g:1:62: LCURLY
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:62: LCURLY
                 {
-                mLCURLY(); 
+                mLCURLY(); if (state.failed) return ;
 
 
                 }
                 break;
             case 13 :
-                // DeeLang.g:1:69: RCURLY
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:69: RCURLY
                 {
-                mRCURLY(); 
+                mRCURLY(); if (state.failed) return ;
 
 
                 }
                 break;
             case 14 :
-                // DeeLang.g:1:76: COMMA
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:76: COMMA
                 {
-                mCOMMA(); 
+                mCOMMA(); if (state.failed) return ;
 
 
                 }
                 break;
             case 15 :
-                // DeeLang.g:1:82: DOT
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:82: DOT
                 {
-                mDOT(); 
+                mDOT(); if (state.failed) return ;
 
 
                 }
                 break;
             case 16 :
-                // DeeLang.g:1:86: IDENTIFIER
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:86: DOTDOT
                 {
-                mIDENTIFIER(); 
+                mDOTDOT(); if (state.failed) return ;
 
 
                 }
                 break;
             case 17 :
-                // DeeLang.g:1:97: CHARACTER_LITERAL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:93: IDENTIFIER
                 {
-                mCHARACTER_LITERAL(); 
+                mIDENTIFIER(); if (state.failed) return ;
 
 
                 }
                 break;
             case 18 :
-                // DeeLang.g:1:115: STRING_LITERAL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:104: CHARACTER_LITERAL
                 {
-                mSTRING_LITERAL(); 
+                mCHARACTER_LITERAL(); if (state.failed) return ;
 
 
                 }
                 break;
             case 19 :
-                // DeeLang.g:1:130: HEX_LITERAL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:122: STRING_LITERAL
                 {
-                mHEX_LITERAL(); 
+                mSTRING_LITERAL(); if (state.failed) return ;
 
 
                 }
                 break;
             case 20 :
-                // DeeLang.g:1:142: DECIMAL_LITERAL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:137: FLOATING_POINT_LITERAL
                 {
-                mDECIMAL_LITERAL(); 
+                mFLOATING_POINT_LITERAL(); if (state.failed) return ;
 
 
                 }
                 break;
             case 21 :
-                // DeeLang.g:1:158: OCTAL_LITERAL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:160: COMMENT
                 {
-                mOCTAL_LITERAL(); 
+                mCOMMENT(); if (state.failed) return ;
 
 
                 }
                 break;
             case 22 :
-                // DeeLang.g:1:172: FLOATING_POINT_LITERAL
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:168: LINE_COMMENT
                 {
-                mFLOATING_POINT_LITERAL(); 
+                mLINE_COMMENT(); if (state.failed) return ;
 
 
                 }
                 break;
             case 23 :
-                // DeeLang.g:1:195: COMMENT
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:181: TERMINATOR
                 {
-                mCOMMENT(); 
+                mTERMINATOR(); if (state.failed) return ;
 
 
                 }
                 break;
             case 24 :
-                // DeeLang.g:1:203: LINE_COMMENT
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:1:192: WS
                 {
-                mLINE_COMMENT(); 
-
-
-                }
-                break;
-            case 25 :
-                // DeeLang.g:1:216: TERMINATOR
-                {
-                mTERMINATOR(); 
-
-
-                }
-                break;
-            case 26 :
-                // DeeLang.g:1:227: WS
-                {
-                mWS(); 
+                mWS(); if (state.failed) return ;
 
 
                 }
@@ -2253,156 +3173,46 @@ public class DeeLangLexer extends Lexer {
 
     }
 
+    // $ANTLR start synpred1_DeeLang
+    public final void synpred1_DeeLang_fragment() throws RecognitionException {
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:820:7: ( '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) ) )
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:821:9: '.' (~ ( 'a' .. 'd' | 'f' .. 'z' | 'A' .. 'D' | 'F' .. 'Z' ) )
+        {
+        match('.'); if (state.failed) return ;
 
-    protected DFA23 dfa23 = new DFA23(this);
-    protected DFA35 dfa35 = new DFA35(this);
-    static final String DFA23_eotS =
-        "\1\uffff\1\4\3\uffff";
-    static final String DFA23_eofS =
-        "\5\uffff";
-    static final String DFA23_minS =
-        "\2\56\3\uffff";
-    static final String DFA23_maxS =
-        "\2\71\3\uffff";
-    static final String DFA23_acceptS =
-        "\2\uffff\1\2\1\1\1\3";
-    static final String DFA23_specialS =
-        "\5\uffff}>";
-    static final String[] DFA23_transitionS = {
-            "\1\2\1\uffff\12\1",
-            "\1\3\1\uffff\12\1",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA23_eot = DFA.unpackEncodedString(DFA23_eotS);
-    static final short[] DFA23_eof = DFA.unpackEncodedString(DFA23_eofS);
-    static final char[] DFA23_min = DFA.unpackEncodedStringToUnsignedChars(DFA23_minS);
-    static final char[] DFA23_max = DFA.unpackEncodedStringToUnsignedChars(DFA23_maxS);
-    static final short[] DFA23_accept = DFA.unpackEncodedString(DFA23_acceptS);
-    static final short[] DFA23_special = DFA.unpackEncodedString(DFA23_specialS);
-    static final short[][] DFA23_transition;
-
-    static {
-        int numStates = DFA23_transitionS.length;
-        DFA23_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA23_transition[i] = DFA.unpackEncodedString(DFA23_transitionS[i]);
+        if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '@')||input.LA(1)=='E'||(input.LA(1) >= '[' && input.LA(1) <= '`')||input.LA(1)=='e'||(input.LA(1) >= '{' && input.LA(1) <= '\uFFFF') ) {
+            input.consume();
+            state.failed=false;
         }
+        else {
+            if (state.backtracking>0) {state.failed=true; return ;}
+            MismatchedSetException mse = new MismatchedSetException(null,input);
+            recover(mse);
+            throw mse;
+        }
+
+
+        }
+
+    }
+    // $ANTLR end synpred1_DeeLang
+
+    public final boolean synpred1_DeeLang() {
+        state.backtracking++;
+        int start = input.mark();
+        try {
+            synpred1_DeeLang_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        state.backtracking--;
+        state.failed=false;
+        return success;
     }
 
-    class DFA23 extends DFA {
 
-        public DFA23(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 23;
-            this.eot = DFA23_eot;
-            this.eof = DFA23_eof;
-            this.min = DFA23_min;
-            this.max = DFA23_max;
-            this.accept = DFA23_accept;
-            this.special = DFA23_special;
-            this.transition = DFA23_transition;
-        }
-        public String getDescription() {
-            return "307:1: FLOATING_POINT_LITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? );";
-        }
-    }
-    static final String DFA35_eotS =
-        "\1\uffff\1\20\4\uffff\1\33\10\uffff\1\34\3\uffff\2\37\1\27\2\uffff"+
-        "\1\42\7\uffff\1\43\1\37\2\uffff";
-    static final String DFA35_eofS =
-        "\44\uffff";
-    static final String DFA35_minS =
-        "\1\11\1\162\4\uffff\1\52\10\uffff\1\56\3\uffff\2\56\1\12\2\uffff"+
-        "\1\44\7\uffff\2\56\2\uffff";
-    static final String DFA35_maxS =
-        "\1\175\1\162\4\uffff\1\57\10\uffff\1\71\3\uffff\1\170\1\146\1\12"+
-        "\2\uffff\1\172\7\uffff\2\146\2\uffff";
-    static final String DFA35_acceptS =
-        "\2\uffff\1\2\1\3\1\4\1\5\1\uffff\1\7\1\10\1\11\1\12\1\13\1\14\1"+
-        "\15\1\16\1\uffff\1\20\1\21\1\22\3\uffff\1\31\1\32\1\uffff\1\27\1"+
-        "\30\1\6\1\17\1\26\1\23\1\24\2\uffff\1\1\1\25";
-    static final String DFA35_specialS =
-        "\44\uffff}>";
-    static final String[] DFA35_transitionS = {
-            "\1\27\1\26\1\uffff\1\27\1\25\22\uffff\1\27\1\10\1\22\1\uffff"+
-            "\1\20\1\3\1\uffff\1\21\1\12\1\13\1\7\1\4\1\16\1\5\1\17\1\6\1"+
-            "\23\11\24\1\uffff\1\26\1\uffff\1\11\3\uffff\32\20\3\uffff\1"+
-            "\2\1\20\1\uffff\16\20\1\1\13\20\1\14\1\uffff\1\15",
-            "\1\30",
-            "",
-            "",
-            "",
-            "",
-            "\1\31\4\uffff\1\32",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\27\1\uffff\12\35",
-            "",
-            "",
-            "",
-            "\1\35\1\uffff\10\40\2\35\12\uffff\3\35\21\uffff\1\36\13\uffff"+
-            "\3\35\21\uffff\1\36",
-            "\1\35\1\uffff\12\41\12\uffff\3\35\35\uffff\3\35",
-            "\1\26",
-            "",
-            "",
-            "\1\20\13\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff\32"+
-            "\20",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\35\1\uffff\10\40\2\35\12\uffff\3\35\35\uffff\3\35",
-            "\1\35\1\uffff\12\41\12\uffff\3\35\35\uffff\3\35",
-            "",
-            ""
-    };
-
-    static final short[] DFA35_eot = DFA.unpackEncodedString(DFA35_eotS);
-    static final short[] DFA35_eof = DFA.unpackEncodedString(DFA35_eofS);
-    static final char[] DFA35_min = DFA.unpackEncodedStringToUnsignedChars(DFA35_minS);
-    static final char[] DFA35_max = DFA.unpackEncodedStringToUnsignedChars(DFA35_maxS);
-    static final short[] DFA35_accept = DFA.unpackEncodedString(DFA35_acceptS);
-    static final short[] DFA35_special = DFA.unpackEncodedString(DFA35_specialS);
-    static final short[][] DFA35_transition;
-
-    static {
-        int numStates = DFA35_transitionS.length;
-        DFA35_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA35_transition[i] = DFA.unpackEncodedString(DFA35_transitionS[i]);
-        }
-    }
-
-    class DFA35 extends DFA {
-
-        public DFA35(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 35;
-            this.eot = DFA35_eot;
-            this.eof = DFA35_eof;
-            this.min = DFA35_min;
-            this.max = DFA35_max;
-            this.accept = DFA35_accept;
-            this.special = DFA35_special;
-            this.transition = DFA35_transition;
-        }
-        public String getDescription() {
-            return "1:1: Tokens : ( OR | POW | MOD | ADD | SUB | DIV | MUL | NOT | ASSIGN | LPAREN | RPAREN | LCURLY | RCURLY | COMMA | DOT | IDENTIFIER | CHARACTER_LITERAL | STRING_LITERAL | HEX_LITERAL | DECIMAL_LITERAL | OCTAL_LITERAL | FLOATING_POINT_LITERAL | COMMENT | LINE_COMMENT | TERMINATOR | WS );";
-        }
-    }
  
 
 }

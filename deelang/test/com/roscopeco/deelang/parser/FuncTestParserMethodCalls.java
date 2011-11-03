@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertNull;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ import com.roscopeco.deelang.parser.DeeLangParser;
  */
 public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   @Test
-  public void testBasicMethCallNoArgs() throws RecognitionException {
+  public void testBasicMethCallNoArgs() throws Throwable {
     CommonTree tree = runTest("foo.bar()");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -43,7 +42,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicMethCallToMethCall() throws RecognitionException {
+  public void testBasicMethCallToMethCall() throws Throwable {
     CommonTree tree = runTest("foo.bar(baz.quux())");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -75,13 +74,13 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChildCount(), is(0));
   }
   
-  @Test(expected = RecognitionException.class)
-  public void testChokesOnInitialDot() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testChokesOnInitialDot() throws Throwable {
     runTest(".bar()");
   }
   
   @Test
-  public void testStringLiteralMethodCall() throws RecognitionException {
+  public void testStringLiteralMethodCall() throws Throwable {
     CommonTree tree = runTest("\"one\".bar()");
     
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -98,7 +97,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testIntLiteralMethodCall() throws RecognitionException {
+  public void testIntLiteralMethodCall() throws Throwable {
     CommonTree tree = runTest("1.bar()");
     
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -115,14 +114,14 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testHexLiteralMethodCall() throws RecognitionException {
+  public void testHexLiteralMethodCall() throws Throwable {
     CommonTree tree = runTest("0x1.bar()");
     
     assertThat(tree.getText(), is("METHOD_CALL"));
     assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
     assertThat(tree.getChildCount(), is(2));
 
-    assertThat(tree.getChild(0).getText(), is("0x1"));
+    assertThat(tree.getChild(0).getText(), is("1"));
     assertThat(tree.getChild(0).getType(), is(DeeLangParser.HEX_LITERAL));
     assertThat(tree.getChild(0).getChildCount(), is(0));
 
@@ -132,7 +131,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testOctalLiteralMethodCall() throws RecognitionException {
+  public void testOctalLiteralMethodCall() throws Throwable {
     CommonTree tree = runTest("007.bar()");
     
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -149,7 +148,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testFloatLiteralMethodCall() throws RecognitionException {
+  public void testFloatLiteralMethodCall() throws Throwable {
     CommonTree tree = runTest("1.2.bar()");
     
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -166,7 +165,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
   
   @Test
-  public void testChainedMethodCall() throws RecognitionException {
+  public void testChainedMethodCall() throws Throwable {
     CommonTree tree = runTest("Foo.bar().baz()");
 
     assertNull(tree.getText());
@@ -199,7 +198,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testChainedMethodCallWithArgs() throws RecognitionException {
+  public void testChainedMethodCallWithArgs() throws Throwable {
     CommonTree tree = runTest("Foo.bar(1,2).baz(3)");
 
     assertNull(tree.getText());
@@ -252,7 +251,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testChainedMethodCallWithBlock() throws RecognitionException {
+  public void testChainedMethodCallWithBlock() throws Throwable {
     CommonTree tree = runTest("Foo.bar() { bee }.baz()");
 
     assertNull(tree.getText());
@@ -293,7 +292,7 @@ public class FuncTestParserMethodCalls extends ParserFuncTestBase {
   }
   
   @Test
-  public void testChainedMethodCallMoreThanThreeChain() throws RecognitionException {
+  public void testChainedMethodCallMoreThanThreeChain() throws Throwable {
     CommonTree tree = runTest("Foo.bar().baz().bee().quux()");
 
     assertNull(tree.getText());

@@ -1,26 +1,25 @@
 package com.roscopeco.deelang.parser;
 
-import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 public class FuncTestParserBasicErrors extends ParserFuncTestBase {
-  @Test(expected = RecognitionException.class)
-  public void testChokesOnUnfinishedAdd() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testChokesOnUnfinishedAdd() throws Throwable {
     runTest("1+");
   }
-  @Test(expected = RecognitionException.class)
-  public void testChokesOnUnfinishedMul() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testChokesOnUnfinishedMul() throws Throwable {
     runTest("1*");
   }
-  @Test(expected = RecognitionException.class)
-  public void testChokesOnUnfinishedDiv() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testChokesOnUnfinishedDiv() throws Throwable {
     runTest("1/");
   }
-  @Test(expected = RecognitionException.class)
-  public void testChokesOnUnfinishedSub() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testChokesOnUnfinishedSub() throws Throwable {
     runTest("1-");
   }
-  @Test(expected = RecognitionException.class)
+  @Test(expected = ParserError.class)
   public void testChokesOnUnfinishedMultiSum() throws Throwable {
     runTest("1-2/");
   }

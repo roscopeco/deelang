@@ -1,6 +1,5 @@
 package com.roscopeco.deelang.parser;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class FuncTestParserMemberAccess extends ParserFuncTestBase {
   @Test
-  public void testBasicMemberAccess() throws RecognitionException {
+  public void testBasicMemberAccess() throws Throwable {
     Tree tree = runTest("Quux.qix");
     
     assertThat(tree.getText(), is("FIELD_ACCESS"));
@@ -28,7 +27,7 @@ public class FuncTestParserMemberAccess extends ParserFuncTestBase {
   }
 
   @Test
-  public void testChainedMemberAccess() throws RecognitionException {
+  public void testChainedMemberAccess() throws Throwable {
     Tree tree = runTest("Quux.qix.baz");
     
     assertNull(tree.getText());

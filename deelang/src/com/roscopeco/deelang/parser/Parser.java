@@ -38,15 +38,30 @@ public class Parser {
   private static final Parser staticParser = new Parser();
   
   /* Simple facade to parse a string... */
-  public static CommonTree staticParse(String code) throws RecognitionException {
+  public static CommonTree staticParse(String code) throws ParserError {
     return staticParser.parse(code);
   }
   
   public Parser() { };
   
-  public CommonTree parse(String code) throws RecognitionException {
+  // TODO *much* better error handling!
+  public CommonTree parse(String code) throws ParserError {
     DeeLangLexer lexer = new DeeLangLexer(new ANTLRStringStream(code));
     DeeLangParser parser = new DeeLangParser(new CommonTokenStream(lexer));
-    return (CommonTree)parser.script().getTree();
+    
+    CommonTree tree;
+    try {
+      tree = (CommonTree)parser.script().getTree();
+    } catch (RecognitionException e) {
+      throw new ParserError(e);
+    }
+    
+    if (lexer.log.hasErrors()) {
+      com.roscopeco.deelang.parser.DeeLangLexer.Log.Error error = lexer.log.getError(0);
+      throw new SyntaxError(error.pos, error.error);
+    }
+    
+    return tree;
+    
   }
 }

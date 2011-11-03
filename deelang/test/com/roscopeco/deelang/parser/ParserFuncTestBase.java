@@ -1,6 +1,5 @@
 package com.roscopeco.deelang.parser;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 
 import com.roscopeco.deelang.parser.DeeLangLexer;
@@ -11,7 +10,7 @@ public class ParserFuncTestBase {
   protected DeeLangLexer mLexer;
   protected DeeLangParser mParser;
 
-  protected CommonTree runTest(String testCode) throws RecognitionException {
+  protected CommonTree runTest(String testCode) throws ParserError {
     return Parser.staticParse(testCode);
   }
 }

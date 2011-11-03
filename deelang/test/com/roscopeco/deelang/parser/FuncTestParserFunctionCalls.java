@@ -3,7 +3,6 @@ package com.roscopeco.deelang.parser;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ import com.roscopeco.deelang.parser.DeeLangParser;
  */
 public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   @Test
-  public void testBasicFuncCallNoArgs() throws RecognitionException {
+  public void testBasicFuncCallNoArgs() throws Throwable {
     CommonTree tree = runTest("foo()");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -34,7 +33,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicFuncCallOneArgWithParens() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithParens() throws Throwable {
     CommonTree tree = runTest("foo(1)");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -59,7 +58,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 /*
   @Test
-  public void testBasicFuncCallOneArgWithoutParens() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithoutParens() throws Throwable {
     CommonTree tree = runTest("foo 1");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -76,7 +75,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 */
   @Test
-  public void testBasicFuncCallTwoArgsWithParens() throws RecognitionException {
+  public void testBasicFuncCallTwoArgsWithParens() throws Throwable {
     CommonTree tree = runTest("foo(1, 2)");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -105,7 +104,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 /*  
   @Test
-  public void testBasicFuncCallTwoArgsWithoutParens() throws RecognitionException {
+  public void testBasicFuncCallTwoArgsWithoutParens() throws Throwable {
     CommonTree tree = runTest("foo 1, 2");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -125,19 +124,19 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(0).getChild(1).getChildCount(), is(0));
   }
 */
-  @Test(expected = RecognitionException.class)
-  public void testBasicFuncCallTwoArgsNoCommaWithParensChokes() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testBasicFuncCallTwoArgsNoCommaWithParensChokes() throws Throwable {
     runTest("foo(1 2)");
   }
 /*
   @Test(expected = RecognitionException.class)
-  public void testBasicFuncCallTwoArgsNoCommaWithoutParensChokes() throws RecognitionException {
+  public void testBasicFuncCallTwoArgsNoCommaWithoutParensChokes() throws Throwable {
     runTest("foo 1 2");
   }
 */
 /*
   @Test
-  public void testBasicFuncCallTwoArgsNoCommaWithoutParensExplicitSeparatorDoesntChoke() throws RecognitionException {
+  public void testBasicFuncCallTwoArgsNoCommaWithoutParensExplicitSeparatorDoesntChoke() throws Throwable {
     CommonTree tree = runTest("foo 1; 2");
 
     assertNull(tree.getText());
@@ -162,7 +161,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 */
   @Test
-  public void testNestedFuncCallOneArgWithAllParens() throws RecognitionException {
+  public void testNestedFuncCallOneArgWithAllParens() throws Throwable {
     CommonTree tree = runTest("foo(bar(1))");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -203,7 +202,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 /*
   @Test
-  public void testNestedFuncCallOneArgWithoutOuterParens() throws RecognitionException {
+  public void testNestedFuncCallOneArgWithoutOuterParens() throws Throwable {
     CommonTree tree = runTest("foo bar(1)");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -228,7 +227,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testNestedFuncCallOneArgWithoutInnerParens() throws RecognitionException {
+  public void testNestedFuncCallOneArgWithoutInnerParens() throws Throwable {
     CommonTree tree = runTest("foo(bar 1)");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -253,7 +252,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
   
   @Test
-  public void testNestedFuncCallOneArgWithoutAnyParens() throws RecognitionException {
+  public void testNestedFuncCallOneArgWithoutAnyParens() throws Throwable {
     CommonTree tree = runTest("foo bar 1");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -278,7 +277,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
   
   @Test
-  public void testNestedFuncCallInnerTwoArgsWithoutOuterParens() throws RecognitionException {
+  public void testNestedFuncCallInnerTwoArgsWithoutOuterParens() throws Throwable {
     CommonTree tree = runTest("foo bar(1, 2)");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -307,7 +306,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testNestedFuncCallInnerTwoArgsWithoutInnerParens() throws RecognitionException {
+  public void testNestedFuncCallInnerTwoArgsWithoutInnerParens() throws Throwable {
     CommonTree tree = runTest("foo(bar 1, 2)");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -336,7 +335,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testNestedFuncCallInnerTwoArgsWithoutAnyParens() throws RecognitionException {
+  public void testNestedFuncCallInnerTwoArgsWithoutAnyParens() throws Throwable {
     CommonTree tree = runTest("foo bar 1, 2");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -365,7 +364,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testDoubleNestedFuncCallInnerTwoArgsWithoutAnyParens() throws RecognitionException {
+  public void testDoubleNestedFuncCallInnerTwoArgsWithoutAnyParens() throws Throwable {
     CommonTree tree = runTest("foo bar 1, baz");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -398,7 +397,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArgWithoutAnyParens() throws RecognitionException {
+  public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArgWithoutAnyParens() throws Throwable {
     CommonTree tree = runTest("foo bar 1, baz 2");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -435,7 +434,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 */
   @Test
-  public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArg() throws RecognitionException {
+  public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArg() throws Throwable {
     CommonTree tree = runTest("foo(bar(1, baz(2)))");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -497,7 +496,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   
   /* ******** BLOCKS ******* */
   @Test
-  public void testBasicFuncCallNoArgsWithEmptyBlock() throws RecognitionException {
+  public void testBasicFuncCallNoArgsWithEmptyBlock() throws Throwable {
     CommonTree tree = runTest("foo() { }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -518,7 +517,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicFuncCallNoArgsWithEmptyBlockNewline() throws RecognitionException {
+  public void testBasicFuncCallNoArgsWithEmptyBlockNewline() throws Throwable {
     CommonTree tree = runTest("foo() {\n}");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -539,7 +538,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicFuncCallOneArgWithEmptyBlock() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithEmptyBlock() throws Throwable {
     CommonTree tree = runTest("foo(1) { }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -568,7 +567,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicFuncCallOneArgWithSingleInstructionNoNewline() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithSingleInstructionNoNewline() throws Throwable {
     CommonTree tree = runTest("foo(1) { bee }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -601,7 +600,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicFuncCallOneArgWithSingleInstructionWithNewlines() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithSingleInstructionWithNewlines() throws Throwable {
     CommonTree tree = runTest("foo(1) { bee\n }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -664,7 +663,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicFuncCallOneArgWithTwoInstructionsNewlines() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithTwoInstructionsNewlines() throws Throwable {
     CommonTree tree = runTest("foo(1) { \nbee\nbar\n }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -701,7 +700,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicFuncCallOneArgWithTwoInstructionsSeparator() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithTwoInstructionsSeparator() throws Throwable {
     CommonTree tree = runTest("foo(1) { \nbee; bar\n }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));
@@ -738,7 +737,7 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicFuncCallOneArgWithMoreThanTwoInstructionsMixedNewlineAndSeparator() throws RecognitionException {
+  public void testBasicFuncCallOneArgWithMoreThanTwoInstructionsMixedNewlineAndSeparator() throws Throwable {
     CommonTree tree = runTest("foo(1) { \nbee; bar\nbaz\nquux;qix }");
 
     assertThat(tree.getText(), is("METHOD_CALL"));

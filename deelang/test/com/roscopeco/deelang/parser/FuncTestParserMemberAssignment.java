@@ -3,7 +3,6 @@ package com.roscopeco.deelang.parser;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ import com.roscopeco.deelang.parser.DeeLangParser;
 
 public class FuncTestParserMemberAssignment extends ParserFuncTestBase {
   @Test
-  public void testBasicMemberAssignment() throws RecognitionException {
+  public void testBasicMemberAssignment() throws Throwable {
     CommonTree tree = runTest("Foo.a=b");
 
     assertNull(tree.getText());

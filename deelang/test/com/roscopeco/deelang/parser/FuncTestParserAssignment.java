@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertNull;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ import com.roscopeco.deelang.parser.DeeLangParser;
  */
 public class FuncTestParserAssignment extends ParserFuncTestBase {
   @Test
-  public void testBasicAssignment() throws RecognitionException {
+  public void testBasicAssignment() throws Throwable {
     CommonTree tree = runTest("a=b");
 
     assertThat(tree.getText(), is("ASSIGN_LOCAL"));
@@ -43,7 +42,7 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
   }
 
   @Test
-  public void testAssignmentToAssign() throws RecognitionException {
+  public void testAssignmentToAssign() throws Throwable {
     CommonTree tree = runTest("a=b=c");
 
     assertThat(tree.getText(), is("ASSIGN_LOCAL"));
@@ -68,7 +67,7 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
   }
 
   @Test
-  public void testAssignmentInExpressionWithLiteralFirst() throws RecognitionException {
+  public void testAssignmentInExpressionWithLiteralFirst() throws Throwable {
     CommonTree tree = runTest("1+(b=2)");
     
     assertThat(tree.getText(), is("+"));
@@ -93,11 +92,11 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
   }
 
   @Test
-  public void testAssignmentInExpressionWithIdentifierFirst() throws RecognitionException {
+  public void testAssignmentInExpressionWithIdentifierFirst() throws Throwable {
     CommonTree tree;
     try {
       tree = runTest("a+(b=2)");
-    } catch (RecognitionException t) {
+    } catch (ParserError t) {
       System.out.println(t);
       throw(t);
     }
@@ -123,13 +122,13 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(1).getChildCount(), is(0));
   }
 
-  @Test(expected = RecognitionException.class)
-  public void testAssignmentInExpressionWithAllIdentifiersNoParensChokes() throws RecognitionException {
+  @Test(expected = ParserError.class)
+  public void testAssignmentInExpressionWithAllIdentifiersNoParensChokes() throws Throwable {
     runTest("a+b=c");
   }
   
   @Test
-  public void testAssignmentInExpressionWithAllIdentifiersAndParens() throws RecognitionException {
+  public void testAssignmentInExpressionWithAllIdentifiersAndParens() throws Throwable {
     CommonTree tree = runTest("1+(b=c)");
     
     assertThat(tree.getText(), is("+"));
@@ -153,13 +152,13 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(1).getChildCount(), is(0));
   }
   
-  @Test(expected=RecognitionException.class)
-  public void testAssignToExprChokes() throws RecognitionException {
+  @Test(expected=ParserError.class)
+  public void testAssignToExprChokes() throws Throwable {
     runTest("(a+b)=c");
   }
   
   @Test
-  public void testAssignToExprResultAndChained() throws RecognitionException {
+  public void testAssignToExprResultAndChained() throws Throwable {
     CommonTree tree = runTest("(a+b).c=d");
 
     assertNull(tree.getText());
@@ -192,7 +191,7 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
   }
   
   @Test
-  public void testChainedLValueAllFieldsAssignment() throws RecognitionException {
+  public void testChainedLValueAllFieldsAssignment() throws Throwable {
     CommonTree tree = runTest("foo.bar.baz = 2");
 
     assertNull(tree.getText());
@@ -225,14 +224,14 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
   }
 
   @Test
-  public void testChainedLValueWithMethodsAssignment() throws RecognitionException {
+  public void testChainedLValueWithMethodsAssignment() throws Throwable {
     runTest("foo.bar().baz = 2");
     
     // TODO implement this
   }
 
   @Test
-  public void testChainedLValueFieldsMethodsAssignmentMoreThanThreeChains() throws RecognitionException {
+  public void testChainedLValueFieldsMethodsAssignmentMoreThanThreeChains() throws Throwable {
     CommonTree tree = runTest("Foo.bar.baz.quux = 2");
 
     assertNull(tree.getText());
@@ -276,8 +275,8 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
     assertThat(tree.getChild(2).getChild(1).getChildCount(), is(0));
   }
 
-  @Test(expected=RecognitionException.class)
-  public void testChainedAssignWithMethodAtEndChokes() throws RecognitionException {
+  @Test(expected=ParserError.class)
+  public void testChainedAssignWithMethodAtEndChokes() throws Throwable {
     runTest("foo.bar().baz() = 2");
   }
 }

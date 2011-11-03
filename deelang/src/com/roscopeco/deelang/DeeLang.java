@@ -17,13 +17,13 @@
 
 package com.roscopeco.deelang;
 
-import org.antlr.runtime.RecognitionException;
-
 import com.roscopeco.deelang.UnsupportedOperationException;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.ParseError;
 import com.roscopeco.deelang.parser.Parser;
+import com.roscopeco.deelang.parser.ParserError;
 
 /**
  * Static easy-entry points into the Dee API. 
@@ -42,8 +42,12 @@ public final class DeeLang {
   }
   
   public static CompiledScript compileScript(String code) 
-      throws RecognitionException, CompilerError {
-    return Compiler.staticCompile(Parser.staticParse(code));
+      throws CompilerError {
+    try {
+      return Compiler.staticCompile(Parser.staticParse(code));
+    } catch (ParserError e) {
+      throw new ParseError(e);
+    }
   }
   
   public static void runScript(String code) throws UnsupportedOperationException {

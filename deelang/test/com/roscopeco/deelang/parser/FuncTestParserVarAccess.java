@@ -1,6 +1,5 @@
 package com.roscopeco.deelang.parser;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class FuncTestParserVarAccess extends ParserFuncTestBase {
   @Test
-  public void testBasicVarAccess() throws RecognitionException {
+  public void testBasicVarAccess() throws Throwable {
     Tree tree = runTest("qix");
     
     assertThat(tree.getText(), is("qix"));

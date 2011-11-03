@@ -26,6 +26,7 @@ import java.util.Set;
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.parser.Parser;
+import com.roscopeco.deelang.parser.ParserError;
 
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
@@ -70,7 +71,7 @@ public class Compiler {
       throws CompilerError {
     try {
       return staticCompile(Parser.staticParse(code));
-    } catch (RecognitionException e) {
+    } catch (ParserError e) {
       throw new ParseError(e);
     }
   }
@@ -399,7 +400,8 @@ public class Compiler {
     @Override
     protected void visitHexLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
       String value = ast.getText();
-      value = value.substring(2, value.length());
+      // Lexer handles this now...
+      //value = value.substring(2, value.length());
       int index = getOrAllocConstPoolIndex(Integer.parseInt(value, 16), CompiledScript.CONST_POOL_INT);
       
       try {
@@ -717,7 +719,7 @@ public class Compiler {
   public CompiledScript compile(String code) throws CompilerError {
     try {
       return compile(Parser.staticParse(code));
-    } catch (RecognitionException e) {
+    } catch (ParserError e) {
       throw new ParseError(e);
     }
   }

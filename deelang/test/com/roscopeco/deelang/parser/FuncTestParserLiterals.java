@@ -3,7 +3,6 @@ package com.roscopeco.deelang.parser;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
 
   /* ********** BASIC - VARIOUS LITERAL TYPES ************* */
   @Test
-  public void testUnderstandDecimalLiterals() throws RecognitionException {
+  public void testUnderstandDecimalLiterals() throws Throwable {
     CommonTree tree = runTest("7");
     
     assertThat(tree.getText(), is("7"));
@@ -22,7 +21,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
   
   @Test
-  public void testUnderstandOctalLiterals() throws RecognitionException {
+  public void testUnderstandOctalLiterals() throws Throwable {
     CommonTree tree = runTest("007");
     
     assertThat(tree.getText(), is("007"));
@@ -31,16 +30,16 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
   
   @Test
-  public void testUnderstandHexLiterals() throws RecognitionException {
+  public void testUnderstandHexLiterals() throws Throwable {
     CommonTree tree = runTest("0x7");
     
-    assertThat(tree.getText(), is("0x7"));
+    assertThat(tree.getText(), is("7"));
     assertThat(tree.getType(), is(DeeLangParser.HEX_LITERAL));
     assertThat(tree.getChildCount(), is(0));
   }
   
   @Test
-  public void testUnderstandFloatLiterals() throws RecognitionException {
+  public void testUnderstandFloatLiterals() throws Throwable {
     CommonTree tree = runTest("7.2");
     
     assertThat(tree.getText(), is("7.2"));
@@ -49,7 +48,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
   
   @Test
-  public void testUnderstandCharLiterals() throws RecognitionException {
+  public void testUnderstandCharLiterals() throws Throwable {
     CommonTree tree = runTest("'f'");
     
     assertThat(tree.getText(), is("'f'"));
@@ -58,7 +57,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
 
   @Test
-  public void testUnderstandStringLiterals() throws RecognitionException {
+  public void testUnderstandStringLiterals() throws Throwable {
     CommonTree tree = runTest("\"foo\"");
     
     assertThat(tree.getText(), is("\"foo\""));
@@ -67,7 +66,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
 
   @Test
-  public void testDontChokeOnCharLiteralEscapes() throws RecognitionException {
+  public void testDontChokeOnCharLiteralEscapes() throws Throwable {
     CommonTree tree = runTest("'\\''");
     
     assertThat(tree.getText(), is("'\\''"));
@@ -76,7 +75,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
 
   @Test
-  public void testDontChokeOnStringLiteralEscapes() throws RecognitionException {
+  public void testDontChokeOnStringLiteralEscapes() throws Throwable {
     CommonTree tree = runTest("\"foo\\\" \"");
     
     assertThat(tree.getText(), is("\"foo\\\" \""));
@@ -86,7 +85,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
 
   /*
   @Test
-  public void testUnderstandRegexpLiterals() throws RecognitionException {
+  public void testUnderstandRegexpLiterals() throws Throwable {
     CommonTree tree = runTest("/foo/");
     
     assertThat(tree.getText(), is("/foo/"));
@@ -95,7 +94,7 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
   }
 
   @Test
-  public void testDontChokeOnRegexpLiteralEscapes() throws RecognitionException {
+  public void testDontChokeOnRegexpLiteralEscapes() throws Throwable {
     CommonTree tree = runTest("/foo\\/ /");
     
     assertThat(tree.getText(), is("/foo\\/ /"));

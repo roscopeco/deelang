@@ -3,14 +3,13 @@ package com.roscopeco.deelang.parser;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 import org.junit.Test;
 
 public class FuncTestParserCombinedFieldMethodChaining extends
     ParserFuncTestBase {
   @Test
-  public void testMemberAccessAfterMethod() throws RecognitionException {
+  public void testMemberAccessAfterMethod() throws Throwable {
     Tree tree = runTest("Quux.qix().baz");
     
     assertNull(tree.getText());
@@ -43,7 +42,7 @@ public class FuncTestParserCombinedFieldMethodChaining extends
   }
 
   @Test
-  public void testMethodAfterMemberAccess() throws RecognitionException {
+  public void testMethodAfterMemberAccess() throws Throwable {
     Tree tree = runTest("Quux.baz.qix()");
     
     assertNull(tree.getText());
@@ -76,7 +75,7 @@ public class FuncTestParserCombinedFieldMethodChaining extends
   }
 
   @Test
-  public void testMethodAfterMemberAccessAfterMethod() throws RecognitionException {
+  public void testMethodAfterMemberAccessAfterMethod() throws Throwable {
     Tree tree = runTest("Quux.qix().baz.beez()");
     
     assertNull(tree.getText());

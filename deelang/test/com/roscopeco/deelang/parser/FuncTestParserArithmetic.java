@@ -3,7 +3,6 @@ package com.roscopeco.deelang.parser;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ import com.roscopeco.deelang.parser.DeeLangParser;
 public class FuncTestParserArithmetic extends ParserFuncTestBase {
   /* ********** BASIC - ARITHMETIC ETC ************* */
   @Test
-  public void testBasicAddExpr() throws RecognitionException {
+  public void testBasicAddExpr() throws Throwable {
     CommonTree tree = runTest("1+2");
 
     assertThat(tree.getText(), is("+"));
@@ -29,7 +28,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicSubExpr() throws RecognitionException {
+  public void testBasicSubExpr() throws Throwable {
     CommonTree tree = runTest("1-2");
 
     assertThat(tree.getText(), is("-"));
@@ -46,7 +45,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicMulExpr() throws RecognitionException {
+  public void testBasicMulExpr() throws Throwable {
     CommonTree tree = runTest("1*2");
 
     assertThat(tree.getText(), is("*"));
@@ -63,7 +62,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicDivExpr() throws RecognitionException {
+  public void testBasicDivExpr() throws Throwable {
     CommonTree tree = runTest("1/2");
 
     assertThat(tree.getText(), is("/"));
@@ -80,7 +79,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicPowExpr() throws RecognitionException {
+  public void testBasicPowExpr() throws Throwable {
     CommonTree tree = runTest("1^2");
 
     assertThat(tree.getText(), is("^"));
@@ -97,7 +96,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicModExpr() throws RecognitionException {
+  public void testBasicModExpr() throws Throwable {
     CommonTree tree = runTest("1%2");
 
     assertThat(tree.getText(), is("%"));
@@ -116,7 +115,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   
   /* ********** BASIC - ARITHMETIC OP ASSOC ETC ************* */
   public void genericBinOpLeftAssocTest(String expr, String op, int tokenType) 
-      throws RecognitionException {
+      throws Throwable {
     CommonTree tree = runTest(expr);  // should be equiv to ((1 op 2) op 3)
 
     assertThat(tree.getText(), is(op));
@@ -141,38 +140,38 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicAddLeftAssocExpr() throws RecognitionException {
+  public void testBasicAddLeftAssocExpr() throws Throwable {
     genericBinOpLeftAssocTest("1+2+3", "+", DeeLangParser.ADD);
   }
 
   @Test
-  public void testBasicSubLeftAssocExpr() throws RecognitionException {
+  public void testBasicSubLeftAssocExpr() throws Throwable {
     genericBinOpLeftAssocTest("1-2-3", "-", DeeLangParser.SUB);
   }
 
   @Test
-  public void testBasicDivLeftAssocExpr() throws RecognitionException {
+  public void testBasicDivLeftAssocExpr() throws Throwable {
     genericBinOpLeftAssocTest("1/2/3", "/", DeeLangParser.DIV);
   }
 
   @Test
-  public void testBasicMulLeftAssocExpr() throws RecognitionException {
+  public void testBasicMulLeftAssocExpr() throws Throwable {
     genericBinOpLeftAssocTest("1*2*3", "*", DeeLangParser.MUL);
   }
 
   @Test
-  public void testBasicPowLeftAssocExpr() throws RecognitionException {
+  public void testBasicPowLeftAssocExpr() throws Throwable {
     genericBinOpLeftAssocTest("1^2^3", "^", DeeLangParser.POW);
   }
 
   @Test
-  public void testBasicModLeftAssocExpr() throws RecognitionException {
+  public void testBasicModLeftAssocExpr() throws Throwable {
     genericBinOpLeftAssocTest("1%2%3", "%", DeeLangParser.MOD);
   }
 
   /* ********** BASIC - ARITHMETIC OP PRECEDENCE ETC ************* */
   @Test
-  public void testBasicMulAddPrecedenceExpr() throws RecognitionException {
+  public void testBasicMulAddPrecedenceExpr() throws Throwable {
     CommonTree tree = runTest("1*2+3");  // should be equiv to ((1*2) + 3)
 
     assertThat(tree.getText(), is("+"));
@@ -197,7 +196,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicMulAddReversedPrecedenceExpr() throws RecognitionException {
+  public void testBasicMulAddReversedPrecedenceExpr() throws Throwable {
     CommonTree tree = runTest("1+2*3");  // should be equiv to (1 + (2 * 3))
 
     assertThat(tree.getText(), is("+"));
@@ -222,7 +221,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicDivSubPrecedenceExpr() throws RecognitionException {
+  public void testBasicDivSubPrecedenceExpr() throws Throwable {
     CommonTree tree = runTest("1/2-3");  // should be equiv to ((1/2) - 3)
 
     assertThat(tree.getText(), is("-"));
@@ -247,7 +246,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicDivSubReversedPrecedenceExpr() throws RecognitionException {
+  public void testBasicDivSubReversedPrecedenceExpr() throws Throwable {
     CommonTree tree = runTest("1-2/3");  // should be equiv to (1 - (2 / 3))
 
     assertThat(tree.getText(), is("-"));
@@ -272,7 +271,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
 
   @Test
-  public void testBasicPowModAddPrecedenceExpr() throws RecognitionException {
+  public void testBasicPowModAddPrecedenceExpr() throws Throwable {
     CommonTree tree = runTest("1^2%3+4");  // should be equiv to (((1^2) % 3) + 4)
 
     assertThat(tree.getText(), is("+"));
@@ -305,7 +304,7 @@ public class FuncTestParserArithmetic extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicMulAddExplicitPrecedenceExpr() throws RecognitionException {
+  public void testBasicMulAddExplicitPrecedenceExpr() throws Throwable {
     CommonTree tree = runTest("1*(2+3)");  // should be equiv to (1 * (2 + 3))
 
     assertThat(tree.getText(), is("*"));
