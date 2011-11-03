@@ -51,7 +51,7 @@ public class DeeLangInteger extends DeeLangObject {
   public void times() {
     if (hasBlock()) {
       int t = integer;
-      for (int i = 0; i < t; t++) {
+      for (int i = 0; i < t; i++) {
         callBlock();
       }
     }
