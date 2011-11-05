@@ -1,27 +1,117 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="doc">
-  <target name="doc">
-    <javadoc access="protected" 
-             author="true" 
-    	       destdir="doc" 
-    	       doctitle="DeeLang API" 
-    	       nodeprecated="false" 
-    	       nodeprecatedlist="false" 
-    	       noindex="false" 
-    	       nonavbar="false" 
-    	       notree="false" 
-    	       overview="README.html" 
-    	       source="1.5" 
-    	       sourcepath="src" 
-    	       splitindex="true" 
-    	       stylesheetfile="doc_src/doc.css" 
-    	       use="true" 
-    	       version="true"/>
-    <copy file="doc_src/javadoc.jpg" todir="doc"/>
-    <copy file="LICENSE.html" todir="doc"/>
-    </target>
+<project name="deelang" default="build">
+	<taskdef name="antlr3" classname="org.apache.tools.ant.antlr.ANTLR3">
+		<classpath>
+			<pathelement path="lib/antlr3-ant.jar:lib/antlr-3.4-complete.jar"/>
+		</classpath>
+	</taskdef>
+
+	<!-- cleanup -->
+	<target name="_clean-jar">
+		<delete dir="bin/build"/>
+		<delete file="bin/*.jar"/>
+	</target>
+	<target name="_clean-classes">
+		<delete dir="bin"/>
+	</target>
+	<target name="_clean-doc">
+		<delete dir="doc"/>
+	</target>
+	<target name="_clean-parser">
+		<delete>
+			<fileset dir="gen_src/com" includes="**/*.java, **/*.tokens"/>
+		</delete>
+	</target>
+
+	<!-- Main code -->
+	<target name="_make-gensrc">
+		<mkdir dir="gen_src/com/roscopeco/deelang/parser"/>
+	</target>
+	<target name="_make-bindirs">
+		<mkdir dir="bin/main"/>
+		<mkdir dir="bin/test"/>
+		<mkdir dir="bin/build"/>
+	</target>
+
+	<target name="generate-parser" description="Generate ANTLR3 parser" depends="_make-gensrc">
+		<antlr3 target="src/com/roscopeco/deelang/parser/DeeLang.g" 
+			outputdirectory="gen_src/com/roscopeco/deelang/parser"/>
+	</target>
+
+	<target name="compile-main" description="Compile the main code" depends="_make-bindirs, generate-parser">
+		<javac destdir="bin/main" includeantruntime="false">
+			<src path="src"/>
+			<src path="gen_src"/>
+			<classpath path="lib/antlr-runtime-3.4.jar"/>
+		</javac>
+	</target>
+
+	<!-- Test code -->
+	<target name="compile-tests" description="Compile the test code" depends="_make-bindirs, compile-main">
+		<javac destdir="bin/test" includeantruntime="false">
+			<src path="test"/>
+			<classpath path=":lib/junit4-4.8.2.jar:lib/antlr-runtime-3.4.jar:bin/main"/>
+		</javac>
+	</target>
 	
-	  <target name="jar">
-	  	<jar destfile="deelang.jar" basedir="bin/main" includes="**/*.class"/>
-	  </target>
+	<!-- Main targets -->
+	<target name="clean" description="Remove compiled classes" depends="_clean-jar, _clean-classes"/>
+	<target name="clobber" description="Remove all generated resources" depends="clean, _clean-doc, _clean-parser"/>
+	<target name="compile" description="Compile all code" depends="compile-main, compile-tests"/>
+	<target name="jar" description="Create Deelang Jars" depends="_clean-jar, _make-bindirs, compile-main">
+		<!-- Build standard jar -->
+		<copy todir="bin/build">
+			<fileset dir="bin/main">
+				<include name="**/*.class"/>
+			</fileset>
+		</copy>
+		<copy todir="bin/build">
+			<fileset dir=".">
+				<include name="LICENSE.html"/>
+			</fileset>
+		</copy>
+		<jar destfile="bin/deelang.jar" basedir="bin/build" includes="**/*"/>
+
+		<!-- Add ANTLR runtime and license and build complete jar -->
+		<unjar src="lib/antlr-runtime-3.4.jar" dest="bin/build"/>
+		<delete dir="bin/build/org/antlr/runtime/debug"/>
+		<delete dir="bin/build/META-INF"/>
+		<copy todir="bin/build">
+			<fileset dir=".">
+				<include name="LICENSE.antlr"/>
+			</fileset>
+		</copy>
+		<jar destfile="bin/deelang-complete.jar" basedir="bin/build" includes="**/*"/>
+	</target>
+
+	<target name="run-tests" description="Run JUnit4 tests" depends="compile-tests">
+		<junit>
+			<classpath path="lib/junit4-4.8.2.jar:lib/antlr-runtime-3.4.jar:bin/main:bin/test"/>
+			<test name="com.roscopeco.deelang.AllTests"/>
+		</junit>
+	</target>
+
+	<target name="build" description="Perform a full, clean, tested build" depends="clean, compile, run-tests, jar"/>	
+		
+	<!-- Generate documentation -->
+	<target name="doc" description="Generate Javadoc documentation">
+		<javadoc access="protected" 
+		     author="true" 
+		       destdir="doc" 
+		       doctitle="DeeLang API" 
+		       nodeprecated="false" 
+		       nodeprecatedlist="false" 
+		       noindex="false" 
+		       nonavbar="false" 
+		       notree="false" 
+		       overview="README.html" 
+		       source="1.5" 
+		       sourcepath="src" 
+		       splitindex="true" 
+		       stylesheetfile="doc_src/doc.css" 
+		       use="true" 
+		       version="true"/>
+		<copy file="doc_src/javadoc.jpg" todir="doc"/>
+		<copy file="LICENSE.html" todir="doc"/>
+	</target>
 </project>
