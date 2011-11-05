@@ -197,35 +197,29 @@ protected boolean checkIntLiteralRange(String text, int pos, int radix,
 }
 
 start_rule
-  :
-  script
+  :  script
   ;
 
 script
-  :
-  statement+
+  : statement+
   | EOF!
   ;
 
 statement
-  :
-  expr terminator!
+  : expr terminator!
   ;
 
 block_statement
-  :
-  expr
+  : expr
   ;
 
 expr
-  :
-  assign_expr
+  : assign_expr
   | math_expr
   ;
 
 assign_expr
-  :
-  class_identifier chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN expr
+  : class_identifier chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN expr
     -> class_identifier chained_call_or_field_expr*
       ^(ASSIGN_FIELD $id expr)
   | ci=class_identifier ASSIGN expr
@@ -238,137 +232,90 @@ assign_expr
     -> $e1 chained_call_or_field_expr*
       ^(ASSIGN_FIELD $id $e2)
   | id=IDENTIFIER ASSIGN expr
-    ->
-      ^(ASSIGN_LOCAL IDENTIFIER expr)
+    -> ^(ASSIGN_LOCAL IDENTIFIER expr)
   ;
 
 math_expr
-  :
-  mult_expr
-  (
-    (
-      ADD^
-      | SUB^
-    )
-    mult_expr
-  )*
+  : mult_expr ((ADD^|SUB^) mult_expr)*
   ;
 
 mult_expr
-  :
-  pow_expr
-  (
-    (
-      MUL^
-      | DIV^
-      | MOD^
-    )
-    pow_expr
-  )*
+  : pow_expr ((MUL^| DIV^| MOD^) pow_expr)*
   ;
 
 pow_expr
-  :
-  unary_expr ( (POW^) unary_expr)*
+  : unary_expr ((POW^) unary_expr)*
   ;
 
 unary_expr
-  :
-  NOT? atom
+  : NOT? atom
   ;
 
 meth_call
 @init {
 boolean explicitReceiver = false;
 }
-  :
-  (IDENTIFIER DOT 
-                 {
-                  explicitReceiver = true;
-                 })? func_call_expr
+  : (IDENTIFIER DOT {explicitReceiver = true;})? func_call_expr
     -> {explicitReceiver}?
       ^(METHOD_CALL IDENTIFIER func_call_expr)
-    ->
-      ^(METHOD_CALL SELF func_call_expr)
+    -> ^(METHOD_CALL SELF func_call_expr)
   | literal DOT func_call_expr
-    ->
-      ^(METHOD_CALL literal func_call_expr)
+    -> ^(METHOD_CALL literal func_call_expr)
   ;
 
 fragment
 chained_call_or_field_expr
-  :
-  chained_field_expr
+  : chained_field_expr
   | chained_meth_call_expr
   ;
 
 fragment
 chained_meth_call_expr
-  :
-  DOT func_call_expr
-    ->
-      ^(METHOD_CALL CHAIN func_call_expr)
+  : DOT func_call_expr -> ^(METHOD_CALL CHAIN func_call_expr)
   ;
 
 fragment
 chained_field_expr
-  :
-  DOT IDENTIFIER
-    ->
-      ^(FIELD_ACCESS CHAIN IDENTIFIER)
+  : DOT IDENTIFIER -> ^(FIELD_ACCESS CHAIN IDENTIFIER)
   ;
 
 fragment
 func_call_expr
-  :
-  IDENTIFIER^ argument_list block? orblock?
+  : IDENTIFIER^ argument_list block? orblock?
   ;
 
 fragment
 block
-  :
-  LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? TERMINATOR* RCURLY
-    ->
-      ^(BLOCK block_statement*)
+  : LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? TERMINATOR* RCURLY
+    -> ^(BLOCK block_statement*)
   ;
 
 fragment
 orblock
-  :
-  OR LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? TERMINATOR* RCURLY
-    ->
-      ^(ORBLOCK block_statement*)
+  : OR LCURLY TERMINATOR* (block_statement (TERMINATOR block_statement)*)? TERMINATOR* RCURLY
+    -> ^(ORBLOCK block_statement*)
   ;
 
 fragment
 argument_list
-  :
-  LPAREN (expr (COMMA expr)*)? RPAREN
-    ->
-      ^(ARGS expr expr*)?
+  : LPAREN (expr (COMMA expr)*)? RPAREN -> ^(ARGS expr expr*)?
   ;
 
 class_identifier
-  :
-  rec=IDENTIFIER DOT id=IDENTIFIER
-    ->
-      ^(FIELD_ACCESS $rec $id)
+  : rec=IDENTIFIER DOT id=IDENTIFIER -> ^(FIELD_ACCESS $rec $id)
   ;
 
 literal
-  :
-  DECIMAL_LITERAL
+  : DECIMAL_LITERAL
   | OCTAL_LITERAL
   | HEX_LITERAL
   | FLOATING_POINT_LITERAL
-  //  |     REGEXP_LITERAL
   | STRING_LITERAL
   | CHARACTER_LITERAL
   ;
 
 atom
-  :
-  literal
+  : literal
   | IDENTIFIER
   | class_identifier (chained_call_or_field_expr)*
   | meth_call (chained_call_or_field_expr)*
@@ -376,141 +323,94 @@ atom
   ;
 
 terminator
-  :
-  TERMINATOR
+  : TERMINATOR
   | EOF
   ;
 
 OR
-  :
-  'or'
+  : 'or'
   ;
 
 POW
-  :
-  '^'
+  : '^'
   ;
 
 MOD
-  :
-  '%'
+  : '%'
   ;
 
 ADD
-  :
-  '+'
+  : '+'
   ;
 
 SUB
-  :
-  '-'
+  : '-'
   ;
 
 DIV
-  :
-  '/'
+  : '/'
   ;
 
 MUL
-  :
-  '*'
+  : '*'
   ;
 
 NOT
-  :
-  '!'
+  : '!'
   ;
 
 ASSIGN
-  :
-  '='
+  : '='
   ;
 
 LPAREN
-  :
-  '('
+  : '('
   ;
 
 RPAREN
-  :
-  ')'
+  : ')'
   ;
 
 LCURLY
-  :
-  '{'
+  : '{'
   ;
 
 RCURLY
-  :
-  '}'
+  : '}'
   ;
 
 COMMA
-  :
-  ','
+  : ','
   ;
 
 DOT
-  :
-  '.'
+  : '.'
   ;
 
 DOTDOT
-  :
-  '..'
+  : '..'
   ;
 
 IDENTIFIER
-  :
-  ID_LETTER
-  (
-    ID_LETTER
-    | '0'..'9'
-  )*
+  : ID_LETTER (ID_LETTER | '0'..'9')*
   ;
 
 fragment
 ID_LETTER
-  :
-  '$'
+  : '$'
   | 'A'..'Z'
   | 'a'..'z'
   | '_'
   ;
 
 CHARACTER_LITERAL
-  :
-  '\''
-  (
-    EscapeSequence
-    |
-    ~(
-      '\''
-      | '\\'
-     )
-  )
-  '\''
+  : '\'' (EscapeSequence|~('\''| '\\'))'\''
   ;
 
 STRING_LITERAL
-  :
-  '"'
-  (
-    EscapeSequence
-    |
-    ~(
-      '\\'
-      | '"'
-     )
-  )*
-  '"'
+  : '"' (EscapeSequence|~('\\'| '"'))* '"'
   ;
-/*
-REGEXP_LITERAL
-    :  '/' ( EscapeSequence | ~('\\'|'"') )* '/'
-    ;
-*/
+
 
 
 /* ******************************************************************** */
@@ -929,24 +829,12 @@ boolean negative = input.LT(-1) == '-';
 
 fragment
 Digits
-  :
-  ('0'..'9')+
+  : ('0'..'9')+
   ;
 
 fragment
 Exponent
-  :
-  (
-    'e'
-    | 'E'
-  )
-  (
-    '+'
-    | '-'
-  )?
-  (
-    Digits
-    | 
+  : ('e' | 'E') ('+' | '-')? (Digits|
      {
       log.error(getCharIndex() - 1, MESSAGE_DLEXER_MALFORMED_EXPONENT);
       setText("0.0");
@@ -961,60 +849,39 @@ Exponent
 
 fragment
 EscapeSequence
-  :
-  '\\'
-  (
-    'b'
-    | 't'
-    | 'n'
-    | 'f'
-    | 'r'
-    | '\"'
-    | '\''
-    | '\\'
-    | '/'
-  )
+  : '\\' ('b' | 't' | 'n' | 'f' | 'r' | '\"' | '\'' | '\\')
   | OctalEscape
   | UnicodeEscape
   ;
 
 fragment
 OctalEscape
-  :
-  '\\' ('0'..'3') ('0'..'7') ('0'..'7')
+  : '\\' ('0'..'3') ('0'..'7') ('0'..'7')
   | '\\' ('0'..'7') ('0'..'7')
   | '\\' ('0'..'7')
   ;
 
 fragment
 HexDigit
-  :
-  '0'..'9'
+  : '0'..'9'
   | 'a'..'f'
   | 'A'..'F'
   ;
 
 fragment
 UnicodeEscape
-  :
-  '\\' 'u' HexDigit HexDigit HexDigit HexDigit
+  : '\\' 'u' HexDigit HexDigit HexDigit HexDigit
   ;
 
 COMMENT
-  :
-  '/*' (options {greedy=false;}: .)* '*/' 
+  : '/*' (options {greedy=false;}: .)* '*/' 
                                          {
                                           $channel = HIDDEN;
                                          }
   ;
 
 LINE_COMMENT
-  :
-  '//'
-  ~(
-    '\n'
-    | '\r'
-   )*
+  : '//' ~('\n' | '\r')*
   '\r'? '\n' 
             {
              $channel = HIDDEN;
@@ -1022,19 +889,12 @@ LINE_COMMENT
   ;
 
 TERMINATOR
-  :
-  '\r'? '\n'
+  : '\r'? '\n'
   | ';'
   ;
 
 WS
-  :
-  (
-    ' '
-    | '\r'
-    | '\t'
-    | '\u000C'
-  )
+  : (' ' | '\r' | '\t' | '\u000C' )
   
   {
    $channel = HIDDEN;

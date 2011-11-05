@@ -82,24 +82,4 @@ public class FuncTestParserLiterals extends ParserFuncTestBase {
     assertThat(tree.getType(), is(DeeLangParser.STRING_LITERAL));
     assertThat(tree.getChildCount(), is(0));
   }
-
-  /*
-  @Test
-  public void testUnderstandRegexpLiterals() throws Throwable {
-    CommonTree tree = runTest("/foo/");
-    
-    assertThat(tree.getText(), is("/foo/"));
-    assertThat(tree.getType(), is(DeeLangParser.REGEXP_LITERAL));
-    assertThat(tree.getChildCount(), is(0));
-  }
-
-  @Test
-  public void testDontChokeOnRegexpLiteralEscapes() throws Throwable {
-    CommonTree tree = runTest("/foo\\/ /");
-    
-    assertThat(tree.getText(), is("/foo\\/ /"));
-    assertThat(tree.getType(), is(DeeLangParser.REGEXP_LITERAL));
-    assertThat(tree.getChildCount(), is(0));
-  }
-  */
 }

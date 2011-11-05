@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g 2011-11-03 17:28:41
+// $ANTLR 3.4 /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g 2011-11-05 14:45:47
 
 package com.roscopeco.deelang.parser;
 
@@ -159,12 +159,12 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking>0 && alreadyParsedRule(input, 1) ) { return retval; }
 
             // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:200:3: ( script )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:201:3: script
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:200:6: script
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_script_in_start_rule170);
+            pushFollow(FOLLOW_script_in_start_rule169);
             script1=script();
 
             state._fsp--;
@@ -205,7 +205,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "script"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:204:1: script : ( ( statement )+ | EOF !);
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:203:1: script : ( ( statement )+ | EOF !);
     public final DeeLangParser.script_return script() throws RecognitionException {
         DeeLangParser.script_return retval = new DeeLangParser.script_return();
         retval.start = input.LT(1);
@@ -223,7 +223,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 2) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:205:3: ( ( statement )+ | EOF !)
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:204:3: ( ( statement )+ | EOF !)
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -243,12 +243,12 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:206:3: ( statement )+
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:204:5: ( statement )+
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:206:3: ( statement )+
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:204:5: ( statement )+
                     int cnt1=0;
                     loop1:
                     do {
@@ -262,9 +262,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt1) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:206:3: statement
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:204:5: statement
                     	    {
-                    	    pushFollow(FOLLOW_statement_in_script185);
+                    	    pushFollow(FOLLOW_statement_in_script182);
                     	    statement2=statement();
 
                     	    state._fsp--;
@@ -288,12 +288,12 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:207:5: EOF !
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:205:5: EOF !
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    EOF3=(Token)match(input,EOF,FOLLOW_EOF_in_script192); if (state.failed) return retval;
+                    EOF3=(Token)match(input,EOF,FOLLOW_EOF_in_script189); if (state.failed) return retval;
 
                     }
                     break;
@@ -331,7 +331,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "statement"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:210:1: statement : expr terminator !;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:208:1: statement : expr terminator !;
     public final DeeLangParser.statement_return statement() throws RecognitionException {
         DeeLangParser.statement_return retval = new DeeLangParser.statement_return();
         retval.start = input.LT(1);
@@ -349,20 +349,20 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 3) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:211:3: ( expr terminator !)
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:212:3: expr terminator !
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:209:3: ( expr terminator !)
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:209:5: expr terminator !
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_expr_in_statement208);
+            pushFollow(FOLLOW_expr_in_statement203);
             expr4=expr();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, expr4.getTree());
 
-            pushFollow(FOLLOW_terminator_in_statement210);
+            pushFollow(FOLLOW_terminator_in_statement205);
             terminator5=terminator();
 
             state._fsp--;
@@ -402,7 +402,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "block_statement"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:215:1: block_statement : expr ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:212:1: block_statement : expr ;
     public final DeeLangParser.block_statement_return block_statement() throws RecognitionException {
         DeeLangParser.block_statement_return retval = new DeeLangParser.block_statement_return();
         retval.start = input.LT(1);
@@ -418,13 +418,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 4) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:216:3: ( expr )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:217:3: expr
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:213:3: ( expr )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:213:5: expr
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_expr_in_block_statement226);
+            pushFollow(FOLLOW_expr_in_block_statement219);
             expr6=expr();
 
             state._fsp--;
@@ -465,7 +465,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:220:1: expr : ( assign_expr | math_expr );
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:216:1: expr : ( assign_expr | math_expr );
     public final DeeLangParser.expr_return expr() throws RecognitionException {
         DeeLangParser.expr_return retval = new DeeLangParser.expr_return();
         retval.start = input.LT(1);
@@ -483,7 +483,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 5) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:221:3: ( assign_expr | math_expr )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:217:3: ( assign_expr | math_expr )
             int alt3=2;
             switch ( input.LA(1) ) {
             case IDENTIFIER:
@@ -567,12 +567,12 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt3) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:3: assign_expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:217:5: assign_expr
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_assign_expr_in_expr241);
+                    pushFollow(FOLLOW_assign_expr_in_expr232);
                     assign_expr7=assign_expr();
 
                     state._fsp--;
@@ -582,12 +582,12 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:223:5: math_expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:218:5: math_expr
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_math_expr_in_expr247);
+                    pushFollow(FOLLOW_math_expr_in_expr238);
                     math_expr8=math_expr();
 
                     state._fsp--;
@@ -630,7 +630,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "assign_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:226:1: assign_expr : ( class_identifier ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> class_identifier ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) |ci= class_identifier ASSIGN expr -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr ) | meth_call ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> meth_call ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) | LPAREN e1= expr RPAREN ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN e2= expr -> $e1 ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id $e2) |id= IDENTIFIER ASSIGN expr -> ^( ASSIGN_LOCAL IDENTIFIER expr ) );
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:221:1: assign_expr : ( class_identifier ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> class_identifier ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) |ci= class_identifier ASSIGN expr -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr ) | meth_call ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> meth_call ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) | LPAREN e1= expr RPAREN ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN e2= expr -> $e1 ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id $e2) |id= IDENTIFIER ASSIGN expr -> ^( ASSIGN_LOCAL IDENTIFIER expr ) );
     public final DeeLangParser.assign_expr_return assign_expr() throws RecognitionException {
         DeeLangParser.assign_expr_return retval = new DeeLangParser.assign_expr_return();
         retval.start = input.LT(1);
@@ -698,7 +698,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 6) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:227:3: ( class_identifier ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> class_identifier ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) |ci= class_identifier ASSIGN expr -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr ) | meth_call ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> meth_call ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) | LPAREN e1= expr RPAREN ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN e2= expr -> $e1 ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id $e2) |id= IDENTIFIER ASSIGN expr -> ^( ASSIGN_LOCAL IDENTIFIER expr ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:3: ( class_identifier ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> class_identifier ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) |ci= class_identifier ASSIGN expr -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr ) | meth_call ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr -> meth_call ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr ) | LPAREN e1= expr RPAREN ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN e2= expr -> $e1 ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id $e2) |id= IDENTIFIER ASSIGN expr -> ^( ASSIGN_LOCAL IDENTIFIER expr ) )
             int alt7=5;
             switch ( input.LA(1) ) {
             case IDENTIFIER:
@@ -792,16 +792,16 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt7) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:228:3: class_identifier ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:5: class_identifier ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr
                     {
-                    pushFollow(FOLLOW_class_identifier_in_assign_expr262);
+                    pushFollow(FOLLOW_class_identifier_in_assign_expr251);
                     class_identifier9=class_identifier();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_class_identifier.add(class_identifier9.getTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:228:20: ( chained_call_or_field_expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:22: ( chained_call_or_field_expr )*
                     loop4:
                     do {
                         int alt4=2;
@@ -826,9 +826,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:228:20: chained_call_or_field_expr
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:22: chained_call_or_field_expr
                     	    {
-                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_assign_expr264);
+                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_assign_expr253);
                     	    chained_call_or_field_expr10=chained_call_or_field_expr();
 
                     	    state._fsp--;
@@ -844,19 +844,19 @@ public TreeAdaptor getTreeAdaptor() {
                     } while (true);
 
 
-                    DOT11=(Token)match(input,DOT,FOLLOW_DOT_in_assign_expr267); if (state.failed) return retval; 
+                    DOT11=(Token)match(input,DOT,FOLLOW_DOT_in_assign_expr256); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_DOT.add(DOT11);
 
 
-                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr271); if (state.failed) return retval; 
+                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr260); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENTIFIER.add(id);
 
 
-                    ASSIGN12=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr273); if (state.failed) return retval; 
+                    ASSIGN12=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr262); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN12);
 
 
-                    pushFollow(FOLLOW_expr_in_assign_expr275);
+                    pushFollow(FOLLOW_expr_in_assign_expr264);
                     expr13=expr();
 
                     state._fsp--;
@@ -877,11 +877,194 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 229:5: -> class_identifier ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr )
+                    // 223:5: -> class_identifier ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr )
                     {
                         adaptor.addChild(root_0, stream_class_identifier.nextTree());
 
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:229:25: ( chained_call_or_field_expr )*
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:223:25: ( chained_call_or_field_expr )*
+                        while ( stream_chained_call_or_field_expr.hasNext() ) {
+                            adaptor.addChild(root_0, stream_chained_call_or_field_expr.nextTree());
+
+                        }
+                        stream_chained_call_or_field_expr.reset();
+
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:224:7: ^( ASSIGN_FIELD $id expr )
+                        {
+                        CommonTree root_1 = (CommonTree)adaptor.nil();
+                        root_1 = (CommonTree)adaptor.becomeRoot(
+                        (CommonTree)adaptor.create(ASSIGN_FIELD, "ASSIGN_FIELD")
+                        , root_1);
+
+                        adaptor.addChild(root_1, stream_id.nextNode());
+
+                        adaptor.addChild(root_1, stream_expr.nextTree());
+
+                        adaptor.addChild(root_0, root_1);
+                        }
+
+                    }
+
+
+                    retval.tree = root_0;
+                    }
+
+                    }
+                    break;
+                case 2 :
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:225:5: ci= class_identifier ASSIGN expr
+                    {
+                    pushFollow(FOLLOW_class_identifier_in_assign_expr298);
+                    ci=class_identifier();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_class_identifier.add(ci.getTree());
+
+                    ASSIGN14=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr300); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN14);
+
+
+                    pushFollow(FOLLOW_expr_in_assign_expr302);
+                    expr15=expr();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_expr.add(expr15.getTree());
+
+                    // AST REWRITE
+                    // elements: expr
+                    // token labels: 
+                    // rule labels: retval
+                    // token list labels: 
+                    // rule list labels: 
+                    // wildcard labels: 
+                    if ( state.backtracking==0 ) {
+
+                    retval.tree = root_0;
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
+
+                    root_0 = (CommonTree)adaptor.nil();
+                    // 226:5: -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr )
+                    {
+                        adaptor.addChild(root_0, 
+                        (CommonTree)adaptor.create(IDENTIFIER, (ci!=null?((CommonTree)ci.tree):null).getChild(0).getText())
+                        );
+
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:227:7: ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr )
+                        {
+                        CommonTree root_1 = (CommonTree)adaptor.nil();
+                        root_1 = (CommonTree)adaptor.becomeRoot(
+                        (CommonTree)adaptor.create(ASSIGN_FIELD, "ASSIGN_FIELD")
+                        , root_1);
+
+                        adaptor.addChild(root_1, 
+                        (CommonTree)adaptor.create(IDENTIFIER, (ci!=null?((CommonTree)ci.tree):null).getChild(1).getText())
+                        );
+
+                        adaptor.addChild(root_1, stream_expr.nextTree());
+
+                        adaptor.addChild(root_0, root_1);
+                        }
+
+                    }
+
+
+                    retval.tree = root_0;
+                    }
+
+                    }
+                    break;
+                case 3 :
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:228:5: meth_call ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr
+                    {
+                    pushFollow(FOLLOW_meth_call_in_assign_expr332);
+                    meth_call16=meth_call();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_meth_call.add(meth_call16.getTree());
+
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:228:15: ( chained_call_or_field_expr )*
+                    loop5:
+                    do {
+                        int alt5=2;
+                        int LA5_0 = input.LA(1);
+
+                        if ( (LA5_0==DOT) ) {
+                            int LA5_1 = input.LA(2);
+
+                            if ( (LA5_1==IDENTIFIER) ) {
+                                int LA5_2 = input.LA(3);
+
+                                if ( (LA5_2==DOT||LA5_2==LPAREN) ) {
+                                    alt5=1;
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                        switch (alt5) {
+                    	case 1 :
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:228:15: chained_call_or_field_expr
+                    	    {
+                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_assign_expr334);
+                    	    chained_call_or_field_expr17=chained_call_or_field_expr();
+
+                    	    state._fsp--;
+                    	    if (state.failed) return retval;
+                    	    if ( state.backtracking==0 ) stream_chained_call_or_field_expr.add(chained_call_or_field_expr17.getTree());
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop5;
+                        }
+                    } while (true);
+
+
+                    DOT18=(Token)match(input,DOT,FOLLOW_DOT_in_assign_expr337); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_DOT.add(DOT18);
+
+
+                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr341); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENTIFIER.add(id);
+
+
+                    ASSIGN19=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr343); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN19);
+
+
+                    pushFollow(FOLLOW_expr_in_assign_expr345);
+                    expr20=expr();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_expr.add(expr20.getTree());
+
+                    // AST REWRITE
+                    // elements: meth_call, expr, id, chained_call_or_field_expr
+                    // token labels: id
+                    // rule labels: retval
+                    // token list labels: 
+                    // rule list labels: 
+                    // wildcard labels: 
+                    if ( state.backtracking==0 ) {
+
+                    retval.tree = root_0;
+                    RewriteRuleTokenStream stream_id=new RewriteRuleTokenStream(adaptor,"token id",id);
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
+
+                    root_0 = (CommonTree)adaptor.nil();
+                    // 229:5: -> meth_call ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr )
+                    {
+                        adaptor.addChild(root_0, stream_meth_call.nextTree());
+
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:229:18: ( chained_call_or_field_expr )*
                         while ( stream_chained_call_or_field_expr.hasNext() ) {
                             adaptor.addChild(root_0, stream_chained_call_or_field_expr.nextTree());
 
@@ -910,208 +1093,25 @@ public TreeAdaptor getTreeAdaptor() {
 
                     }
                     break;
-                case 2 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:231:5: ci= class_identifier ASSIGN expr
-                    {
-                    pushFollow(FOLLOW_class_identifier_in_assign_expr309);
-                    ci=class_identifier();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_class_identifier.add(ci.getTree());
-
-                    ASSIGN14=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr311); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN14);
-
-
-                    pushFollow(FOLLOW_expr_in_assign_expr313);
-                    expr15=expr();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr15.getTree());
-
-                    // AST REWRITE
-                    // elements: expr
-                    // token labels: 
-                    // rule labels: retval
-                    // token list labels: 
-                    // rule list labels: 
-                    // wildcard labels: 
-                    if ( state.backtracking==0 ) {
-
-                    retval.tree = root_0;
-                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
-
-                    root_0 = (CommonTree)adaptor.nil();
-                    // 232:5: -> IDENTIFIER[$ci.tree.getChild(0).getText()] ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr )
-                    {
-                        adaptor.addChild(root_0, 
-                        (CommonTree)adaptor.create(IDENTIFIER, (ci!=null?((CommonTree)ci.tree):null).getChild(0).getText())
-                        );
-
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:233:7: ^( ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr )
-                        {
-                        CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot(
-                        (CommonTree)adaptor.create(ASSIGN_FIELD, "ASSIGN_FIELD")
-                        , root_1);
-
-                        adaptor.addChild(root_1, 
-                        (CommonTree)adaptor.create(IDENTIFIER, (ci!=null?((CommonTree)ci.tree):null).getChild(1).getText())
-                        );
-
-                        adaptor.addChild(root_1, stream_expr.nextTree());
-
-                        adaptor.addChild(root_0, root_1);
-                        }
-
-                    }
-
-
-                    retval.tree = root_0;
-                    }
-
-                    }
-                    break;
-                case 3 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:234:5: meth_call ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN expr
-                    {
-                    pushFollow(FOLLOW_meth_call_in_assign_expr343);
-                    meth_call16=meth_call();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_meth_call.add(meth_call16.getTree());
-
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:234:15: ( chained_call_or_field_expr )*
-                    loop5:
-                    do {
-                        int alt5=2;
-                        int LA5_0 = input.LA(1);
-
-                        if ( (LA5_0==DOT) ) {
-                            int LA5_1 = input.LA(2);
-
-                            if ( (LA5_1==IDENTIFIER) ) {
-                                int LA5_2 = input.LA(3);
-
-                                if ( (LA5_2==DOT||LA5_2==LPAREN) ) {
-                                    alt5=1;
-                                }
-
-
-                            }
-
-
-                        }
-
-
-                        switch (alt5) {
-                    	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:234:15: chained_call_or_field_expr
-                    	    {
-                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_assign_expr345);
-                    	    chained_call_or_field_expr17=chained_call_or_field_expr();
-
-                    	    state._fsp--;
-                    	    if (state.failed) return retval;
-                    	    if ( state.backtracking==0 ) stream_chained_call_or_field_expr.add(chained_call_or_field_expr17.getTree());
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    break loop5;
-                        }
-                    } while (true);
-
-
-                    DOT18=(Token)match(input,DOT,FOLLOW_DOT_in_assign_expr348); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_DOT.add(DOT18);
-
-
-                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr352); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENTIFIER.add(id);
-
-
-                    ASSIGN19=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr354); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN19);
-
-
-                    pushFollow(FOLLOW_expr_in_assign_expr356);
-                    expr20=expr();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr20.getTree());
-
-                    // AST REWRITE
-                    // elements: meth_call, expr, id, chained_call_or_field_expr
-                    // token labels: id
-                    // rule labels: retval
-                    // token list labels: 
-                    // rule list labels: 
-                    // wildcard labels: 
-                    if ( state.backtracking==0 ) {
-
-                    retval.tree = root_0;
-                    RewriteRuleTokenStream stream_id=new RewriteRuleTokenStream(adaptor,"token id",id);
-                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
-
-                    root_0 = (CommonTree)adaptor.nil();
-                    // 235:5: -> meth_call ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id expr )
-                    {
-                        adaptor.addChild(root_0, stream_meth_call.nextTree());
-
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:235:18: ( chained_call_or_field_expr )*
-                        while ( stream_chained_call_or_field_expr.hasNext() ) {
-                            adaptor.addChild(root_0, stream_chained_call_or_field_expr.nextTree());
-
-                        }
-                        stream_chained_call_or_field_expr.reset();
-
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:236:7: ^( ASSIGN_FIELD $id expr )
-                        {
-                        CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot(
-                        (CommonTree)adaptor.create(ASSIGN_FIELD, "ASSIGN_FIELD")
-                        , root_1);
-
-                        adaptor.addChild(root_1, stream_id.nextNode());
-
-                        adaptor.addChild(root_1, stream_expr.nextTree());
-
-                        adaptor.addChild(root_0, root_1);
-                        }
-
-                    }
-
-
-                    retval.tree = root_0;
-                    }
-
-                    }
-                    break;
                 case 4 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:237:5: LPAREN e1= expr RPAREN ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN e2= expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:231:5: LPAREN e1= expr RPAREN ( chained_call_or_field_expr )* DOT id= IDENTIFIER ASSIGN e2= expr
                     {
-                    LPAREN21=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_assign_expr388); if (state.failed) return retval; 
+                    LPAREN21=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_assign_expr377); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN21);
 
 
-                    pushFollow(FOLLOW_expr_in_assign_expr392);
+                    pushFollow(FOLLOW_expr_in_assign_expr381);
                     e1=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(e1.getTree());
 
-                    RPAREN22=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_assign_expr394); if (state.failed) return retval; 
+                    RPAREN22=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_assign_expr383); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN22);
 
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:237:27: ( chained_call_or_field_expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:231:27: ( chained_call_or_field_expr )*
                     loop6:
                     do {
                         int alt6=2;
@@ -1136,9 +1136,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:237:27: chained_call_or_field_expr
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:231:27: chained_call_or_field_expr
                     	    {
-                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_assign_expr396);
+                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_assign_expr385);
                     	    chained_call_or_field_expr23=chained_call_or_field_expr();
 
                     	    state._fsp--;
@@ -1154,19 +1154,19 @@ public TreeAdaptor getTreeAdaptor() {
                     } while (true);
 
 
-                    DOT24=(Token)match(input,DOT,FOLLOW_DOT_in_assign_expr399); if (state.failed) return retval; 
+                    DOT24=(Token)match(input,DOT,FOLLOW_DOT_in_assign_expr388); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_DOT.add(DOT24);
 
 
-                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr403); if (state.failed) return retval; 
+                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr392); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENTIFIER.add(id);
 
 
-                    ASSIGN25=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr405); if (state.failed) return retval; 
+                    ASSIGN25=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr394); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN25);
 
 
-                    pushFollow(FOLLOW_expr_in_assign_expr409);
+                    pushFollow(FOLLOW_expr_in_assign_expr398);
                     e2=expr();
 
                     state._fsp--;
@@ -1189,18 +1189,18 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_e2=new RewriteRuleSubtreeStream(adaptor,"rule e2",e2!=null?e2.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 238:5: -> $e1 ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id $e2)
+                    // 232:5: -> $e1 ( chained_call_or_field_expr )* ^( ASSIGN_FIELD $id $e2)
                     {
                         adaptor.addChild(root_0, stream_e1.nextTree());
 
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:238:12: ( chained_call_or_field_expr )*
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:232:12: ( chained_call_or_field_expr )*
                         while ( stream_chained_call_or_field_expr.hasNext() ) {
                             adaptor.addChild(root_0, stream_chained_call_or_field_expr.nextTree());
 
                         }
                         stream_chained_call_or_field_expr.reset();
 
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:7: ^( ASSIGN_FIELD $id $e2)
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:233:7: ^( ASSIGN_FIELD $id $e2)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
                         root_1 = (CommonTree)adaptor.becomeRoot(
@@ -1223,17 +1223,17 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:240:5: id= IDENTIFIER ASSIGN expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:234:5: id= IDENTIFIER ASSIGN expr
                     {
-                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr445); if (state.failed) return retval; 
+                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_assign_expr434); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENTIFIER.add(id);
 
 
-                    ASSIGN26=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr447); if (state.failed) return retval; 
+                    ASSIGN26=(Token)match(input,ASSIGN,FOLLOW_ASSIGN_in_assign_expr436); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN26);
 
 
-                    pushFollow(FOLLOW_expr_in_assign_expr449);
+                    pushFollow(FOLLOW_expr_in_assign_expr438);
                     expr27=expr();
 
                     state._fsp--;
@@ -1253,9 +1253,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 241:5: -> ^( ASSIGN_LOCAL IDENTIFIER expr )
+                    // 235:5: -> ^( ASSIGN_LOCAL IDENTIFIER expr )
                     {
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:242:7: ^( ASSIGN_LOCAL IDENTIFIER expr )
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:235:8: ^( ASSIGN_LOCAL IDENTIFIER expr )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
                         root_1 = (CommonTree)adaptor.becomeRoot(
@@ -1313,7 +1313,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "math_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:245:1: math_expr : mult_expr ( ( ADD ^| SUB ^) mult_expr )* ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:238:1: math_expr : mult_expr ( ( ADD ^| SUB ^) mult_expr )* ;
     public final DeeLangParser.math_expr_return math_expr() throws RecognitionException {
         DeeLangParser.math_expr_return retval = new DeeLangParser.math_expr_return();
         retval.start = input.LT(1);
@@ -1335,20 +1335,20 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 7) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:246:3: ( mult_expr ( ( ADD ^| SUB ^) mult_expr )* )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:3: mult_expr ( ( ADD ^| SUB ^) mult_expr )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:3: ( mult_expr ( ( ADD ^| SUB ^) mult_expr )* )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:5: mult_expr ( ( ADD ^| SUB ^) mult_expr )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_mult_expr_in_math_expr484);
+            pushFollow(FOLLOW_mult_expr_in_math_expr465);
             mult_expr28=mult_expr();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, mult_expr28.getTree());
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:248:3: ( ( ADD ^| SUB ^) mult_expr )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:15: ( ( ADD ^| SUB ^) mult_expr )*
             loop9:
             do {
                 int alt9=2;
@@ -1361,9 +1361,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt9) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:249:5: ( ADD ^| SUB ^) mult_expr
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:16: ( ADD ^| SUB ^) mult_expr
             	    {
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:249:5: ( ADD ^| SUB ^)
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:16: ( ADD ^| SUB ^)
             	    int alt8=2;
             	    int LA8_0 = input.LA(1);
 
@@ -1383,9 +1383,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    switch (alt8) {
             	        case 1 :
-            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:250:7: ADD ^
+            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:17: ADD ^
             	            {
-            	            ADD29=(Token)match(input,ADD,FOLLOW_ADD_in_math_expr502); if (state.failed) return retval;
+            	            ADD29=(Token)match(input,ADD,FOLLOW_ADD_in_math_expr469); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            ADD29_tree = 
             	            (CommonTree)adaptor.create(ADD29)
@@ -1396,9 +1396,9 @@ public TreeAdaptor getTreeAdaptor() {
             	            }
             	            break;
             	        case 2 :
-            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:251:9: SUB ^
+            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:239:22: SUB ^
             	            {
-            	            SUB30=(Token)match(input,SUB,FOLLOW_SUB_in_math_expr513); if (state.failed) return retval;
+            	            SUB30=(Token)match(input,SUB,FOLLOW_SUB_in_math_expr472); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            SUB30_tree = 
             	            (CommonTree)adaptor.create(SUB30)
@@ -1412,7 +1412,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_mult_expr_in_math_expr526);
+            	    pushFollow(FOLLOW_mult_expr_in_math_expr476);
             	    mult_expr31=mult_expr();
 
             	    state._fsp--;
@@ -1462,7 +1462,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "mult_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:257:1: mult_expr : pow_expr ( ( MUL ^| DIV ^| MOD ^) pow_expr )* ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:242:1: mult_expr : pow_expr ( ( MUL ^| DIV ^| MOD ^) pow_expr )* ;
     public final DeeLangParser.mult_expr_return mult_expr() throws RecognitionException {
         DeeLangParser.mult_expr_return retval = new DeeLangParser.mult_expr_return();
         retval.start = input.LT(1);
@@ -1486,20 +1486,20 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 8) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:258:3: ( pow_expr ( ( MUL ^| DIV ^| MOD ^) pow_expr )* )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:259:3: pow_expr ( ( MUL ^| DIV ^| MOD ^) pow_expr )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:3: ( pow_expr ( ( MUL ^| DIV ^| MOD ^) pow_expr )* )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:5: pow_expr ( ( MUL ^| DIV ^| MOD ^) pow_expr )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_pow_expr_in_mult_expr546);
+            pushFollow(FOLLOW_pow_expr_in_mult_expr491);
             pow_expr32=pow_expr();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, pow_expr32.getTree());
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:260:3: ( ( MUL ^| DIV ^| MOD ^) pow_expr )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:14: ( ( MUL ^| DIV ^| MOD ^) pow_expr )*
             loop11:
             do {
                 int alt11=2;
@@ -1512,9 +1512,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt11) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:261:5: ( MUL ^| DIV ^| MOD ^) pow_expr
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:15: ( MUL ^| DIV ^| MOD ^) pow_expr
             	    {
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:261:5: ( MUL ^| DIV ^| MOD ^)
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:15: ( MUL ^| DIV ^| MOD ^)
             	    int alt10=3;
             	    switch ( input.LA(1) ) {
             	    case MUL:
@@ -1543,9 +1543,9 @@ public TreeAdaptor getTreeAdaptor() {
 
             	    switch (alt10) {
             	        case 1 :
-            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:262:7: MUL ^
+            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:16: MUL ^
             	            {
-            	            MUL33=(Token)match(input,MUL,FOLLOW_MUL_in_mult_expr564); if (state.failed) return retval;
+            	            MUL33=(Token)match(input,MUL,FOLLOW_MUL_in_mult_expr495); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            MUL33_tree = 
             	            (CommonTree)adaptor.create(MUL33)
@@ -1556,9 +1556,9 @@ public TreeAdaptor getTreeAdaptor() {
             	            }
             	            break;
             	        case 2 :
-            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:263:9: DIV ^
+            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:22: DIV ^
             	            {
-            	            DIV34=(Token)match(input,DIV,FOLLOW_DIV_in_mult_expr575); if (state.failed) return retval;
+            	            DIV34=(Token)match(input,DIV,FOLLOW_DIV_in_mult_expr499); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            DIV34_tree = 
             	            (CommonTree)adaptor.create(DIV34)
@@ -1569,9 +1569,9 @@ public TreeAdaptor getTreeAdaptor() {
             	            }
             	            break;
             	        case 3 :
-            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:264:9: MOD ^
+            	            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:243:28: MOD ^
             	            {
-            	            MOD35=(Token)match(input,MOD,FOLLOW_MOD_in_mult_expr586); if (state.failed) return retval;
+            	            MOD35=(Token)match(input,MOD,FOLLOW_MOD_in_mult_expr503); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            MOD35_tree = 
             	            (CommonTree)adaptor.create(MOD35)
@@ -1585,7 +1585,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_pow_expr_in_mult_expr599);
+            	    pushFollow(FOLLOW_pow_expr_in_mult_expr507);
             	    pow_expr36=pow_expr();
 
             	    state._fsp--;
@@ -1635,7 +1635,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "pow_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:270:1: pow_expr : unary_expr ( ( POW ^) unary_expr )* ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:246:1: pow_expr : unary_expr ( ( POW ^) unary_expr )* ;
     public final DeeLangParser.pow_expr_return pow_expr() throws RecognitionException {
         DeeLangParser.pow_expr_return retval = new DeeLangParser.pow_expr_return();
         retval.start = input.LT(1);
@@ -1655,20 +1655,20 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 9) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:271:3: ( unary_expr ( ( POW ^) unary_expr )* )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:272:3: unary_expr ( ( POW ^) unary_expr )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:3: ( unary_expr ( ( POW ^) unary_expr )* )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:5: unary_expr ( ( POW ^) unary_expr )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_unary_expr_in_pow_expr619);
+            pushFollow(FOLLOW_unary_expr_in_pow_expr522);
             unary_expr37=unary_expr();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, unary_expr37.getTree());
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:272:14: ( ( POW ^) unary_expr )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:16: ( ( POW ^) unary_expr )*
             loop12:
             do {
                 int alt12=2;
@@ -1681,12 +1681,12 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt12) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:272:16: ( POW ^) unary_expr
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:17: ( POW ^) unary_expr
             	    {
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:272:16: ( POW ^)
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:272:17: POW ^
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:17: ( POW ^)
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:247:18: POW ^
             	    {
-            	    POW38=(Token)match(input,POW,FOLLOW_POW_in_pow_expr624); if (state.failed) return retval;
+            	    POW38=(Token)match(input,POW,FOLLOW_POW_in_pow_expr526); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    POW38_tree = 
             	    (CommonTree)adaptor.create(POW38)
@@ -1697,7 +1697,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_unary_expr_in_pow_expr628);
+            	    pushFollow(FOLLOW_unary_expr_in_pow_expr530);
             	    unary_expr39=unary_expr();
 
             	    state._fsp--;
@@ -1747,7 +1747,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unary_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:275:1: unary_expr : ( NOT )? atom ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:250:1: unary_expr : ( NOT )? atom ;
     public final DeeLangParser.unary_expr_return unary_expr() throws RecognitionException {
         DeeLangParser.unary_expr_return retval = new DeeLangParser.unary_expr_return();
         retval.start = input.LT(1);
@@ -1765,13 +1765,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 10) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:276:3: ( ( NOT )? atom )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:277:3: ( NOT )? atom
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:251:3: ( ( NOT )? atom )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:251:5: ( NOT )? atom
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:277:3: ( NOT )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:251:5: ( NOT )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1780,9 +1780,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt13) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:277:3: NOT
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:251:5: NOT
                     {
-                    NOT40=(Token)match(input,NOT,FOLLOW_NOT_in_unary_expr645); if (state.failed) return retval;
+                    NOT40=(Token)match(input,NOT,FOLLOW_NOT_in_unary_expr545); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     NOT40_tree = 
                     (CommonTree)adaptor.create(NOT40)
@@ -1796,7 +1796,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            pushFollow(FOLLOW_atom_in_unary_expr648);
+            pushFollow(FOLLOW_atom_in_unary_expr548);
             atom41=atom();
 
             state._fsp--;
@@ -1837,7 +1837,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "meth_call"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:280:1: meth_call : ( ( IDENTIFIER DOT )? func_call_expr -> {explicitReceiver}? ^( METHOD_CALL IDENTIFIER func_call_expr ) -> ^( METHOD_CALL SELF func_call_expr ) | literal DOT func_call_expr -> ^( METHOD_CALL literal func_call_expr ) );
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:254:1: meth_call : ( ( IDENTIFIER DOT )? func_call_expr -> {explicitReceiver}? ^( METHOD_CALL IDENTIFIER func_call_expr ) -> ^( METHOD_CALL SELF func_call_expr ) | literal DOT func_call_expr -> ^( METHOD_CALL literal func_call_expr ) );
     public final DeeLangParser.meth_call_return meth_call() throws RecognitionException {
         DeeLangParser.meth_call_return retval = new DeeLangParser.meth_call_return();
         retval.start = input.LT(1);
@@ -1869,7 +1869,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 11) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:3: ( ( IDENTIFIER DOT )? func_call_expr -> {explicitReceiver}? ^( METHOD_CALL IDENTIFIER func_call_expr ) -> ^( METHOD_CALL SELF func_call_expr ) | literal DOT func_call_expr -> ^( METHOD_CALL literal func_call_expr ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:258:3: ( ( IDENTIFIER DOT )? func_call_expr -> {explicitReceiver}? ^( METHOD_CALL IDENTIFIER func_call_expr ) -> ^( METHOD_CALL SELF func_call_expr ) | literal DOT func_call_expr -> ^( METHOD_CALL literal func_call_expr ) )
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -1889,9 +1889,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt15) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:285:3: ( IDENTIFIER DOT )? func_call_expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:258:5: ( IDENTIFIER DOT )? func_call_expr
                     {
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:285:3: ( IDENTIFIER DOT )?
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:258:5: ( IDENTIFIER DOT )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -1904,19 +1904,17 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt14) {
                         case 1 :
-                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:285:4: IDENTIFIER DOT
+                            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:258:6: IDENTIFIER DOT
                             {
-                            IDENTIFIER42=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_meth_call669); if (state.failed) return retval; 
+                            IDENTIFIER42=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_meth_call567); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_IDENTIFIER.add(IDENTIFIER42);
 
 
-                            DOT43=(Token)match(input,DOT,FOLLOW_DOT_in_meth_call671); if (state.failed) return retval; 
+                            DOT43=(Token)match(input,DOT,FOLLOW_DOT_in_meth_call569); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_DOT.add(DOT43);
 
 
-                            if ( state.backtracking==0 ) {
-                                              explicitReceiver = true;
-                                             }
+                            if ( state.backtracking==0 ) {explicitReceiver = true;}
 
                             }
                             break;
@@ -1924,7 +1922,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    pushFollow(FOLLOW_func_call_expr_in_meth_call695);
+                    pushFollow(FOLLOW_func_call_expr_in_meth_call575);
                     func_call_expr44=func_call_expr();
 
                     state._fsp--;
@@ -1944,9 +1942,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 289:5: -> {explicitReceiver}? ^( METHOD_CALL IDENTIFIER func_call_expr )
+                    // 259:5: -> {explicitReceiver}? ^( METHOD_CALL IDENTIFIER func_call_expr )
                     if (explicitReceiver) {
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:290:7: ^( METHOD_CALL IDENTIFIER func_call_expr )
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:260:7: ^( METHOD_CALL IDENTIFIER func_call_expr )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
                         root_1 = (CommonTree)adaptor.becomeRoot(
@@ -1964,9 +1962,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                     }
 
-                    else // 291:5: -> ^( METHOD_CALL SELF func_call_expr )
+                    else // 261:5: -> ^( METHOD_CALL SELF func_call_expr )
                     {
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:292:7: ^( METHOD_CALL SELF func_call_expr )
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:261:8: ^( METHOD_CALL SELF func_call_expr )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
                         root_1 = (CommonTree)adaptor.becomeRoot(
@@ -1991,20 +1989,20 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:293:5: literal DOT func_call_expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:262:5: literal DOT func_call_expr
                     {
-                    pushFollow(FOLLOW_literal_in_meth_call743);
+                    pushFollow(FOLLOW_literal_in_meth_call617);
                     literal45=literal();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_literal.add(literal45.getTree());
 
-                    DOT46=(Token)match(input,DOT,FOLLOW_DOT_in_meth_call745); if (state.failed) return retval; 
+                    DOT46=(Token)match(input,DOT,FOLLOW_DOT_in_meth_call619); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_DOT.add(DOT46);
 
 
-                    pushFollow(FOLLOW_func_call_expr_in_meth_call747);
+                    pushFollow(FOLLOW_func_call_expr_in_meth_call621);
                     func_call_expr47=func_call_expr();
 
                     state._fsp--;
@@ -2024,9 +2022,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 294:5: -> ^( METHOD_CALL literal func_call_expr )
+                    // 263:5: -> ^( METHOD_CALL literal func_call_expr )
                     {
-                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:7: ^( METHOD_CALL literal func_call_expr )
+                        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:263:8: ^( METHOD_CALL literal func_call_expr )
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
                         root_1 = (CommonTree)adaptor.becomeRoot(
@@ -2082,7 +2080,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "chained_call_or_field_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:299:1: fragment chained_call_or_field_expr : ( chained_field_expr | chained_meth_call_expr );
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:267:1: fragment chained_call_or_field_expr : ( chained_field_expr | chained_meth_call_expr );
     public final DeeLangParser.chained_call_or_field_expr_return chained_call_or_field_expr() throws RecognitionException {
         DeeLangParser.chained_call_or_field_expr_return retval = new DeeLangParser.chained_call_or_field_expr_return();
         retval.start = input.LT(1);
@@ -2100,7 +2098,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 12) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:300:3: ( chained_field_expr | chained_meth_call_expr )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:268:3: ( chained_field_expr | chained_meth_call_expr )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -2144,12 +2142,12 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt16) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:3: chained_field_expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:268:5: chained_field_expr
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_chained_field_expr_in_chained_call_or_field_expr784);
+                    pushFollow(FOLLOW_chained_field_expr_in_chained_call_or_field_expr650);
                     chained_field_expr48=chained_field_expr();
 
                     state._fsp--;
@@ -2159,12 +2157,12 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:302:5: chained_meth_call_expr
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:269:5: chained_meth_call_expr
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_chained_meth_call_expr_in_chained_call_or_field_expr790);
+                    pushFollow(FOLLOW_chained_meth_call_expr_in_chained_call_or_field_expr656);
                     chained_meth_call_expr49=chained_meth_call_expr();
 
                     state._fsp--;
@@ -2207,7 +2205,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "chained_meth_call_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:306:1: fragment chained_meth_call_expr : DOT func_call_expr -> ^( METHOD_CALL CHAIN func_call_expr ) ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:273:1: fragment chained_meth_call_expr : DOT func_call_expr -> ^( METHOD_CALL CHAIN func_call_expr ) ;
     public final DeeLangParser.chained_meth_call_expr_return chained_meth_call_expr() throws RecognitionException {
         DeeLangParser.chained_meth_call_expr_return retval = new DeeLangParser.chained_meth_call_expr_return();
         retval.start = input.LT(1);
@@ -2226,14 +2224,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 13) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:307:3: ( DOT func_call_expr -> ^( METHOD_CALL CHAIN func_call_expr ) )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:308:3: DOT func_call_expr
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:274:3: ( DOT func_call_expr -> ^( METHOD_CALL CHAIN func_call_expr ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:274:5: DOT func_call_expr
             {
-            DOT50=(Token)match(input,DOT,FOLLOW_DOT_in_chained_meth_call_expr807); if (state.failed) return retval; 
+            DOT50=(Token)match(input,DOT,FOLLOW_DOT_in_chained_meth_call_expr671); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_DOT.add(DOT50);
 
 
-            pushFollow(FOLLOW_func_call_expr_in_chained_meth_call_expr809);
+            pushFollow(FOLLOW_func_call_expr_in_chained_meth_call_expr673);
             func_call_expr51=func_call_expr();
 
             state._fsp--;
@@ -2253,9 +2251,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 309:5: -> ^( METHOD_CALL CHAIN func_call_expr )
+            // 274:24: -> ^( METHOD_CALL CHAIN func_call_expr )
             {
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:310:7: ^( METHOD_CALL CHAIN func_call_expr )
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:274:27: ^( METHOD_CALL CHAIN func_call_expr )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot(
@@ -2311,7 +2309,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "chained_field_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:314:1: fragment chained_field_expr : DOT IDENTIFIER -> ^( FIELD_ACCESS CHAIN IDENTIFIER ) ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:278:1: fragment chained_field_expr : DOT IDENTIFIER -> ^( FIELD_ACCESS CHAIN IDENTIFIER ) ;
     public final DeeLangParser.chained_field_expr_return chained_field_expr() throws RecognitionException {
         DeeLangParser.chained_field_expr_return retval = new DeeLangParser.chained_field_expr_return();
         retval.start = input.LT(1);
@@ -2331,14 +2329,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 14) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:315:3: ( DOT IDENTIFIER -> ^( FIELD_ACCESS CHAIN IDENTIFIER ) )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:316:3: DOT IDENTIFIER
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:279:3: ( DOT IDENTIFIER -> ^( FIELD_ACCESS CHAIN IDENTIFIER ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:279:5: DOT IDENTIFIER
             {
-            DOT52=(Token)match(input,DOT,FOLLOW_DOT_in_chained_field_expr846); if (state.failed) return retval; 
+            DOT52=(Token)match(input,DOT,FOLLOW_DOT_in_chained_field_expr698); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_DOT.add(DOT52);
 
 
-            IDENTIFIER53=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_chained_field_expr848); if (state.failed) return retval; 
+            IDENTIFIER53=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_chained_field_expr700); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENTIFIER.add(IDENTIFIER53);
 
 
@@ -2355,9 +2353,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 317:5: -> ^( FIELD_ACCESS CHAIN IDENTIFIER )
+            // 279:20: -> ^( FIELD_ACCESS CHAIN IDENTIFIER )
             {
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:318:7: ^( FIELD_ACCESS CHAIN IDENTIFIER )
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:279:23: ^( FIELD_ACCESS CHAIN IDENTIFIER )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot(
@@ -2415,7 +2413,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "func_call_expr"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:322:1: fragment func_call_expr : IDENTIFIER ^ argument_list ( block )? ( orblock )? ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:283:1: fragment func_call_expr : IDENTIFIER ^ argument_list ( block )? ( orblock )? ;
     public final DeeLangParser.func_call_expr_return func_call_expr() throws RecognitionException {
         DeeLangParser.func_call_expr_return retval = new DeeLangParser.func_call_expr_return();
         retval.start = input.LT(1);
@@ -2437,13 +2435,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 15) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:323:3: ( IDENTIFIER ^ argument_list ( block )? ( orblock )? )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:324:3: IDENTIFIER ^ argument_list ( block )? ( orblock )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:3: ( IDENTIFIER ^ argument_list ( block )? ( orblock )? )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:5: IDENTIFIER ^ argument_list ( block )? ( orblock )?
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            IDENTIFIER54=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_func_call_expr885); if (state.failed) return retval;
+            IDENTIFIER54=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_func_call_expr725); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             IDENTIFIER54_tree = 
             (CommonTree)adaptor.create(IDENTIFIER54)
@@ -2451,14 +2449,14 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (CommonTree)adaptor.becomeRoot(IDENTIFIER54_tree, root_0);
             }
 
-            pushFollow(FOLLOW_argument_list_in_func_call_expr888);
+            pushFollow(FOLLOW_argument_list_in_func_call_expr728);
             argument_list55=argument_list();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, argument_list55.getTree());
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:324:29: ( block )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:31: ( block )?
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -2467,9 +2465,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt17) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:324:29: block
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:31: block
                     {
-                    pushFollow(FOLLOW_block_in_func_call_expr890);
+                    pushFollow(FOLLOW_block_in_func_call_expr730);
                     block56=block();
 
                     state._fsp--;
@@ -2482,7 +2480,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:324:36: ( orblock )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:38: ( orblock )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -2491,9 +2489,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt18) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:324:36: orblock
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:284:38: orblock
                     {
-                    pushFollow(FOLLOW_orblock_in_func_call_expr893);
+                    pushFollow(FOLLOW_orblock_in_func_call_expr733);
                     orblock57=orblock();
 
                     state._fsp--;
@@ -2540,7 +2538,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "block"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:328:1: fragment block : LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( BLOCK ( block_statement )* ) ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:288:1: fragment block : LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( BLOCK ( block_statement )* ) ;
     public final DeeLangParser.block_return block() throws RecognitionException {
         DeeLangParser.block_return retval = new DeeLangParser.block_return();
         retval.start = input.LT(1);
@@ -2571,14 +2569,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 16) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:329:3: ( LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( BLOCK ( block_statement )* ) )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:3: LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:3: ( LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( BLOCK ( block_statement )* ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:5: LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY
             {
-            LCURLY58=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_block911); if (state.failed) return retval; 
+            LCURLY58=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_block749); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LCURLY.add(LCURLY58);
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:10: ( TERMINATOR )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:12: ( TERMINATOR )*
             loop19:
             do {
                 int alt19=2;
@@ -2597,9 +2595,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt19) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:10: TERMINATOR
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:12: TERMINATOR
             	    {
-            	    TERMINATOR59=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_block913); if (state.failed) return retval; 
+            	    TERMINATOR59=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_block751); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_TERMINATOR.add(TERMINATOR59);
 
 
@@ -2612,7 +2610,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:22: ( block_statement ( TERMINATOR block_statement )* )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:24: ( block_statement ( TERMINATOR block_statement )* )?
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -2621,16 +2619,16 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt21) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:23: block_statement ( TERMINATOR block_statement )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:25: block_statement ( TERMINATOR block_statement )*
                     {
-                    pushFollow(FOLLOW_block_statement_in_block917);
+                    pushFollow(FOLLOW_block_statement_in_block755);
                     block_statement60=block_statement();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_block_statement.add(block_statement60.getTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:39: ( TERMINATOR block_statement )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:41: ( TERMINATOR block_statement )*
                     loop20:
                     do {
                         int alt20=2;
@@ -2649,13 +2647,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt20) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:40: TERMINATOR block_statement
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:42: TERMINATOR block_statement
                     	    {
-                    	    TERMINATOR61=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_block920); if (state.failed) return retval; 
+                    	    TERMINATOR61=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_block758); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_TERMINATOR.add(TERMINATOR61);
 
 
-                    	    pushFollow(FOLLOW_block_statement_in_block922);
+                    	    pushFollow(FOLLOW_block_statement_in_block760);
                     	    block_statement62=block_statement();
 
                     	    state._fsp--;
@@ -2677,7 +2675,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:71: ( TERMINATOR )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:73: ( TERMINATOR )*
             loop22:
             do {
                 int alt22=2;
@@ -2690,9 +2688,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt22) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:71: TERMINATOR
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:73: TERMINATOR
             	    {
-            	    TERMINATOR63=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_block928); if (state.failed) return retval; 
+            	    TERMINATOR63=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_block766); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_TERMINATOR.add(TERMINATOR63);
 
 
@@ -2705,7 +2703,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            RCURLY64=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_block931); if (state.failed) return retval; 
+            RCURLY64=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_block769); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RCURLY.add(RCURLY64);
 
 
@@ -2722,16 +2720,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 331:5: -> ^( BLOCK ( block_statement )* )
+            // 290:5: -> ^( BLOCK ( block_statement )* )
             {
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:332:7: ^( BLOCK ( block_statement )* )
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:290:8: ^( BLOCK ( block_statement )* )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot(
                 (CommonTree)adaptor.create(BLOCK, "BLOCK")
                 , root_1);
 
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:332:15: ( block_statement )*
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:290:16: ( block_statement )*
                 while ( stream_block_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_block_statement.nextTree());
 
@@ -2781,7 +2779,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "orblock"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:336:1: fragment orblock : OR LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( ORBLOCK ( block_statement )* ) ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:294:1: fragment orblock : OR LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( ORBLOCK ( block_statement )* ) ;
     public final DeeLangParser.orblock_return orblock() throws RecognitionException {
         DeeLangParser.orblock_return retval = new DeeLangParser.orblock_return();
         retval.start = input.LT(1);
@@ -2815,18 +2813,18 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 17) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:337:3: ( OR LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( ORBLOCK ( block_statement )* ) )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:3: OR LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:3: ( OR LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY -> ^( ORBLOCK ( block_statement )* ) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:5: OR LCURLY ( TERMINATOR )* ( block_statement ( TERMINATOR block_statement )* )? ( TERMINATOR )* RCURLY
             {
-            OR65=(Token)match(input,OR,FOLLOW_OR_in_orblock967); if (state.failed) return retval; 
+            OR65=(Token)match(input,OR,FOLLOW_OR_in_orblock797); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_OR.add(OR65);
 
 
-            LCURLY66=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_orblock969); if (state.failed) return retval; 
+            LCURLY66=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_orblock799); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LCURLY.add(LCURLY66);
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:13: ( TERMINATOR )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:15: ( TERMINATOR )*
             loop23:
             do {
                 int alt23=2;
@@ -2845,9 +2843,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt23) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:13: TERMINATOR
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:15: TERMINATOR
             	    {
-            	    TERMINATOR67=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_orblock971); if (state.failed) return retval; 
+            	    TERMINATOR67=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_orblock801); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_TERMINATOR.add(TERMINATOR67);
 
 
@@ -2860,7 +2858,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:25: ( block_statement ( TERMINATOR block_statement )* )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:27: ( block_statement ( TERMINATOR block_statement )* )?
             int alt25=2;
             int LA25_0 = input.LA(1);
 
@@ -2869,16 +2867,16 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt25) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:26: block_statement ( TERMINATOR block_statement )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:28: block_statement ( TERMINATOR block_statement )*
                     {
-                    pushFollow(FOLLOW_block_statement_in_orblock975);
+                    pushFollow(FOLLOW_block_statement_in_orblock805);
                     block_statement68=block_statement();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_block_statement.add(block_statement68.getTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:42: ( TERMINATOR block_statement )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:44: ( TERMINATOR block_statement )*
                     loop24:
                     do {
                         int alt24=2;
@@ -2897,13 +2895,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt24) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:43: TERMINATOR block_statement
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:45: TERMINATOR block_statement
                     	    {
-                    	    TERMINATOR69=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_orblock978); if (state.failed) return retval; 
+                    	    TERMINATOR69=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_orblock808); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_TERMINATOR.add(TERMINATOR69);
 
 
-                    	    pushFollow(FOLLOW_block_statement_in_orblock980);
+                    	    pushFollow(FOLLOW_block_statement_in_orblock810);
                     	    block_statement70=block_statement();
 
                     	    state._fsp--;
@@ -2925,7 +2923,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:74: ( TERMINATOR )*
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:76: ( TERMINATOR )*
             loop26:
             do {
                 int alt26=2;
@@ -2938,9 +2936,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt26) {
             	case 1 :
-            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:74: TERMINATOR
+            	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:76: TERMINATOR
             	    {
-            	    TERMINATOR71=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_orblock986); if (state.failed) return retval; 
+            	    TERMINATOR71=(Token)match(input,TERMINATOR,FOLLOW_TERMINATOR_in_orblock816); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_TERMINATOR.add(TERMINATOR71);
 
 
@@ -2953,7 +2951,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            RCURLY72=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_orblock989); if (state.failed) return retval; 
+            RCURLY72=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_orblock819); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RCURLY.add(RCURLY72);
 
 
@@ -2970,16 +2968,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 339:5: -> ^( ORBLOCK ( block_statement )* )
+            // 296:5: -> ^( ORBLOCK ( block_statement )* )
             {
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:340:7: ^( ORBLOCK ( block_statement )* )
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:296:8: ^( ORBLOCK ( block_statement )* )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot(
                 (CommonTree)adaptor.create(ORBLOCK, "ORBLOCK")
                 , root_1);
 
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:340:17: ( block_statement )*
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:296:18: ( block_statement )*
                 while ( stream_block_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_block_statement.nextTree());
 
@@ -3029,7 +3027,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "argument_list"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:344:1: fragment argument_list : LPAREN ( expr ( COMMA expr )* )? RPAREN -> ( ^( ARGS expr ( expr )* ) )? ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:300:1: fragment argument_list : LPAREN ( expr ( COMMA expr )* )? RPAREN -> ( ^( ARGS expr ( expr )* ) )? ;
     public final DeeLangParser.argument_list_return argument_list() throws RecognitionException {
         DeeLangParser.argument_list_return retval = new DeeLangParser.argument_list_return();
         retval.start = input.LT(1);
@@ -3056,14 +3054,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 18) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:345:3: ( LPAREN ( expr ( COMMA expr )* )? RPAREN -> ( ^( ARGS expr ( expr )* ) )? )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:346:3: LPAREN ( expr ( COMMA expr )* )? RPAREN
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:3: ( LPAREN ( expr ( COMMA expr )* )? RPAREN -> ( ^( ARGS expr ( expr )* ) )? )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:5: LPAREN ( expr ( COMMA expr )* )? RPAREN
             {
-            LPAREN73=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_argument_list1025); if (state.failed) return retval; 
+            LPAREN73=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_argument_list847); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN73);
 
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:346:10: ( expr ( COMMA expr )* )?
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:12: ( expr ( COMMA expr )* )?
             int alt28=2;
             int LA28_0 = input.LA(1);
 
@@ -3072,16 +3070,16 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt28) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:346:11: expr ( COMMA expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:13: expr ( COMMA expr )*
                     {
-                    pushFollow(FOLLOW_expr_in_argument_list1028);
+                    pushFollow(FOLLOW_expr_in_argument_list850);
                     expr74=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr74.getTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:346:16: ( COMMA expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:18: ( COMMA expr )*
                     loop27:
                     do {
                         int alt27=2;
@@ -3094,13 +3092,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt27) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:346:17: COMMA expr
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:19: COMMA expr
                     	    {
-                    	    COMMA75=(Token)match(input,COMMA,FOLLOW_COMMA_in_argument_list1031); if (state.failed) return retval; 
+                    	    COMMA75=(Token)match(input,COMMA,FOLLOW_COMMA_in_argument_list853); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA75);
 
 
-                    	    pushFollow(FOLLOW_expr_in_argument_list1033);
+                    	    pushFollow(FOLLOW_expr_in_argument_list855);
                     	    expr76=expr();
 
                     	    state._fsp--;
@@ -3122,7 +3120,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            RPAREN77=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_argument_list1039); if (state.failed) return retval; 
+            RPAREN77=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_argument_list861); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN77);
 
 
@@ -3139,11 +3137,11 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 347:5: -> ( ^( ARGS expr ( expr )* ) )?
+            // 301:41: -> ( ^( ARGS expr ( expr )* ) )?
             {
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:348:7: ( ^( ARGS expr ( expr )* ) )?
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:44: ( ^( ARGS expr ( expr )* ) )?
                 if ( stream_expr.hasNext()||stream_expr.hasNext() ) {
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:348:7: ^( ARGS expr ( expr )* )
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:44: ^( ARGS expr ( expr )* )
                     {
                     CommonTree root_1 = (CommonTree)adaptor.nil();
                     root_1 = (CommonTree)adaptor.becomeRoot(
@@ -3152,7 +3150,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:348:19: ( expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:301:56: ( expr )*
                     while ( stream_expr.hasNext() ) {
                         adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -3206,7 +3204,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "class_identifier"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:351:1: class_identifier : rec= IDENTIFIER DOT id= IDENTIFIER -> ^( FIELD_ACCESS $rec $id) ;
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:304:1: class_identifier : rec= IDENTIFIER DOT id= IDENTIFIER -> ^( FIELD_ACCESS $rec $id) ;
     public final DeeLangParser.class_identifier_return class_identifier() throws RecognitionException {
         DeeLangParser.class_identifier_return retval = new DeeLangParser.class_identifier_return();
         retval.start = input.LT(1);
@@ -3228,18 +3226,18 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 19) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:352:3: (rec= IDENTIFIER DOT id= IDENTIFIER -> ^( FIELD_ACCESS $rec $id) )
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:353:3: rec= IDENTIFIER DOT id= IDENTIFIER
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:305:3: (rec= IDENTIFIER DOT id= IDENTIFIER -> ^( FIELD_ACCESS $rec $id) )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:305:5: rec= IDENTIFIER DOT id= IDENTIFIER
             {
-            rec=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_class_identifier1078); if (state.failed) return retval; 
+            rec=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_class_identifier888); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENTIFIER.add(rec);
 
 
-            DOT78=(Token)match(input,DOT,FOLLOW_DOT_in_class_identifier1080); if (state.failed) return retval; 
+            DOT78=(Token)match(input,DOT,FOLLOW_DOT_in_class_identifier890); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_DOT.add(DOT78);
 
 
-            id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_class_identifier1084); if (state.failed) return retval; 
+            id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_class_identifier894); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENTIFIER.add(id);
 
 
@@ -3258,9 +3256,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 354:5: -> ^( FIELD_ACCESS $rec $id)
+            // 305:38: -> ^( FIELD_ACCESS $rec $id)
             {
-                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:355:7: ^( FIELD_ACCESS $rec $id)
+                // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:305:41: ^( FIELD_ACCESS $rec $id)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot(
@@ -3314,7 +3312,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "literal"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:358:1: literal : ( DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL | FLOATING_POINT_LITERAL | STRING_LITERAL | CHARACTER_LITERAL );
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:308:1: literal : ( DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL | FLOATING_POINT_LITERAL | STRING_LITERAL | CHARACTER_LITERAL );
     public final DeeLangParser.literal_return literal() throws RecognitionException {
         DeeLangParser.literal_return retval = new DeeLangParser.literal_return();
         retval.start = input.LT(1);
@@ -3330,7 +3328,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 20) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:359:3: ( DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL | FLOATING_POINT_LITERAL | STRING_LITERAL | CHARACTER_LITERAL )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:309:3: ( DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL | FLOATING_POINT_LITERAL | STRING_LITERAL | CHARACTER_LITERAL )
             // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
             {
             root_0 = (CommonTree)adaptor.nil();
@@ -3387,7 +3385,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "atom"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:369:1: atom : ( literal | IDENTIFIER | class_identifier ( chained_call_or_field_expr )* | meth_call ( chained_call_or_field_expr )* | LPAREN ! expr RPAREN !);
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:317:1: atom : ( literal | IDENTIFIER | class_identifier ( chained_call_or_field_expr )* | meth_call ( chained_call_or_field_expr )* | LPAREN ! expr RPAREN !);
     public final DeeLangParser.atom_return atom() throws RecognitionException {
         DeeLangParser.atom_return retval = new DeeLangParser.atom_return();
         retval.start = input.LT(1);
@@ -3419,7 +3417,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 21) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:370:3: ( literal | IDENTIFIER | class_identifier ( chained_call_or_field_expr )* | meth_call ( chained_call_or_field_expr )* | LPAREN ! expr RPAREN !)
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:318:3: ( literal | IDENTIFIER | class_identifier ( chained_call_or_field_expr )* | meth_call ( chained_call_or_field_expr )* | LPAREN ! expr RPAREN !)
             int alt31=5;
             switch ( input.LA(1) ) {
             case CHARACTER_LITERAL:
@@ -3529,12 +3527,12 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt31) {
                 case 1 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:371:3: literal
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:318:5: literal
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_literal_in_atom1169);
+                    pushFollow(FOLLOW_literal_in_atom962);
                     literal80=literal();
 
                     state._fsp--;
@@ -3544,12 +3542,12 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:372:5: IDENTIFIER
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:319:5: IDENTIFIER
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    IDENTIFIER81=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_atom1175); if (state.failed) return retval;
+                    IDENTIFIER81=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_atom968); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     IDENTIFIER81_tree = 
                     (CommonTree)adaptor.create(IDENTIFIER81)
@@ -3560,19 +3558,19 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:373:5: class_identifier ( chained_call_or_field_expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:320:5: class_identifier ( chained_call_or_field_expr )*
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_class_identifier_in_atom1181);
+                    pushFollow(FOLLOW_class_identifier_in_atom974);
                     class_identifier82=class_identifier();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, class_identifier82.getTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:373:22: ( chained_call_or_field_expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:320:22: ( chained_call_or_field_expr )*
                     loop29:
                     do {
                         int alt29=2;
@@ -3585,9 +3583,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:373:23: chained_call_or_field_expr
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:320:23: chained_call_or_field_expr
                     	    {
-                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_atom1184);
+                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_atom977);
                     	    chained_call_or_field_expr83=chained_call_or_field_expr();
 
                     	    state._fsp--;
@@ -3606,19 +3604,19 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:374:5: meth_call ( chained_call_or_field_expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:321:5: meth_call ( chained_call_or_field_expr )*
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_meth_call_in_atom1192);
+                    pushFollow(FOLLOW_meth_call_in_atom985);
                     meth_call84=meth_call();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, meth_call84.getTree());
 
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:374:15: ( chained_call_or_field_expr )*
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:321:15: ( chained_call_or_field_expr )*
                     loop30:
                     do {
                         int alt30=2;
@@ -3631,9 +3629,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt30) {
                     	case 1 :
-                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:374:16: chained_call_or_field_expr
+                    	    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:321:16: chained_call_or_field_expr
                     	    {
-                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_atom1195);
+                    	    pushFollow(FOLLOW_chained_call_or_field_expr_in_atom988);
                     	    chained_call_or_field_expr85=chained_call_or_field_expr();
 
                     	    state._fsp--;
@@ -3652,21 +3650,21 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:375:5: LPAREN ! expr RPAREN !
+                    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:322:5: LPAREN ! expr RPAREN !
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    LPAREN86=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_atom1203); if (state.failed) return retval;
+                    LPAREN86=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_atom996); if (state.failed) return retval;
 
-                    pushFollow(FOLLOW_expr_in_atom1206);
+                    pushFollow(FOLLOW_expr_in_atom999);
                     expr87=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expr87.getTree());
 
-                    RPAREN88=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_atom1208); if (state.failed) return retval;
+                    RPAREN88=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_atom1001); if (state.failed) return retval;
 
                     }
                     break;
@@ -3704,7 +3702,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "terminator"
-    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:378:1: terminator : ( TERMINATOR | EOF );
+    // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:325:1: terminator : ( TERMINATOR | EOF );
     public final DeeLangParser.terminator_return terminator() throws RecognitionException {
         DeeLangParser.terminator_return retval = new DeeLangParser.terminator_return();
         retval.start = input.LT(1);
@@ -3720,7 +3718,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 22) ) { return retval; }
 
-            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:379:3: ( TERMINATOR | EOF )
+            // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:326:3: ( TERMINATOR | EOF )
             // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:
             {
             root_0 = (CommonTree)adaptor.nil();
@@ -3771,10 +3769,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred3_DeeLang
     public final void synpred3_DeeLang_fragment() throws RecognitionException {
-        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:3: ( assign_expr )
-        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:222:3: assign_expr
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:217:5: ( assign_expr )
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:217:5: assign_expr
         {
-        pushFollow(FOLLOW_assign_expr_in_synpred3_DeeLang241);
+        pushFollow(FOLLOW_assign_expr_in_synpred3_DeeLang232);
         assign_expr();
 
         state._fsp--;
@@ -3787,10 +3785,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred23_DeeLang
     public final void synpred23_DeeLang_fragment() throws RecognitionException {
-        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:10: ( TERMINATOR )
-        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:330:10: TERMINATOR
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:12: ( TERMINATOR )
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:289:12: TERMINATOR
         {
-        match(input,TERMINATOR,FOLLOW_TERMINATOR_in_synpred23_DeeLang913); if (state.failed) return ;
+        match(input,TERMINATOR,FOLLOW_TERMINATOR_in_synpred23_DeeLang751); if (state.failed) return ;
 
         }
 
@@ -3799,10 +3797,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred27_DeeLang
     public final void synpred27_DeeLang_fragment() throws RecognitionException {
-        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:13: ( TERMINATOR )
-        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:338:13: TERMINATOR
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:15: ( TERMINATOR )
+        // /home/rosco/workspace/deelang/src/com/roscopeco/deelang/parser/DeeLang.g:295:15: TERMINATOR
         {
-        match(input,TERMINATOR,FOLLOW_TERMINATOR_in_synpred27_DeeLang971); if (state.failed) return ;
+        match(input,TERMINATOR,FOLLOW_TERMINATOR_in_synpred27_DeeLang801); if (state.failed) return ;
 
         }
 
@@ -3857,104 +3855,104 @@ public TreeAdaptor getTreeAdaptor() {
 
  
 
-    public static final BitSet FOLLOW_script_in_start_rule170 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_statement_in_script185 = new BitSet(new long[]{0x0000040622C04802L});
-    public static final BitSet FOLLOW_EOF_in_script192 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_statement208 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_terminator_in_statement210 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_block_statement226 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_assign_expr_in_expr241 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_math_expr_in_expr247 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_class_identifier_in_assign_expr262 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_chained_call_or_field_expr_in_assign_expr264 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_DOT_in_assign_expr267 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr271 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign_expr273 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_assign_expr275 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_class_identifier_in_assign_expr309 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign_expr311 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_assign_expr313 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_meth_call_in_assign_expr343 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_chained_call_or_field_expr_in_assign_expr345 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_DOT_in_assign_expr348 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr352 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign_expr354 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_assign_expr356 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LPAREN_in_assign_expr388 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_assign_expr392 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_RPAREN_in_assign_expr394 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_chained_call_or_field_expr_in_assign_expr396 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_DOT_in_assign_expr399 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr403 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign_expr405 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_assign_expr409 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr445 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign_expr447 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_assign_expr449 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_mult_expr_in_math_expr484 = new BitSet(new long[]{0x0000080000000012L});
-    public static final BitSet FOLLOW_ADD_in_math_expr502 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_SUB_in_math_expr513 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_mult_expr_in_math_expr526 = new BitSet(new long[]{0x0000080000000012L});
-    public static final BitSet FOLLOW_pow_expr_in_mult_expr546 = new BitSet(new long[]{0x0000000180008002L});
-    public static final BitSet FOLLOW_MUL_in_mult_expr564 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_DIV_in_mult_expr575 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_MOD_in_mult_expr586 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_pow_expr_in_mult_expr599 = new BitSet(new long[]{0x0000000180008002L});
-    public static final BitSet FOLLOW_unary_expr_in_pow_expr619 = new BitSet(new long[]{0x0000004000000002L});
-    public static final BitSet FOLLOW_POW_in_pow_expr624 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_unary_expr_in_pow_expr628 = new BitSet(new long[]{0x0000004000000002L});
-    public static final BitSet FOLLOW_NOT_in_unary_expr645 = new BitSet(new long[]{0x0000040422C04800L});
-    public static final BitSet FOLLOW_atom_in_unary_expr648 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_meth_call669 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_DOT_in_meth_call671 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_func_call_expr_in_meth_call695 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_meth_call743 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_DOT_in_meth_call745 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_func_call_expr_in_meth_call747 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_chained_field_expr_in_chained_call_or_field_expr784 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_chained_meth_call_expr_in_chained_call_or_field_expr790 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_chained_meth_call_expr807 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_func_call_expr_in_chained_meth_call_expr809 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_chained_field_expr846 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_chained_field_expr848 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_func_call_expr885 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_argument_list_in_func_call_expr888 = new BitSet(new long[]{0x0000000808000002L});
-    public static final BitSet FOLLOW_block_in_func_call_expr890 = new BitSet(new long[]{0x0000000800000002L});
-    public static final BitSet FOLLOW_orblock_in_func_call_expr893 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LCURLY_in_block911 = new BitSet(new long[]{0x0000148622C04800L});
-    public static final BitSet FOLLOW_TERMINATOR_in_block913 = new BitSet(new long[]{0x0000148622C04800L});
-    public static final BitSet FOLLOW_block_statement_in_block917 = new BitSet(new long[]{0x0000108000000000L});
-    public static final BitSet FOLLOW_TERMINATOR_in_block920 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_block_statement_in_block922 = new BitSet(new long[]{0x0000108000000000L});
-    public static final BitSet FOLLOW_TERMINATOR_in_block928 = new BitSet(new long[]{0x0000108000000000L});
-    public static final BitSet FOLLOW_RCURLY_in_block931 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_OR_in_orblock967 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_LCURLY_in_orblock969 = new BitSet(new long[]{0x0000148622C04800L});
-    public static final BitSet FOLLOW_TERMINATOR_in_orblock971 = new BitSet(new long[]{0x0000148622C04800L});
-    public static final BitSet FOLLOW_block_statement_in_orblock975 = new BitSet(new long[]{0x0000108000000000L});
-    public static final BitSet FOLLOW_TERMINATOR_in_orblock978 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_block_statement_in_orblock980 = new BitSet(new long[]{0x0000108000000000L});
-    public static final BitSet FOLLOW_TERMINATOR_in_orblock986 = new BitSet(new long[]{0x0000108000000000L});
-    public static final BitSet FOLLOW_RCURLY_in_orblock989 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LPAREN_in_argument_list1025 = new BitSet(new long[]{0x0000050622C04800L});
-    public static final BitSet FOLLOW_expr_in_argument_list1028 = new BitSet(new long[]{0x0000010000001000L});
-    public static final BitSet FOLLOW_COMMA_in_argument_list1031 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_argument_list1033 = new BitSet(new long[]{0x0000010000001000L});
-    public static final BitSet FOLLOW_RPAREN_in_argument_list1039 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_class_identifier1078 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_DOT_in_class_identifier1080 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_class_identifier1084 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_atom1169 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_atom1175 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_class_identifier_in_atom1181 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_chained_call_or_field_expr_in_atom1184 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_meth_call_in_atom1192 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_chained_call_or_field_expr_in_atom1195 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_LPAREN_in_atom1203 = new BitSet(new long[]{0x0000040622C04800L});
-    public static final BitSet FOLLOW_expr_in_atom1206 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_RPAREN_in_atom1208 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_assign_expr_in_synpred3_DeeLang241 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_TERMINATOR_in_synpred23_DeeLang913 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_TERMINATOR_in_synpred27_DeeLang971 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_script_in_start_rule169 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statement_in_script182 = new BitSet(new long[]{0x0000040622C04802L});
+    public static final BitSet FOLLOW_EOF_in_script189 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_statement203 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_terminator_in_statement205 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_block_statement219 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_assign_expr_in_expr232 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_math_expr_in_expr238 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_class_identifier_in_assign_expr251 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_chained_call_or_field_expr_in_assign_expr253 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_DOT_in_assign_expr256 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr260 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign_expr262 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_assign_expr264 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_class_identifier_in_assign_expr298 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign_expr300 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_assign_expr302 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_meth_call_in_assign_expr332 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_chained_call_or_field_expr_in_assign_expr334 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_DOT_in_assign_expr337 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr341 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign_expr343 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_assign_expr345 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LPAREN_in_assign_expr377 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_assign_expr381 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_RPAREN_in_assign_expr383 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_chained_call_or_field_expr_in_assign_expr385 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_DOT_in_assign_expr388 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr392 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign_expr394 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_assign_expr398 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_assign_expr434 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign_expr436 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_assign_expr438 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_mult_expr_in_math_expr465 = new BitSet(new long[]{0x0000080000000012L});
+    public static final BitSet FOLLOW_ADD_in_math_expr469 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_SUB_in_math_expr472 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_mult_expr_in_math_expr476 = new BitSet(new long[]{0x0000080000000012L});
+    public static final BitSet FOLLOW_pow_expr_in_mult_expr491 = new BitSet(new long[]{0x0000000180008002L});
+    public static final BitSet FOLLOW_MUL_in_mult_expr495 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_DIV_in_mult_expr499 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_MOD_in_mult_expr503 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_pow_expr_in_mult_expr507 = new BitSet(new long[]{0x0000000180008002L});
+    public static final BitSet FOLLOW_unary_expr_in_pow_expr522 = new BitSet(new long[]{0x0000004000000002L});
+    public static final BitSet FOLLOW_POW_in_pow_expr526 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_unary_expr_in_pow_expr530 = new BitSet(new long[]{0x0000004000000002L});
+    public static final BitSet FOLLOW_NOT_in_unary_expr545 = new BitSet(new long[]{0x0000040422C04800L});
+    public static final BitSet FOLLOW_atom_in_unary_expr548 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_meth_call567 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_DOT_in_meth_call569 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_func_call_expr_in_meth_call575 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_meth_call617 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_DOT_in_meth_call619 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_func_call_expr_in_meth_call621 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_chained_field_expr_in_chained_call_or_field_expr650 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_chained_meth_call_expr_in_chained_call_or_field_expr656 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_chained_meth_call_expr671 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_func_call_expr_in_chained_meth_call_expr673 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_chained_field_expr698 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_chained_field_expr700 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_func_call_expr725 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_argument_list_in_func_call_expr728 = new BitSet(new long[]{0x0000000808000002L});
+    public static final BitSet FOLLOW_block_in_func_call_expr730 = new BitSet(new long[]{0x0000000800000002L});
+    public static final BitSet FOLLOW_orblock_in_func_call_expr733 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LCURLY_in_block749 = new BitSet(new long[]{0x0000148622C04800L});
+    public static final BitSet FOLLOW_TERMINATOR_in_block751 = new BitSet(new long[]{0x0000148622C04800L});
+    public static final BitSet FOLLOW_block_statement_in_block755 = new BitSet(new long[]{0x0000108000000000L});
+    public static final BitSet FOLLOW_TERMINATOR_in_block758 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_block_statement_in_block760 = new BitSet(new long[]{0x0000108000000000L});
+    public static final BitSet FOLLOW_TERMINATOR_in_block766 = new BitSet(new long[]{0x0000108000000000L});
+    public static final BitSet FOLLOW_RCURLY_in_block769 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_OR_in_orblock797 = new BitSet(new long[]{0x0000000008000000L});
+    public static final BitSet FOLLOW_LCURLY_in_orblock799 = new BitSet(new long[]{0x0000148622C04800L});
+    public static final BitSet FOLLOW_TERMINATOR_in_orblock801 = new BitSet(new long[]{0x0000148622C04800L});
+    public static final BitSet FOLLOW_block_statement_in_orblock805 = new BitSet(new long[]{0x0000108000000000L});
+    public static final BitSet FOLLOW_TERMINATOR_in_orblock808 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_block_statement_in_orblock810 = new BitSet(new long[]{0x0000108000000000L});
+    public static final BitSet FOLLOW_TERMINATOR_in_orblock816 = new BitSet(new long[]{0x0000108000000000L});
+    public static final BitSet FOLLOW_RCURLY_in_orblock819 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LPAREN_in_argument_list847 = new BitSet(new long[]{0x0000050622C04800L});
+    public static final BitSet FOLLOW_expr_in_argument_list850 = new BitSet(new long[]{0x0000010000001000L});
+    public static final BitSet FOLLOW_COMMA_in_argument_list853 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_argument_list855 = new BitSet(new long[]{0x0000010000001000L});
+    public static final BitSet FOLLOW_RPAREN_in_argument_list861 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_class_identifier888 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_DOT_in_class_identifier890 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_class_identifier894 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_atom962 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_atom968 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_class_identifier_in_atom974 = new BitSet(new long[]{0x0000000000010002L});
+    public static final BitSet FOLLOW_chained_call_or_field_expr_in_atom977 = new BitSet(new long[]{0x0000000000010002L});
+    public static final BitSet FOLLOW_meth_call_in_atom985 = new BitSet(new long[]{0x0000000000010002L});
+    public static final BitSet FOLLOW_chained_call_or_field_expr_in_atom988 = new BitSet(new long[]{0x0000000000010002L});
+    public static final BitSet FOLLOW_LPAREN_in_atom996 = new BitSet(new long[]{0x0000040622C04800L});
+    public static final BitSet FOLLOW_expr_in_atom999 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_RPAREN_in_atom1001 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_assign_expr_in_synpred3_DeeLang232 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_TERMINATOR_in_synpred23_DeeLang751 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_TERMINATOR_in_synpred27_DeeLang801 = new BitSet(new long[]{0x0000000000000002L});
 
 }

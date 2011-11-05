@@ -77,11 +77,11 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
 
   @Test
   public void testStringLiteralEscapes() throws RecognitionException, CompilerError {
-    runCodeAndPoolComparisonTest("\"\\\\ \\\" \\b \\t \\n \\f \\r \\' \\u0001 \\/\"", new byte[] {
+    runCodeAndPoolComparisonTest("\"\\\\ \\\" \\b \\t \\n \\f \\r \\' \\u0001\"", new byte[] {
         Opcodes.SPUSHCONST_B, 0
     }, 
     new CompiledScript.ConstPoolEntry[] {
-        new CompiledScript.ConstPoolString("\\ \" \b \t \n \f \r ' \u0001 /")
+        new CompiledScript.ConstPoolString("\\ \" \b \t \n \f \r ' \u0001")
     });
   }
 }
