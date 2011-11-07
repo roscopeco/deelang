@@ -16,7 +16,7 @@
  */
 package deelang;
 
-import com.roscopeco.deelang.vm.Context;
+import com.roscopeco.deelang.vm.RuntimeContext;
 
 /**
  * A float within the Dee VM.
@@ -30,12 +30,12 @@ public class DeeLangFloat extends DeeLangObject {
   
   Double dbl;
 
-  public DeeLangFloat(Context context) {
+  public DeeLangFloat(RuntimeContext context) {
     super(context);
     this.dbl = ZERO;
   }
   
-  public DeeLangFloat(Context context, Double dbl) {
+  public DeeLangFloat(RuntimeContext context, Double dbl) {
     super(context);
     this.dbl = dbl;
   }

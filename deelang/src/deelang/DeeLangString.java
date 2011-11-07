@@ -16,7 +16,7 @@
  */
 package deelang;
 
-import com.roscopeco.deelang.vm.Context;
+import com.roscopeco.deelang.vm.RuntimeContext;
 
 /**
  * A String in the Dee VM. 
@@ -28,12 +28,12 @@ import com.roscopeco.deelang.vm.Context;
 public class DeeLangString extends DeeLangObject {
   private String string;
   
-  public DeeLangString(Context context) {
+  public DeeLangString(RuntimeContext context) {
     super(context);
     this.string = "";
   }
   
-  public DeeLangString(Context context, String string) {
+  public DeeLangString(RuntimeContext context, String string) {
     super(context);
     this.string = string;
   }

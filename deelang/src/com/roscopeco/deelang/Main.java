@@ -23,7 +23,7 @@ import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.vm.Context;
+import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
 
@@ -48,7 +48,7 @@ public class Main {
   		"3.times() { puts(\"Hello\") }\n";
   
   public static class BarObj extends DeeLangObject {
-    public BarObj(Context ctx) {
+    public BarObj(RuntimeContext ctx) {
       super(ctx);
     }
     
@@ -64,7 +64,7 @@ public class Main {
   public static class FooObj extends DeeLangObject {
     public DeeLangObject qix;
     
-    public FooObj(Context ctx) {
+    public FooObj(RuntimeContext ctx) {
       super(ctx);
     }
     
@@ -133,7 +133,7 @@ public class Main {
     try {
       FooObj foo;
       VM vm = new VM();
-      Context ctx = vm.createContext(script);
+      RuntimeContext ctx = vm.createContext(script);
       ctx.setSelf(new BarObj(ctx));
       ctx.setLocal("Quux", foo = new FooObj(ctx));
       ctx.setLocal("beezum", new DeeLangInteger(ctx, 10));

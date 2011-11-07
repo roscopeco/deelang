@@ -16,7 +16,7 @@
  */
 package deelang;
 
-import com.roscopeco.deelang.vm.Context;
+import com.roscopeco.deelang.vm.RuntimeContext;
 
 /**
  * An Integer within the Dee VM.
@@ -29,12 +29,12 @@ public class DeeLangInteger extends DeeLangObject {
   
   Integer integer;
 
-  public DeeLangInteger(Context context) {
+  public DeeLangInteger(RuntimeContext context) {
     super(context);
     this.integer = ZERO;
   }
   
-  public DeeLangInteger(Context context, Integer integer) {
+  public DeeLangInteger(RuntimeContext context, Integer integer) {
     super(context);
     this.integer = integer;
   }

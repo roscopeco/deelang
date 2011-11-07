@@ -16,7 +16,7 @@
  */
 package deelang;
 
-import com.roscopeco.deelang.vm.Context;
+import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.UnsupportedOperationError;
 
 /**
@@ -29,19 +29,19 @@ import com.roscopeco.deelang.vm.UnsupportedOperationError;
  *
  */
 public class DeeLangObject {
-  final Context context;
+  final RuntimeContext context;
   
-  public DeeLangObject(Context context) {
+  public DeeLangObject(RuntimeContext context) {
     this.context = context;
   }
   
   /* **** DROIDLANG API **** */
   /**
-   * Get the {@link Context} to which this Object belongs.
+   * Get the {@link RuntimeContext} to which this Object belongs.
    * 
    * @return This object's context.
    */
-  protected Context getContext() {
+  protected RuntimeContext getContext() {
     return context;
   }
   

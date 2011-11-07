@@ -40,8 +40,8 @@ import deelang.DeeLangString;
 public class VM {  
   public VM() { }
   
-  public Context createContext(CompiledScript script) {
-    return new Context(this, script);
+  public RuntimeContext createContext(CompiledScript script) {
+    return new RuntimeContext(this, script);
   }
   
   private Method findMethodForArgs(Object receiver, String name, Object[] args) {
@@ -69,11 +69,11 @@ public class VM {
   /**
    * Single-step the VM. 
    * 
-   * @param ctx The Context.
+   * @param ctx The RuntimeContext.
    * 
    * @throws RuntimeError
    */
-  public void step(Context ctx) throws RuntimeError {
+  public void step(RuntimeContext ctx) throws RuntimeError {
     step(ctx, ctx.codeStrm);
   }
   
@@ -83,7 +83,7 @@ public class VM {
    * @param ctx The context.
    * @param index Index in the const pool of the CONST_POOL_FIELD to set.
    */
-  private final void doPutField(Context ctx, int index) {
+  private final void doPutField(RuntimeContext ctx, int index) {
     Object value = ctx.stack.removeFirst();
     Object receiver = ctx.stack.removeFirst();
     try {
@@ -102,7 +102,7 @@ public class VM {
    * @param ctx The context.
    * @param index Index in the const pool of the CONST_POOL_FIELD to get.
    */
-  private final void doGetField(Context ctx, int index) {
+  private final void doGetField(RuntimeContext ctx, int index) {
     Object receiver = ctx.stack.removeFirst();
     try {
       Field f = receiver.getClass().getDeclaredField((String)ctx.pool[index].getValue());
@@ -123,7 +123,7 @@ public class VM {
    * @param argc The argument count.
    * @param errorWasSet True if errorFlag was set at end of previous instruction (used for 'or' invocation)
    */
-  private final void doInvoke(Context ctx, byte op, int index, byte argc, boolean errorWasSet) {
+  private final void doInvoke(RuntimeContext ctx, byte op, int index, byte argc, boolean errorWasSet) {
     Object args[] = new Object[argc];
     
     for (int i = argc - 1; i > -1; i--) {
@@ -187,7 +187,7 @@ public class VM {
    * 
    * @throws RuntimeError
    */
-  void step(Context ctx, DataInputStream strm) throws UnsupportedOperationError, 
+  void step(RuntimeContext ctx, DataInputStream strm) throws UnsupportedOperationError, 
                                                       NoSuchMethodError,
                                                       JavaMethodError,
                                                       ReflectiveAccessError,
@@ -335,7 +335,7 @@ public class VM {
    * 
    * @throws RuntimeError
    */
-  public void run(Context ctx) throws RuntimeError {
+  public void run(RuntimeContext ctx) throws RuntimeError {
     try {
       while (ctx.codeStrm.available() > 0) {
         step(ctx);
@@ -375,7 +375,7 @@ public class VM {
    * @return True if a block was executed, false otherwise.
    * @throws RuntimeError
    */
-  public boolean runBlock(Context ctx) throws UnsupportedOperationError, 
+  public boolean runBlock(RuntimeContext ctx) throws UnsupportedOperationError, 
                                               NoSuchMethodError,
                                               JavaMethodError,
                                               ReflectiveAccessError,

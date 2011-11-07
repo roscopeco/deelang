@@ -1,4 +1,4 @@
-/* Context.java - Context within which the VM runs scripts.
+/* RuntimeContext.java - RuntimeContext within which the VM runs scripts.
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -30,14 +30,14 @@ import deelang.DeeLangInteger;
 import deelang.DeeLangObject;
 
 /**
- * <p>Context within which the VM runs scripts. The context
+ * <p>RuntimeContext within which the VM runs scripts. The context
  * contains the code, bindings, outer-scope SELF object,
  * state and variables for the script's execution.</p>
  *   
  * @author rosco
  * @created 16 Oct 2011
  */
-public class Context {
+public class RuntimeContext {
   // TODO don't like this, highly couples vm and runtime...
   
   public final DeeLangInteger ZERO = new DeeLangInteger(this, 0);
@@ -59,7 +59,7 @@ public class Context {
   
   DeeLangObject self;
   
-  Context(VM vm, CompiledScript script) {
+  RuntimeContext(VM vm, CompiledScript script) {
     this.vm = vm;
     this.script = script;
     this.locals = new Object[script.getLocalsTable().length];

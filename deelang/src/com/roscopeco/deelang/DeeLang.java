@@ -24,7 +24,7 @@ import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.ParseError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.vm.Context;
+import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
 
@@ -54,7 +54,7 @@ public final class DeeLang {
      * 
      * @param context The new context. 
      */
-    public void initContext(Context context);
+    public void initContext(RuntimeContext context);
   }
   
   private DeeLang() throws UnsupportedOperationException {
@@ -88,7 +88,7 @@ public final class DeeLang {
    */
   public static void runScript(CompiledScript script, ContextInitialiser initialiser) throws CompilerError, RuntimeError {
     VM vm = new VM();
-    Context context = vm.createContext(script);
+    RuntimeContext context = vm.createContext(script);
     initialiser.initContext(context);
     vm.run(context);
   }
