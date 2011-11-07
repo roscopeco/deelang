@@ -23,12 +23,13 @@ import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.runtime.DeeLangInteger;
-import com.roscopeco.deelang.runtime.DeeLangObject;
-import com.roscopeco.deelang.runtime.DeeLangString;
 import com.roscopeco.deelang.vm.Context;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
+
+import deelang.DeeLangInteger;
+import deelang.DeeLangObject;
+import deelang.DeeLangString;
 
 /**
  * Just a testbed/sandbox for use during development. NOT FOR INCLUSION IN DISTRIBUTION!

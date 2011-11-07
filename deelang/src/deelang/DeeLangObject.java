@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.runtime;
+package deelang;
 
 import com.roscopeco.deelang.vm.Context;
 import com.roscopeco.deelang.vm.UnsupportedOperationError;
