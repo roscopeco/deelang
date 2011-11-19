@@ -11,7 +11,9 @@
 	<!-- cleanup -->
 	<target name="_clean-jar">
 		<delete dir="${build.dir}"/>
-		<delete file="${bin.dir}/*.jar"/>
+		<delete>
+			<fileset dir="${bin.dir}" includes="*.jar"/>
+		</delete>
 	</target>
 	<target name="_clean-classes">
 		<delete dir="${test.classes.dir}"/>
@@ -75,7 +77,11 @@
 		</copy>
 		<jar destfile="${bin.dir}/${jar.name}" basedir="${build.dir}" includes="**/*"/>
 
+		<!-- Build nocli jar -->
+		<jar destfile="${bin.dir}/${jar.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
+
 		<!-- Add ANTLR runtime and license and build complete jar -->
+		<!-- This jar gets the manifest with the Main-Class attribute, so it can run as a commandline compiler. -->
 		<unjar src="${lib.dir}/antlr-runtime-3.4.jar" dest="${build.dir}"/>
 		<delete dir="${build.dir}/org/antlr/runtime/debug"/>
 		<delete dir="${build.dir}/META-INF"/>
@@ -84,7 +90,10 @@
 				<include name="LICENSE.antlr"/>
 			</fileset>
 		</copy>
-		<jar destfile="${bin.dir}/${jar.complete.name}" basedir="${build.dir}" includes="**/*"/>
+		<jar destfile="${bin.dir}/${jar.complete.name}" basedir="${build.dir}" includes="**/*" manifest="${main.src.dir}/manifest"/>
+
+		<!-- Build nocli complete jar -->
+		<jar destfile="${bin.dir}/${jar.complete.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
 	</target>
 
 	<target name="run-tests" description="Run JUnit4 tests" depends="compile-tests">
