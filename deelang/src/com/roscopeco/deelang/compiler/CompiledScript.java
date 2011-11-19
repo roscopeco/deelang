@@ -89,12 +89,51 @@ public class CompiledScript {
     
     /**
      * Write this pool entry to the specified data stream.
+     * Implementations of this method are responsible for writing the
+     * appropriate TYPE byte followed by the actual data storage.
      * 
      * @param os The output stream.
      * 
      * @throws IOException If an IO error occurs.
      */
     abstract void store(DataOutputStream os) throws IOException;
+    
+    /**
+     * Read a const pool entry and return the correct subclass for it's type.
+     * 
+     * @param di DataInputStream. Next byte should be the pool entry's TYPE
+     * @return A new ConstPoolEntry implementation for the entry type.
+     * @throws IOException 
+     * @throws UnknownConstPoolTypeException
+     */
+    static ConstPoolEntry readEntry(DataInputStream di) throws IOException, UnknownConstPoolTypeException {
+      byte type = di.readByte();
+      switch (type) {
+      case CONST_POOL_CLASS:
+        return new ConstPoolClass(di);
+      case CONST_POOL_FIELD:
+        return new ConstPoolField(di);
+      case CONST_POOL_METHOD:
+        return new ConstPoolMethod(di);
+      case CONST_POOL_INT:
+        return new ConstPoolInt(di);
+      case CONST_POOL_FLOAT:
+        return new ConstPoolFloat(di);
+      case CONST_POOL_STRING:
+        return new ConstPoolString(di);
+      default:
+        throw new UnknownConstPoolTypeException("Unknown constant pool entry type: " + type);
+      }
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+      if (other instanceof ConstPoolEntry) {
+        ConstPoolEntry e = (ConstPoolEntry)other;
+        return ((e.getType() == getType()) && (e.getValue().equals(getValue())));
+      }
+      return false;
+    }
   }
   
   /*
@@ -110,7 +149,7 @@ public class CompiledScript {
     ConstPoolClass(DataInputStream strm) throws IOException { this.value = strm.readUTF(); }
     public final int getType() { return CONST_POOL_CLASS; }
     public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeUTF(value); }
+    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeUTF(value); }
     public final String toString() { return "[CONST_POOL_CLASS  " + value + "]"; }
   }
   
@@ -123,7 +162,7 @@ public class CompiledScript {
     ConstPoolField(DataInputStream strm) throws IOException { this.value = strm.readUTF(); }
     public final int getType() { return CONST_POOL_FIELD; }
     public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeUTF(value); }
+    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeUTF(value); }
     public final String toString() { return "[CONST_POOL_FIELD  " + value + "]"; }
   }
   
@@ -136,7 +175,7 @@ public class CompiledScript {
     ConstPoolMethod(DataInputStream strm) throws IOException { this.value = strm.readUTF(); }
     public final int getType() { return CONST_POOL_METHOD; }
     public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeUTF(value); }
+    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeUTF(value); }
     public final String toString() { return "[CONST_POOL_METHOD " + value + "]"; }
   }
   
@@ -149,7 +188,7 @@ public class CompiledScript {
     ConstPoolInt(DataInputStream strm) throws IOException { this.value = strm.readInt(); }
     public final int getType() { return CONST_POOL_INT; }
     public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeInt(value); }
+    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeInt(value); }
     public final String toString() { return "[CONST_POOL_INT    " + value + "]"; }
   }
   
@@ -162,7 +201,7 @@ public class CompiledScript {
     ConstPoolFloat(DataInputStream strm) throws IOException { this.value = strm.readDouble(); }
     public final int getType() { return CONST_POOL_FLOAT; }
     public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeDouble(value); }
+    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeDouble(value); }
     public final String toString() { return "[CONST_POOL_FLOAT  " + value + "]"; }
   }
   
@@ -175,7 +214,7 @@ public class CompiledScript {
     ConstPoolString(DataInputStream strm) throws IOException { this.value = strm.readUTF(); }
     public final int getType() { return CONST_POOL_STRING; }
     public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeUTF(value); }
+    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeUTF(value); }
     public final String toString() { return "[CONST_POOL_STRING \"" + value + "\"]"; }
   }
   
@@ -203,47 +242,25 @@ public class CompiledScript {
     if (Arrays.equals(SCRIPT_SIGNATURE, buf)) {
       // is a script!      
       int constPoolLen = di.readInt();
-
+      
       script = new CompiledScript(constPoolLen);
 
       for (int i = 0; i < constPoolLen; i++) {
-        byte type = di.readByte();
-        switch (type) {
-        case CONST_POOL_CLASS:
-          script.constPool[i] = new ConstPoolClass(di);
-          break;
-        case CONST_POOL_FIELD:
-          script.constPool[i] = new ConstPoolField(di);
-          break;
-        case CONST_POOL_METHOD:
-          script.constPool[i] = new ConstPoolMethod(di);
-          break;
-        case CONST_POOL_INT:
-          script.constPool[i] = new ConstPoolInt(di);
-          break;
-        case CONST_POOL_FLOAT:
-          script.constPool[i] = new ConstPoolFloat(di);
-          break;
-        case CONST_POOL_STRING:
-          script.constPool[i] = new ConstPoolString(di);
-          break;
-        default:
-          throw new UnknownConstPoolTypeException("Unknown constant pool entry type: " + type);
-        }
-        
-        byte numLocals = di.readByte();
-        script.localsTable = new String[numLocals];
-        for (int j = 0; j < numLocals; j++) {
-          script.localsTable[j] = di.readUTF();
-        }
-        
-        int codeLen = di.readInt();
-        script.code = new byte[codeLen];
-        
-        if (di.read(script.code, 0, codeLen) != codeLen) {
-          throw(new CodeUnderflowException("Code array length doesn't match reported length in script file"));
-        };
+        script.constPool[i] = ConstPoolEntry.readEntry(di);
       }
+        
+      byte numLocals = di.readByte();
+      script.localsTable = new String[numLocals];
+      for (int j = 0; j < numLocals; j++) {
+        script.localsTable[j] = di.readUTF();
+      }
+      
+      int codeLen = di.readInt();
+      script.code = new byte[codeLen];
+      
+      if (di.read(script.code, 0, codeLen) != codeLen) {
+        throw(new CodeUnderflowException("Code array length doesn't match reported length in script file"));
+      };
     } else {
       throw new BadScriptSignatureException("Unknown script signature: " + Arrays.toString(buf));
     }
@@ -316,5 +333,13 @@ public class CompiledScript {
     }
     os.writeInt(code.length);
     os.write(code);
+  }
+  
+  @Override
+  public boolean equals(Object other) {
+    return ((other instanceof CompiledScript) &&
+            (Arrays.equals(constPool, ((CompiledScript)other).constPool)) &&
+            (Arrays.equals(this.localsTable, ((CompiledScript)other).localsTable)) &&
+            (Arrays.equals(this.code, ((CompiledScript)other).code)));
   }
 }
