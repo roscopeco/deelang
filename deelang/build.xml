@@ -68,6 +68,7 @@
 		<copy todir="${build.dir}">
 			<fileset dir="${main.classes.dir}">
 				<include name="**/*.class"/>
+				<exclude name="com/roscopeco/deelang/Main*.class"/>
 			</fileset>
 		</copy>
 		<copy todir="${build.dir}">
