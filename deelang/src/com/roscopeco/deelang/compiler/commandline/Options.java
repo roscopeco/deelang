@@ -140,7 +140,7 @@ public class Options {
   private Prefix                               prefix              = null;
   private Multiplicity                         defaultMultiplicity = null;
   private String[]                             arguments           = null;
-  private boolean                              ignoreUnmatched     = false;
+  //private boolean                              ignoreUnmatched     = false;
   private int                                  defaultMinData      = 0;
   private int                                  defaultMaxData      = 0;
   private StringBuffer                         checkErrors         = null;
