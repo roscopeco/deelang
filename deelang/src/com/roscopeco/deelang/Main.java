@@ -91,7 +91,7 @@ public class Main {
     }
     
     public void puts(DeeLangString s) {
-      System.out.println("FooObj.puts: " + s);
+      System.out.println("QuuxObj.puts: " + s);
     }
   }
     
@@ -139,7 +139,7 @@ public class Main {
       ctx.setLocal("beezum", new DeeLangInteger(ctx, 10));
       vm.run(ctx);
       
-      System.out.println("Finished exec: FooObj's qix field now = '" + foo.qix + "'");
+      System.out.println("Finished exec: QuuxObj's qix field now = '" + foo.qix + "'");
     } catch (RuntimeError e) {
       System.err.println("DeeLang runtime exception: " + e);
       e.printStackTrace(System.err);
