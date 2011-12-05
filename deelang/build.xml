@@ -16,6 +16,7 @@
 		</delete>
 	</target>
 	<target name="_clean-classes">
+		<delete dir="${jartest.classes.dir}"/>
 		<delete dir="${test.classes.dir}"/>
 		<delete dir="${main.classes.dir}"/>
 	</target>
@@ -35,6 +36,7 @@
 	<target name="_make-bindirs">
 		<mkdir dir="${main.classes.dir}"/>
 		<mkdir dir="${test.classes.dir}"/>
+		<mkdir dir="${jartest.classes.dir}"/>
 		<mkdir dir="${build.dir}"/>
 	</target>
 
@@ -58,11 +60,25 @@
 			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}"/>
 		</javac>
 	</target>
+
+	<target name="compile-jartests" description="Compile the Jar test code" depends="_make-bindirs, compile-main">
+		<javac destdir="${jartest.classes.dir}" includeantruntime="false">
+			<src path="${jartest.src.dir}"/>
+			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}"/>
+		</javac>
+	</target>
 	
 	<!-- Main targets -->
 	<target name="clean" description="Remove compiled classes" depends="_clean-jar, _clean-classes"/>
 	<target name="clobber" description="Remove all generated resources" depends="clean, _clean-doc, _clean-parser"/>
-	<target name="compile" description="Compile all code" depends="compile-main, compile-tests"/>
+	<target name="compile" description="Compile all code" depends="compile-main, compile-tests, compile-jartests"/>
+	<target name="test" description="Run JUnit4 tests" depends="compile-tests">
+		<junit printsummary="true" fork="true">
+			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}:${test.classes.dir}"/>
+			<test name="com.roscopeco.deelang.AllTests"/>
+		</junit>
+	</target>
+	
 	<target name="jar" description="Create Deelang Jars" depends="_clean-jar, _make-bindirs, compile-main">
 		<!-- Build standard jar -->
 		<copy todir="${build.dir}">
@@ -97,14 +113,26 @@
 		<jar destfile="${bin.dir}/${jar.complete.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
 	</target>
 
-	<target name="run-tests" description="Run JUnit4 tests" depends="compile-tests">
-		<junit>
-			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}:${test.classes.dir}"/>
-			<test name="com.roscopeco.deelang.AllTests"/>
-		</junit>
+	<target name="test-jars" description="Ensure that generated Jars work as expected" depends="jar, compile-jartests">
+		<!-- test non-complete withcli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${bin.dir}/${jar.name}:${test.classes.dir}"/>
+		</java>
+		<!-- test non-complete nocli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${bin.dir}/${jar.nocli.name}:${test.classes.dir}"/>
+		</java>
+		<!-- test complete withcli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${bin.dir}/${jar.complete.name}:${test.classes.dir}"/>
+		</java>
+		<!-- test complete nocli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${bin.dir}/${jar.complete.nocli.name}:${test.classes.dir}"/>
+		</java>
 	</target>
 
-	<target name="build" description="Perform a full, clean, tested build" depends="clean, compile, run-tests, jar"/>	
+	<target name="build" description="Perform a full, clean, tested build" depends="clean, compile, test, jar, test-jars"/>
 		
 	<!-- Generate documentation -->
 	<target name="doc" description="Generate Javadoc documentation">
