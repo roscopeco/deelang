@@ -59,7 +59,7 @@ public class RuntimeContext {
   
   DeeLangObject self;
   
-  RuntimeContext(VM vm, CompiledScript script) {
+  protected RuntimeContext(VM vm, CompiledScript script) {
     this.vm = vm;
     this.script = script;
     this.locals = new Object[script.getLocalsTable().length];
