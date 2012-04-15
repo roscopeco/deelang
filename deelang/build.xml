@@ -135,7 +135,7 @@
 	<target name="build" description="Perform a full, clean, tested build" depends="clean, compile, test, jar, test-jars"/>
 		
 	<!-- Generate documentation -->
-	<target name="doc" description="Generate Javadoc documentation">
+	<target name="doc" description="Generate Javadoc documentation" depends="compile">
 		<javadoc access="protected" 
 		     author="true" 
 		       destdir="${doc.dir}" 
@@ -146,13 +146,13 @@
 		       nonavbar="false" 
 		       notree="false" 
 		       overview="README.html" 
-		       source="1.5" 
+		       source="1.7" 
 		       sourcepath="src" 
 		       splitindex="true" 
-		       stylesheetfile="doc_src/doc.css" 
 		       use="true" 
-		       version="true"/>
-		<copy file="doc_src/javadoc.jpg" todir="doc"/>
+		       version="true">
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}"/>
+		</javadoc>
 		<copy file="LICENSE.html" todir="doc"/>
 	</target>
 </project>

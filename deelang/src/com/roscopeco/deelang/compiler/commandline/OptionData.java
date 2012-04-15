@@ -6,11 +6,14 @@
 package com.roscopeco.deelang.compiler.commandline;
 
 /**
- * This class holds all the data for an option. This includes the prefix, the key, the separator 
+ * <p>This class holds all the data for an option. This includes the prefix, the key, the separator 
  * (for value options), the multiplicity, and all the other settings describing the option. The class
  * is designed to be only a data container from a user perspective, i. e. the user has read-access to 
  * any data determined by the {@link Options#check()}, but not access to any of the other methods
- * which are used internally for the operation of the actual check. 
+ * which are used internally for the operation of the actual check.</p> 
+ * 
+ * <p>Originally sourced from <a href='http://www.javaworld.com/javaworld/jw-08-2004/jw-0816-command.html' target="_blank">
+ * http://www.javaworld.com/javaworld/jw-08-2004/jw-0816-command.html</a>. Copyright remains with the original author.</p>
  */
 
 public class OptionData {

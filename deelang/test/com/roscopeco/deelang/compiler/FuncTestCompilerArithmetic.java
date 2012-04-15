@@ -1,12 +1,12 @@
 package com.roscopeco.deelang.compiler;
 
-import org.antlr.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.parser.ParserError;
 
 public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
 
@@ -14,7 +14,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void setUp() throws Exception {
   }
   
-  private void runComparison(String sumCode, String expMethod) throws RecognitionException, CompilerError {
+  private void runComparison(String sumCode, String expMethod) throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest(sumCode, new byte[] {
         Opcodes.IPUSHCONST_B, 0,
         Opcodes.IPUSHCONST_B, 1,
@@ -28,37 +28,37 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testLiteralLiteralAdd() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralAdd() throws ParserError, CompilerError {
     runComparison("1+2", "__opADD");
   }
   
   @Test
-  public void testLiteralLiteralSub() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralSub() throws ParserError, CompilerError {
     runComparison("1-2", "__opSUB");
   }
   
   @Test
-  public void testLiteralLiteralMul() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralMul() throws ParserError, CompilerError {
     runComparison("1*2", "__opMUL");
   }
   
   @Test
-  public void testLiteralLiteralDiv() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralDiv() throws ParserError, CompilerError {
     runComparison("1/2", "__opDIV");
   }
 
   @Test
-  public void testLiteralLiteralMod() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralMod() throws ParserError, CompilerError {
     runComparison("1%2", "__opMOD");
   }
 
   @Test
-  public void testLiteralLiteralPow() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralPow() throws ParserError, CompilerError {
     runComparison("1^2", "__opPOW");
   }
 
   @Test
-  public void testLiteralLiteralLiteralSum() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralLiteralSum() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("1+2-3", new byte[] {
         Opcodes.IPUSHCONST_B, 0,
         Opcodes.IPUSHCONST_B, 1,
@@ -76,7 +76,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testLiteralLiteralLiteralMulAddSum() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralLiteralMulAddSum() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("1+2*3", new byte[] {
         Opcodes.IPUSHCONST_B, 0,
         Opcodes.IPUSHCONST_B, 1,
@@ -94,7 +94,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testLiteralLiteralLiteralMulAddSumExplicitPrecedence() throws RecognitionException, CompilerError {
+  public void testLiteralLiteralLiteralMulAddSumExplicitPrecedence() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("(1+2)*3", new byte[] {
         Opcodes.IPUSHCONST_B, 0,
         Opcodes.IPUSHCONST_B, 1,

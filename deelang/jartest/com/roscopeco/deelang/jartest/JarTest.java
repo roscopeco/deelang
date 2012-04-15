@@ -19,6 +19,7 @@ package com.roscopeco.deelang.jartest;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
@@ -39,7 +40,7 @@ public class JarTest {
     }
   }
     
-  public static void main(String[] args) {
+  public static void main(String[] args) throws ParserError {
     CompiledScript script;
     
     try {

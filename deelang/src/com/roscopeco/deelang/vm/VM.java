@@ -187,12 +187,7 @@ public class VM {
    * 
    * @throws RuntimeError
    */
-  void step(RuntimeContext ctx, DataInputStream strm) throws UnsupportedOperationError, 
-                                                      NoSuchMethodError,
-                                                      JavaMethodError,
-                                                      ReflectiveAccessError,
-                                                      CodeUnderflowError,
-                                                      InputError {
+  void step(RuntimeContext ctx, DataInputStream strm) throws RuntimeError {
     try {
       // This needs to be cleared, unless the current op is invokeself on 
       // 'or' - this is how the compiler handles the or construct, so we
@@ -375,12 +370,7 @@ public class VM {
    * @return True if a block was executed, false otherwise.
    * @throws RuntimeError
    */
-  public boolean runBlock(RuntimeContext ctx) throws UnsupportedOperationError, 
-                                              NoSuchMethodError,
-                                              JavaMethodError,
-                                              ReflectiveAccessError,
-                                              CodeUnderflowError,
-                                              InputError {
+  boolean runBlock(RuntimeContext ctx) throws RuntimeError {
     try {
       int len;
       BytecodeInputStream bcis = ctx.bcis;

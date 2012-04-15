@@ -21,7 +21,6 @@ import com.roscopeco.deelang.UnsupportedOperationException;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
-import com.roscopeco.deelang.compiler.ParseError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;
@@ -43,7 +42,7 @@ public final class DeeLang {
   /**
    * <p>Implementations of this inteface receive a callback 
    * when a VM context is created, before a script is run
-   * by the {@link DeeLang.runScript} method.</p>
+   * by the {@link DeeLang#runScript} method.</p>
    * 
    * @author rosco
    */
@@ -67,15 +66,12 @@ public final class DeeLang {
    * @param code The code to compile.
    * @return The {@link CompiledScript} for the supplied code.
    * 
+   * @throws ParserError to indicate a problem during parsing.
    * @throws CompilerError To indicate a problem during compilation.
    */
   public static CompiledScript compileScript(String code) 
-      throws CompilerError {
-    try {
-      return Compiler.staticCompile(Parser.staticParse(code));
-    } catch (ParserError e) {
-      throw new ParseError(e);
-    }
+      throws ParserError, CompilerError {
+    return Compiler.staticCompile(Parser.staticParse(code));
   }
   
   /**
@@ -83,10 +79,9 @@ public final class DeeLang {
    * 
    * @param script The compiled script.
    * @param initialiser The context initialiser callback.
-   * @throws CompilerError To indicate a problem during compilation.
    * @throws RuntimeError To indicate an error at runtime.
    */
-  public static void runScript(CompiledScript script, ContextInitialiser initialiser) throws CompilerError, RuntimeError {
+  public static void runScript(CompiledScript script, ContextInitialiser initialiser) throws RuntimeError {
     VM vm = new VM();
     RuntimeContext context = vm.createContext(script);
     initialiser.initContext(context);
@@ -98,10 +93,11 @@ public final class DeeLang {
    * 
    * @param code The code to run.
    * @param initialiser The context initialiser callback.
+   * @throws ParserError to indicate a problem during parsing.
    * @throws CompilerError To indicate a problem during compilation.
    * @throws RuntimeError To indicate an error at runtime.
    */
-  public static void runScript(String code, ContextInitialiser initialiser) throws CompilerError, RuntimeError {
+  public static void runScript(String code, ContextInitialiser initialiser) throws ParserError, CompilerError, RuntimeError {
     runScript(Compiler.staticCompile(code), initialiser);
   }
 }

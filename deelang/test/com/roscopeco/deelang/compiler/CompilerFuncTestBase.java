@@ -9,13 +9,14 @@ import java.util.Arrays;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.parser.ParserError;
 
 public class CompilerFuncTestBase {
-  CompiledScript runTest(String code) throws CompilerError {
+  CompiledScript runTest(String code) throws ParserError, CompilerError {
     return Compiler.staticCompile(code);
   }
   
-  void runCodeComparisonTest(String code, byte[] expected) throws CompilerError {
+  void runCodeComparisonTest(String code, byte[] expected) throws ParserError, CompilerError {
     byte[] bcode = runTest(code).getCode();
     
     assertThat("Incorrect code length", bcode.length, is(expected.length));
@@ -25,7 +26,7 @@ public class CompilerFuncTestBase {
   void runCodeAndPoolComparisonTest(String code, 
                                     byte[] expectedCode, 
                                     CompiledScript.ConstPoolEntry[] expectedPool)
-      throws CompilerError {
+      throws ParserError, CompilerError {
     CompiledScript script = Compiler.staticCompile(code);
     
     assertThat("Incorrect code length", script.getCode().length, is(expectedCode.length));
@@ -39,7 +40,7 @@ public class CompilerFuncTestBase {
                                           byte[] expectedCode,
                                           String[] expectedLocals,
                                           CompiledScript.ConstPoolEntry[] expectedPool)
-          throws CompilerError {
+          throws ParserError, CompilerError {
     CompiledScript script = Compiler.staticCompile(code);
     
     assertThat("Incorrect code length", script.getCode().length, is(expectedCode.length));

@@ -128,11 +128,26 @@ public class DeeLangInteger extends DeeLangObject {
     }
   }
 
+  /**
+   * <p>Coerce this <code>DeeLangInteger</code> to itself.</p>
+   * 
+   * <p>Simply returns <code>this</code>.</p>
+   * 
+   * @return This DeeLangInteger.
+   */
   @Override
   public DeeLangInteger toI() {
     return this;
   }
   
+  /**
+   * <p>Coerce this <code>DeeLangInteger</code> to a {@link DeeLangFloat}.</p>
+   * 
+   * <p>This implementation returns a new {@link DeeLangFloat} containing a
+   * double-precision floating point representation of this integer.</p>
+   * 
+   * @return A floating-point representation of this integer.
+   */
   @Override
   public DeeLangFloat toF() {
     return new DeeLangFloat(context, this.integer.doubleValue());

@@ -9,6 +9,7 @@ import com.roscopeco.deelang.ScriptDumper;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.parser.ParserError;
 
 /**
  * Command-line compiler for Deelang. 
@@ -70,7 +71,7 @@ public class Command {
     }
   }
   
-  public void doCompile() throws IOException, CompilerError {
+  public void doCompile() throws IOException, ParserError, CompilerError {
     String code = new Scanner( new File(infile), "UTF-8" ).useDelimiter("\\A").next();
     CompiledScript script = Compiler.staticCompile(code);
 
@@ -94,9 +95,12 @@ public class Command {
     } catch (IOException e) {
       System.err.println("IO Error: " + e);
       System.exit(-1);
+    } catch (ParserError e) {
+      System.err.println("Parser Error: " + e);
+      System.exit(-2);
     } catch (CompilerError e) {
       System.err.println("Compiler Error: " + e);
-      System.exit(-2);
+      System.exit(-3);
     }
     System.exit(0);
   }

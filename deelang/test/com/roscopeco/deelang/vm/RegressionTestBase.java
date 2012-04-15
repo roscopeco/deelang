@@ -2,10 +2,11 @@ package com.roscopeco.deelang.vm;
 
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.parser.ParserError;
 
 public class RegressionTestBase {
   
-  public RuntimeContext createContext(String code) throws CompilerError {
+  public RuntimeContext createContext(String code) throws ParserError, CompilerError {
     VM vm = new VM();
     return vm.createContext(Compiler.staticCompile(code));
   }
@@ -15,7 +16,7 @@ public class RegressionTestBase {
     return ctx;
   }
 
-  public RuntimeContext runTest(String code) throws CompilerError {
+  public RuntimeContext runTest(String code) throws ParserError, CompilerError {
     return runTest(createContext(code));
   }
   
@@ -27,7 +28,7 @@ public class RegressionTestBase {
     }
   }
 
-  public RuntimeContext runTestDoesntThrowException(String code) throws CompilerError {
+  public RuntimeContext runTestDoesntThrowException(String code) throws ParserError, CompilerError {
     try {
       return runTest(code);
     } catch (RuntimeError e) {

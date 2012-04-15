@@ -51,8 +51,8 @@ package com.roscopeco.deelang;
  * @created 19 Oct 2011
  */
 public final class Opcodes {
-  private Opcodes() {
-    throw new java.lang.UnsupportedOperationException("Please don't do that... :|");
+  private Opcodes() throws UnsupportedOperationException {
+    throw new UnsupportedOperationException("Please don't do that... :|");
   }
   
   /**

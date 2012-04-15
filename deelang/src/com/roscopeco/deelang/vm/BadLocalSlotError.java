@@ -16,9 +16,7 @@
  */
 package com.roscopeco.deelang.vm;
 
-import com.roscopeco.deelang.compiler.CompilerError;
-
-public class BadLocalSlotError extends CompilerError {
+public class BadLocalSlotError extends RuntimeError {
 
   /**
    * 

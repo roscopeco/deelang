@@ -6,10 +6,12 @@
 package com.roscopeco.deelang.compiler.commandline;
 
 /**
- * The central class for option processing. Sets are identified by their name, but there is also 
- * an anonymous default set, which is very convenient if an application requieres only one set. 
+ * <p>The central class for option processing. Sets are identified by their name, but there is also 
+ * an anonymous default set, which is very convenient if an application requieres only one set.</p>
+ * 
+ * <p>Originally sourced from <a href='http://www.javaworld.com/javaworld/jw-08-2004/jw-0816-command.html' target="_blank">
+ * http://www.javaworld.com/javaworld/jw-08-2004/jw-0816-command.html</a>. Copyright remains with the original author.</p>
  */
-
 public class Options {
 
   private final static String CLASS = "Options";
@@ -515,9 +517,9 @@ public class Options {
     if (optionSets.get(setName) == null) throw new IllegalArgumentException(CLASS + ": Unknown OptionSet: " + setName);
 
     checkErrors = new StringBuffer();
-    checkErrors.append("Checking set ");
+    /*checkErrors.append("Checking set ");
     checkErrors.append(setName);
-    checkErrors.append('\n');
+    checkErrors.append('\n');*/
 
 //.... Access the data for the set to use
 
@@ -536,7 +538,7 @@ public class Options {
         return false;
       }
     } else if (arguments.length == 0) {     // Options have been defined, but no arguments given
-      checkErrors.append("Options have been defined, but no arguments have been given; nothing to check\n");
+      checkErrors.append("You must supply at least <mandatory> arguments.\n");
       return false;
     }
 

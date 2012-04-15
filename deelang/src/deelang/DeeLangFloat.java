@@ -115,11 +115,27 @@ public class DeeLangFloat extends DeeLangObject {
     throw new ArithmeticException();
   }
   
+  /**
+   * <p>Coerce this <code>DeeLangFloat</code> to a {@link DeeLangInteger}.</p>
+   * 
+   * <p>This implementation returns a new {@link DeeLangInteger} containing
+   * an integer representation of this <code>DeeLangFloat</code>. This is
+   * obtained internally by calling {@link Double#intValue}.</p>
+   * 
+   * @return An integer representation of this floating-point value.
+   */
   @Override
   public DeeLangInteger toI() {
     return new DeeLangInteger(context, this.dbl.intValue());
   }
   
+  /**
+   * <p>Coerce this <code>DeeLangFloat</code> to itself.</p>
+   * 
+   * <p>Simply returns <code>this</code>.</p>
+   * 
+   * @return This DeeLangFloat.
+   */
   @Override
   public DeeLangFloat toF() {
     return this;

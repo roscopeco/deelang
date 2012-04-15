@@ -16,6 +16,13 @@
  */
 package com.roscopeco.deelang.compiler;
 
+/**
+ * Wraps a {@link com.roscopeco.deelang.parser.ParserError}, for some bizarre reason. No longer
+ * used.
+ * 
+ * @deprecated To be removed.
+ * @author rosco
+ */
 public class ParseError extends CompilerError {
 
   /**

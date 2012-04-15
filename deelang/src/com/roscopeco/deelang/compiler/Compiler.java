@@ -28,7 +28,6 @@ import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 
 
@@ -50,7 +49,7 @@ public class Compiler {
   /**
    * Convenience method to just compile an AST and return the compiled script.
    * 
-   * @param tree The AST to compile.
+   * @param ast The AST to compile.
    * @return The compiled script.
    * @throws CompilerError If a compilation error occurs.
    */
@@ -64,16 +63,12 @@ public class Compiler {
    * 
    * @param code The code to compile.
    * @return The compiled script.
-   * @throws RecognitionException If a parse error occurs.
+   * @throws ParserError If a parse error occurs.
    * @throws CompilerError If a compilation error occurs.
    */
   public static CompiledScript staticCompile(String code) 
-      throws CompilerError {
-    try {
-      return staticCompile(Parser.staticParse(code));
-    } catch (ParserError e) {
-      throw new ParseError(e);
-    }
+      throws ParserError, CompilerError {
+    return staticCompile(Parser.staticParse(code));
   }
   
   /**
@@ -201,7 +196,7 @@ public class Compiler {
     /**
      * Called at the end of compilation to get the generated code.
      * 
-     * @return
+     * @return The compiled code.
      */
     protected byte[] getCode() {
       return code.toByteArray();
@@ -271,9 +266,9 @@ public class Compiler {
      * Get the const pool index for the specified const, or allocate the
      * next available if it's not in there.
      * 
-     * @param constant
-     * @param type
-     * @return
+     * @param constant The constant to allocate an index for.
+     * @param type The type of the constant.
+     * @return The allocated constant-pool index.
      */
     protected int getOrAllocConstPoolIndex(Object constant, byte type) {
       CompilationUnit.ConstPoolKey k = new ConstPoolKey(constant, type);
@@ -317,9 +312,9 @@ public class Compiler {
      * Get the local variable slot number for the specified var,
      * or alloc the next available if it's not in there.
      * 
-     * @param varName
-     * @return
-     * @throws CompilerError
+     * @param varName The name of the local variable.
+     * @return The allocated local slot number.
+     * @throws CompilerError to indicate that the maximum number of locals (255) has been exceeded.
      */
     protected byte getOrAllocLocalSlot(String varName) throws CompilerError {
       Byte slot;
@@ -337,7 +332,7 @@ public class Compiler {
     /**
      * Called at the end of compilation to get the compiled script.
      * 
-     * @return
+     * @return The {@link CompiledScript} resulting from the compilation.
      */
     public CompiledScript buildScript() throws CompilerError {
       return new CompiledScript(buildConstPool(), buildLocalsTable(), getCode());
@@ -716,12 +711,19 @@ public class Compiler {
     return true;
   }
   
-  public CompiledScript compile(String code) throws CompilerError {
-    try {
-      return compile(Parser.staticParse(code));
-    } catch (ParserError e) {
-      throw new ParseError(e);
-    }
+  /**
+   * Compile the script in the supplied String by parsing it with {@link DeeLangParser}
+   * and then compiling to a {@link CompiledScript}. This is a convenience method that calls
+   * through to {@link #compile(CompilationUnit, Tree)} with the default
+   * state, and simply returns the compiled script.
+   * 
+   * @param code The Deelang code to compile.
+   * @return The compiled script
+   * @throws ParserError if an error occurs during parsing.
+   * @throws CompilerError If an error occurs during compilation.
+   */
+  public CompiledScript compile(String code) throws ParserError, CompilerError {
+    return compile(Parser.staticParse(code));
   }
   
   /**
@@ -734,7 +736,7 @@ public class Compiler {
    * 
    * @return The compiled script
    * 
-   * @throws CompilerThrowable If an error occurs during compilation.
+   * @throws CompilerError If an error occurs during compilation.
    */
   public CompiledScript compile(Tree ast) throws CompilerError {
     return compile(new CompilationUnit(), ast).buildScript();
@@ -752,7 +754,7 @@ public class Compiler {
    * @return The state supplied to the method, for convenience. You can obtain the script
    *         from this object by calling {@link CompilationUnit#buildScript}.
    * 
-   * @throws CompilerThrowable If an error occurs during compilation.
+   * @throws CompilerError If an error occurs during compilation.
    */
   public CompilationUnit compile(CompilationUnit unit, Tree ast) throws CompilerError {
     try {

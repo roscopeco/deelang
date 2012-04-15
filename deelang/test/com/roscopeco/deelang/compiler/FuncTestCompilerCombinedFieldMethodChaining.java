@@ -3,10 +3,11 @@ package com.roscopeco.deelang.compiler;
 import org.junit.Test;
 
 import com.roscopeco.deelang.Opcodes;
+import com.roscopeco.deelang.parser.ParserError;
 
 public class FuncTestCompilerCombinedFieldMethodChaining extends CompilerFuncTestBase {
   @Test
-  public void testMemberAccessAfterMethod() throws CompilerError {
+  public void testMemberAccessAfterMethod() throws ParserError, CompilerError {
     runCodeLocalsAndPoolComparisonTest("Quux.qix().baz", new byte[] {
         Opcodes.LOAD,               0,
         Opcodes.INVOKEDYNAMIC_B,    0, 0,
@@ -20,7 +21,7 @@ public class FuncTestCompilerCombinedFieldMethodChaining extends CompilerFuncTes
   }
 
   @Test
-  public void testMethodAfterMemberAccess() throws CompilerError {
+  public void testMethodAfterMemberAccess() throws ParserError, CompilerError {
     runCodeLocalsAndPoolComparisonTest("Quux.baz.qix()", new byte[] {
         Opcodes.LOAD,               0,
         Opcodes.GETFIELD_B,         0,
@@ -34,7 +35,7 @@ public class FuncTestCompilerCombinedFieldMethodChaining extends CompilerFuncTes
   }
 
   @Test
-  public void testMethodAfterMemberAccessAfterMethod() throws CompilerError {
+  public void testMethodAfterMemberAccessAfterMethod() throws ParserError, CompilerError {
     runCodeLocalsAndPoolComparisonTest("Quux.qix().baz.beez()", new byte[] {
         Opcodes.LOAD,               0,
         Opcodes.INVOKEDYNAMIC_B,    0, 0,

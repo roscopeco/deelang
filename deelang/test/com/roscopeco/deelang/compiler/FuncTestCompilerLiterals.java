@@ -1,12 +1,12 @@
 package com.roscopeco.deelang.compiler;
 
-import org.antlr.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.parser.ParserError;
 
 public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
 
@@ -15,7 +15,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testIntegerLiteral() throws RecognitionException, CompilerError {
+  public void testIntegerLiteral() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("1", new byte[] {
         Opcodes.IPUSHCONST_B, 0
     }, 
@@ -25,7 +25,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testHexLiteral() throws RecognitionException, CompilerError {
+  public void testHexLiteral() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("0xF", new byte[] {
         Opcodes.IPUSHCONST_B, 0
     }, 
@@ -35,7 +35,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testOctalLiteral() throws RecognitionException, CompilerError {
+  public void testOctalLiteral() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("010", new byte[] {
         Opcodes.IPUSHCONST_B, 0
     }, 
@@ -45,7 +45,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testFloatLiteral() throws RecognitionException, CompilerError {
+  public void testFloatLiteral() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("1.2", new byte[] {
         Opcodes.FPUSHCONST_B, 0
     }, 
@@ -55,7 +55,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testCharLiteral() throws RecognitionException, CompilerError {
+  public void testCharLiteral() throws ParserError, CompilerError {
     // treated as a string...
     runCodeAndPoolComparisonTest("'o'", new byte[] {
         Opcodes.SPUSHCONST_B, 0
@@ -66,7 +66,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
   
   @Test
-  public void testStringLiteral() throws RecognitionException, CompilerError {
+  public void testStringLiteral() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("\"onetwothree\"", new byte[] {
         Opcodes.SPUSHCONST_B, 0
     }, 
@@ -76,7 +76,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   }
 
   @Test
-  public void testStringLiteralEscapes() throws RecognitionException, CompilerError {
+  public void testStringLiteralEscapes() throws ParserError, CompilerError {
     runCodeAndPoolComparisonTest("\"\\\\ \\\" \\b \\t \\n \\f \\r \\' \\u0001\"", new byte[] {
         Opcodes.SPUSHCONST_B, 0
     }, 
