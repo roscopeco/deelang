@@ -80,4 +80,31 @@ public class DeeLangString extends DeeLangObject {
     
     return new DeeLangString(getContext(), s);
   }
+  
+  /**
+   * Attempts to coerce this string to an integer, specifically
+   * using Java's <code>Integer.parseInt</code>.
+   */
+  @Override
+  public DeeLangInteger toI() {
+    return new DeeLangInteger(getContext(), Integer.parseInt(string));
+  }
+
+  /**
+   * Attempts to coerce this string to an integer, specifically
+   * using Java's <code>Double.parseDouble</code>.
+   */
+  @Override
+  public DeeLangFloat toF() {
+    return new DeeLangFloat(getContext(), Double.parseDouble(string));
+  }
+  
+  /**
+   * Returns <code>this</code>.
+   */
+  @Override
+  public DeeLangString toS() {
+    return this;
+  }
+  
 }
