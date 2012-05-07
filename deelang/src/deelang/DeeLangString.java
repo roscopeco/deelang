@@ -19,7 +19,7 @@ package deelang;
 import com.roscopeco.deelang.vm.RuntimeContext;
 
 /**
- * A String in the Dee VM. 
+ * A String in the Dee VM. As in Java, strings are immutable.
  * 
  * @author rosco
  * @created 27 Oct 2011
@@ -51,8 +51,33 @@ public class DeeLangString extends DeeLangObject {
     return string;
   }
   
+  /**
+   * Performs string concatenation. Coerces the <code>other</code>
+   * parameter to a DeeLangString via the {@link DeeLangObject#toS()}
+   * method.
+   */
   @Override
   public DeeLangObject __opADD(DeeLangObject other) {
-    return new DeeLangString(getContext(), string + other.toString());
-  }  
+    return new DeeLangString(getContext(), string + other.toS());
+  }
+
+  /**
+   * <p>"Multiplies" the string by the given number. For example,
+   * <code>"one".__opMUL(2)</code> returns "oneone".</p>
+   * 
+   * <p><code>other</code> is coerced to an integer using the 
+   * {@link DeeLangObject#toI()} method.</p>
+   */
+  @Override
+  public DeeLangObject __opMUL(DeeLangObject other) {
+    StringBuffer buf = new StringBuffer();
+    int num = other.toI().integer;
+    String s = toS().string;
+    
+    for (int i = 0; i < num; i++) {
+      buf.append(s);
+    }
+    
+    return new DeeLangString(getContext(), s);
+  }
 }
