@@ -16,6 +16,7 @@
  */
 package com.roscopeco.deelang.compiler;
 
+
 /**
  * <p>Thrown to indicate that the script attempted to access a local variable
  * that has not been previously assigned to.</p>
@@ -36,22 +37,18 @@ public class UnknownVariableException extends CompilerError {
   private static final long serialVersionUID = -3872310037337653004L;
 
   public UnknownVariableException() {
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownVariableException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownVariableException(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownVariableException(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

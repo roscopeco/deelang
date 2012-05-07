@@ -32,22 +32,17 @@ public class ArithmeticException extends DeeLangRuntimeException {
   private static final long serialVersionUID = 7106875001255689903L;
 
   public ArithmeticException() {
-    // TODO Auto-generated constructor stub
   }
 
   public ArithmeticException(String message) {
     super(message);
-    // TODO Auto-generated constructor stub
   }
 
   public ArithmeticException(Throwable cause) {
     super(cause);
-    // TODO Auto-generated constructor stub
   }
 
   public ArithmeticException(String message, Throwable cause) {
     super(message, cause);
-    // TODO Auto-generated constructor stub
   }
-
 }

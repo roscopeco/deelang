@@ -24,22 +24,18 @@ public class IllegalConstPoolTypeBug extends CompilerBug {
   private static final long serialVersionUID = 3902888901866763172L;
 
   public IllegalConstPoolTypeBug() {
-    // TODO Auto-generated constructor stub
   }
 
   public IllegalConstPoolTypeBug(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public IllegalConstPoolTypeBug(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public IllegalConstPoolTypeBug(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

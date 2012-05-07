@@ -24,22 +24,18 @@ public class IllegalLValueException extends CompilerError {
   private static final long serialVersionUID = 4100108876604550101L;
 
   public IllegalLValueException() {
-    // TODO Auto-generated constructor stub
   }
 
   public IllegalLValueException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public IllegalLValueException(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public IllegalLValueException(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

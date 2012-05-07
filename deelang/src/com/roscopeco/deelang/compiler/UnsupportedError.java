@@ -29,22 +29,18 @@ public class UnsupportedError extends CompilerError {
   private static final long serialVersionUID = -7653790812759943842L;
 
   public UnsupportedError() {
-    // TODO Auto-generated constructor stub
   }
 
   public UnsupportedError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public UnsupportedError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnsupportedError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

@@ -24,22 +24,18 @@ public class StackUnderflowError extends RuntimeError {
   private static final long serialVersionUID = 5255130229499160428L;
 
   public StackUnderflowError() {
-    // TODO Auto-generated constructor stub
   }
 
   public StackUnderflowError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public StackUnderflowError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public StackUnderflowError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

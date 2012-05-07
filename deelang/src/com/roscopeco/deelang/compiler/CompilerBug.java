@@ -24,22 +24,17 @@ public class CompilerBug extends CompilerError {
   private static final long serialVersionUID = 7494631536788815889L;
 
   public CompilerBug() {
-    // TODO Auto-generated constructor stub
   }
 
   public CompilerBug(String arg0, Throwable arg1) {
     super("[BUG] " + arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public CompilerBug(String arg0) {
     super("[BUG] " + arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public CompilerBug(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
-
 }

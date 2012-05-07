@@ -24,22 +24,18 @@ public class MaxLocalsExceededException extends CompilerError {
   private static final long serialVersionUID = -8762173612496462496L;
 
   public MaxLocalsExceededException() {
-    // TODO Auto-generated constructor stub
   }
 
   public MaxLocalsExceededException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public MaxLocalsExceededException(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public MaxLocalsExceededException(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

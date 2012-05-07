@@ -24,22 +24,18 @@ public class InputError extends RuntimeError {
   private static final long serialVersionUID = -8729971231358548797L;
 
   public InputError() {
-    // TODO Auto-generated constructor stub
   }
 
   public InputError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public InputError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public InputError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

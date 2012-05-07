@@ -24,22 +24,18 @@ public class ScriptLoaderException extends Exception {
   private static final long serialVersionUID = -6234108340485192230L;
 
   public ScriptLoaderException() {
-    // TODO Auto-generated constructor stub
   }
 
   public ScriptLoaderException(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public ScriptLoaderException(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public ScriptLoaderException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

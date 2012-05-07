@@ -24,22 +24,18 @@ public class UnknownCompilerError extends CompilerError {
   private static final long serialVersionUID = 1940655497708788848L;
 
   public UnknownCompilerError() {
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownCompilerError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownCompilerError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownCompilerError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

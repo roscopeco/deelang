@@ -24,22 +24,18 @@ public class NoSuchMethodError extends RuntimeError {
   private static final long serialVersionUID = 6777897021311736818L;
 
   public NoSuchMethodError() {
-    // TODO Auto-generated constructor stub
   }
 
   public NoSuchMethodError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public NoSuchMethodError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public NoSuchMethodError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

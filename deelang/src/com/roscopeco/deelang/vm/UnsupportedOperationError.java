@@ -24,22 +24,18 @@ public class UnsupportedOperationError extends RuntimeError {
   private static final long serialVersionUID = -6412116347013661113L;
 
   public UnsupportedOperationError() {
-    // TODO Auto-generated constructor stub
   }
 
   public UnsupportedOperationError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnsupportedOperationError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnsupportedOperationError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

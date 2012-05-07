@@ -31,22 +31,18 @@ public class OutputError extends CompilerError {
   private static final long serialVersionUID = -5843388492617198308L;
 
   public OutputError() {
-    // TODO Auto-generated constructor stub
   }
 
   public OutputError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public OutputError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public OutputError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

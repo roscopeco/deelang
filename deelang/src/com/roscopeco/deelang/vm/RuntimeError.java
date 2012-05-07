@@ -36,22 +36,18 @@ public class RuntimeError extends Error {
   private static final long serialVersionUID = 7203811400226307616L;
 
   public RuntimeError() {
-    // TODO Auto-generated constructor stub
   }
 
   public RuntimeError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public RuntimeError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public RuntimeError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

@@ -24,22 +24,18 @@ public class CodeUnderflowError extends RuntimeError {
   private static final long serialVersionUID = -2413880557900510788L;
 
   public CodeUnderflowError() {
-    // TODO Auto-generated constructor stub
   }
 
   public CodeUnderflowError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public CodeUnderflowError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public CodeUnderflowError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

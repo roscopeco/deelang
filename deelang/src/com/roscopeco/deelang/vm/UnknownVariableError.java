@@ -24,22 +24,18 @@ public class UnknownVariableError extends RuntimeError {
   private static final long serialVersionUID = 1625408676321631662L;
 
   public UnknownVariableError() {
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownVariableError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownVariableError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public UnknownVariableError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

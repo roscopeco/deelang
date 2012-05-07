@@ -24,22 +24,18 @@ public class TooManyArgsError extends CompilerError {
   private static final long serialVersionUID = 6320402036862175437L;
 
   public TooManyArgsError() {
-    // TODO Auto-generated constructor stub
   }
 
   public TooManyArgsError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public TooManyArgsError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public TooManyArgsError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

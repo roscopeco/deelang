@@ -16,6 +16,8 @@
  */
 package com.roscopeco.deelang.compiler;
 
+// TODO get rid of this...
+
 /**
  * Wraps a {@link com.roscopeco.deelang.parser.ParserError}, for some bizarre reason. No longer
  * used.
@@ -31,22 +33,18 @@ public class ParseError extends CompilerError {
   private static final long serialVersionUID = 1206152605300785415L;
 
   public ParseError() {
-    // TODO Auto-generated constructor stub
   }
 
   public ParseError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public ParseError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public ParseError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }

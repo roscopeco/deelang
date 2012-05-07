@@ -24,22 +24,18 @@ public class JavaMethodError extends RuntimeError {
   private static final long serialVersionUID = 7453265502692140400L;
 
   public JavaMethodError() {
-    // TODO Auto-generated constructor stub
   }
 
   public JavaMethodError(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public JavaMethodError(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public JavaMethodError(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
 }

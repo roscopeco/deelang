@@ -24,22 +24,18 @@ public class MaxBlockSizeExceededException extends CompilerError {
   private static final long serialVersionUID = 3226134712870031490L;
 
   public MaxBlockSizeExceededException() {
-    // TODO Auto-generated constructor stub
   }
 
   public MaxBlockSizeExceededException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-    // TODO Auto-generated constructor stub
   }
 
   public MaxBlockSizeExceededException(String arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
   public MaxBlockSizeExceededException(Throwable arg0) {
     super(arg0);
-    // TODO Auto-generated constructor stub
   }
 
 }
