@@ -47,7 +47,6 @@ public class ScriptDumper {
     return sb.toString();
   }
   
-  @SuppressWarnings("deprecation")
   public static final String codeToString(byte[] code) {
     StringBuffer sb = new StringBuffer();
     ByteArrayInputStream bais = new ByteArrayInputStream(code);
@@ -119,9 +118,6 @@ public class ScriptDumper {
         case Opcodes.GETFIELD_L:
           sb.append("[GETFIELD_L       " + strm.readInt() + "]\n");
           break;
-        case Opcodes.INVOKESTATIC:
-          sb.append("[**INVOKESTATIC   " + strm.readInt() + ", " + strm.readByte() + "]\n");
-          break;
         case Opcodes.INVOKEDYNAMIC_B:
           sb.append("[INVOKEDYNAMIC_B  " + strm.readByte() + ", " + strm.readByte() + "]\n");
           break;
@@ -140,9 +136,6 @@ public class ScriptDumper {
         case Opcodes.INVOKESELF_L:
           sb.append("[INVOKESELF_L     " + strm.readInt() + ", " + strm.readByte() + "]\n");
           break;
-        case Opcodes.BLOCKRETURN:
-          sb.append("[**BLOCKRETURN]\n");
-          break;
         case Opcodes.ENTERBLOCK_B:
           sb.append("[ENTERBLOCK_B     " + strm.readByte() + "]\n");
           break;
@@ -160,24 +153,6 @@ public class ScriptDumper {
           break;
         case Opcodes.JUMP_L:
           sb.append("[JUMP_L           " + strm.readInt() + "]\n");
-          break;
-        case Opcodes.ADD:
-          sb.append("[**ADD]\n");
-          break;
-        case Opcodes.SUB:
-          sb.append("[**SUB]\n");
-          break;
-        case Opcodes.MUL:
-          sb.append("[**MUL]\n");
-          break;
-        case Opcodes.DIV:
-          sb.append("[**DIV]\n");
-          break;
-        case Opcodes.MOD:
-          sb.append("[**MOD]\n");
-          break;
-        case Opcodes.POW:
-          sb.append("[**POW]\n");
           break;
         default:
           sb.append("[UNKNOWN]");

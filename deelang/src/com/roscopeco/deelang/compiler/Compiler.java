@@ -208,7 +208,6 @@ public class Compiler {
      * 
      * @return The resolved and ordered constant pool.
      */
-    @SuppressWarnings("deprecation")
     protected CompiledScript.ConstPoolEntry[] buildConstPool() throws IllegalConstPoolTypeBug {
       HashMap<CompilationUnit.ConstPoolKey, Integer> entries = constPoolEntries;
       Set<CompilationUnit.ConstPoolKey> keys = entries.keySet();
@@ -220,9 +219,6 @@ public class Compiler {
         byte type = k.type;
         
         switch (type) {
-        case CompiledScript.CONST_POOL_CLASS:
-          pool[index] = new CompiledScript.ConstPoolClass((String)k.constant);
-          break;
         case CompiledScript.CONST_POOL_FIELD:
           pool[index] = new CompiledScript.ConstPoolField((String)k.constant);
           break;
@@ -280,32 +276,6 @@ public class Compiler {
       }
       
       return index;
-    }
-    
-    /**
-     * <p>Get the local variable slot number for the specified var. If it's
-     * not there, throw a compiler exception.</p>
-     * 
-     * <p>This <i>WAS</i> used when processing a variable LOAD to indicate we
-     * were accessing a variable that hadn't been defined yet (by assignment).</p>
-     * 
-     * <p>Now, it's not used at all (we do load-time linking in the VM, simplifying
-     * the whole variable/class/receiver etc thing), so it'll be deleted at some
-     * point...</p>
-     * 
-     * @deprecated To be removed
-     * @param varName The local variable name.
-     * @return The slot number allocated to that variable.
-     * @throws CompilerError If the specified local is not allocated a slot.
-     */
-    // TODO remove this method...
-    protected byte getLocalSlot(String varName) throws CompilerError {
-      Byte slot;
-      if ((slot = locals.get(varName)) == null) {
-        // new local var
-        throw new UnknownVariableException("Attempt to read unknown variable: " + varName);
-      }
-      return slot;
     }
     
     /**

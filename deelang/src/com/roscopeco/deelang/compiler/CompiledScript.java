@@ -39,13 +39,7 @@ import java.util.Arrays;
  */
 public class CompiledScript {
   /** 4-byte signature that begins every compiled DeeLang script file */
-  public static final byte[] SCRIPT_SIGNATURE = new byte[] { 'D', 'L', 0, 1 };
-  
-  /** 
-   * Constant-pool type for a CLASS reference.
-   * @deprecated This is no longer used.
-   */
-  public static final byte CONST_POOL_CLASS = 0x01;
+  public static final byte[] SCRIPT_SIGNATURE = new byte[] { 'D', 'L', 0, 2 };
   
   /** Constant-pool type for a FIELD reference. */
   public static final byte CONST_POOL_FIELD = 0x02;
@@ -109,8 +103,6 @@ public class CompiledScript {
     static ConstPoolEntry readEntry(DataInputStream di) throws IOException, UnknownConstPoolTypeException {
       byte type = di.readByte();
       switch (type) {
-      case CONST_POOL_CLASS:
-        return new ConstPoolClass(di);
       case CONST_POOL_FIELD:
         return new ConstPoolField(di);
       case CONST_POOL_METHOD:
@@ -134,23 +126,6 @@ public class CompiledScript {
       }
       return false;
     }
-  }
-  
-  /*
-   * A CLASS entry in the constant pool.
-   * 
-   * @deprecated This is no longer used.
-   */
-  // TODO remove this
-  @Deprecated
-  static final class ConstPoolClass extends ConstPoolEntry {
-    private final String value;
-    ConstPoolClass(String value) { this.value = value; }
-    ConstPoolClass(DataInputStream strm) throws IOException { this.value = strm.readUTF(); }
-    public final int getType() { return CONST_POOL_CLASS; }
-    public final Object getValue() { return value; }
-    final void store(DataOutputStream os) throws IOException { os.writeByte(getType()); os.writeUTF(value); }
-    public final String toString() { return "[CONST_POOL_CLASS  " + value + "]"; }
   }
   
   /* 

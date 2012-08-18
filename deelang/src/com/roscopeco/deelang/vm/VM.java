@@ -177,7 +177,6 @@ public class VM {
     }
   }
 
-  @SuppressWarnings("deprecation")
   /**
    * Single-step the VM, using the specified input stream for the code.
    * This allows us to run blocks from a different stream.
@@ -278,15 +277,6 @@ public class VM {
         case Opcodes.GETFIELD_L:
           doGetField(ctx, strm.readInt());
           return;
-        case Opcodes.ADD:
-        case Opcodes.SUB:
-        case Opcodes.MUL:
-        case Opcodes.DIV:
-        case Opcodes.MOD:
-        case Opcodes.POW:
-          throw new UnsupportedOperationError("Static arithmetic is not supported");
-        case Opcodes.INVOKESTATIC:
-          throw new UnsupportedOperationError("Static dispatch is no longer supported");
         case Opcodes.INVOKESELF_B:
         case Opcodes.INVOKEDYNAMIC_B:
           doInvoke(ctx, op, strm.readByte(), strm.readByte(), errorWasSet);
@@ -299,8 +289,6 @@ public class VM {
         case Opcodes.INVOKEDYNAMIC_L:
           doInvoke(ctx, op, strm.readInt(), strm.readByte(), errorWasSet);
           return;
-        case Opcodes.BLOCKRETURN:
-          throw new UnsupportedOperationError("BLOCKRETURN is no longer supported");
         case Opcodes.JUMP_B:
           strm.skip(strm.readByte());
           break;

@@ -143,33 +143,6 @@ public final class Opcodes {
   public static final byte SPUSHCONST_L     = 0x18;
 
   /**
-   * <p><strong>IPUSHCONST(idx_b1, idx_b2, idx_b3, idx_b4)</strong> - Push an integer constant from the constant pool onto the stack.</p>
-   * <p><i> ... -> ..., INT</i></p>
-   *
-   * @deprecated This is an alias for IPUSHCONST_L
-   */
-  @Deprecated
-  public static final byte IPUSHCONST       = 0x16;
-
-  /**
-   * <p><strong>FPUSHCONST(idx_b1, idx_b2, idx_b3, idx_b4)</strong> - Push a float constant from the constant pool onto the stack.</p>
-   * <p><i> ... -> ..., FLOAT</i></p>
-   *
-   * @deprecated This is an alias for FPUSHCONST_L
-   */
-  @Deprecated
-  public static final byte FPUSHCONST       = 0x17;
-
-  /**
-   * <p><strong>SPUSHCONST(idx_b1, idx_b2, idx_b3, idx_b4)</strong> - Push a string constant from the constant pool onto the stack</p>
-   * <p><i> ... -> ..., STRING</i></p>
-   * 
-   * @deprecated This is an alias for SPUSHCONST_L
-   */
-  @Deprecated
-  public static final byte SPUSHCONST       = 0x18;
-
-  /**
    * <p><strong>POP</strong> - Pop the top value from the stack, and discard it.</p>
    * <p><i> ..., VALUE -> ...</i></p>
    */
@@ -224,80 +197,6 @@ public final class Opcodes {
   public static final byte GETFIELD_L       = 0x2f;
 
   /**
-   * <p><strong>PUTFIELD(idx_b1, idx_b2, idx_b3, idx_b4)</strong> - Store the top object from the stack in field at constant pool index <i>idx</i> in the object at the second-top stack.</p>
-   * <p><i> ..., RECEIVER, VALUE -> ...</i></p>
-   * 
-   * @deprecated This is an alias for PUTFIELD_L
-   */
-  @Deprecated
-  public static final byte PUTFIELD         = 0x2e;
-
-  /**
-   * <p><strong>GETFIELD(idx_b1, idx_b2, idx_b3, idx_b4)</strong> - Retrieve the value of the field at constant pool index <i>idx</i> in the object on top of the stack, and push it to the stack.</p>
-   * <p><i> ..., RECEIVER -> ..., VALUE</i></p>
-   * 
-   * @deprecated This is an alias for GETFIELD_L
-   */
-  @Deprecated
-  public static final byte GETFIELD         = 0x2f;
-
-  /**
-   * <p><strong>ADD</strong> - Pop the top two values from the stack, add them, and push the result back onto the stack.</p>
-   * <p><i> ..., V1, V2 -> ..., VALUE(V1+V2)</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Arithmetic operators are implemented as method calls.
-   */
-  public static final byte ADD              = 0x30;
-
-  /**
-   * <p><strong>SUB</strong> - Pop the top two values from the stack, subtract V2 from V1, and push the result back onto the stack.</p>
-   * <p><i> ..., V1, V2 -> ..., VALUE(V1-V2)</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Arithmetic operators are implemented as method calls.
-   */
-  public static final byte SUB              = 0x31;
-  
-  /**
-   * <p><strong>MUL</strong> - Pop the top two values from the stack, multiply V1 by V2, and push the result back onto the stack.</p>
-   * <p><i> ..., V1, V2 -> ..., VALUE(V1*V2)</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Arithmetic operators are implemented as method calls.
-   */
-  public static final byte MUL              = 0x32;
-
-  /**
-   * <p><strong>DIV</strong> - Pop the top two values from the stack, divide V1 by V2, and push the result back onto the stack.</p>
-   * <p><i> ..., V1, V2 -> ..., VALUE(V1/V2)</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Arithmetic operators are implemented as method calls.
-   */
-  public static final byte DIV              = 0x33;
-
-  /**
-   * <p><strong>MOD</strong> - Pop the top two values from the stack, divide V1 by V2, and push the <strong>remainder</strong> back onto the stack.</p>
-   * <p><i> ..., V1, V2 -> ..., VALUE(V1%V2)</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Arithmetic operators are implemented as method calls.
-   */
-  public static final byte MOD              = 0x34;
-
-  /**
-   * <p><strong>POW</strong> - Pop the top two values from the stack, raise V1 to the power V2, and push the result back onto the stack.</p>
-   * <p><i> ..., V1, V2 -> ..., VALUE(V1^V2)</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Arithmetic operators are now implemented as method calls.
-   */
-  public static final byte POW              = 0x35;
-
-  /**
-   * <p><strong>INVOKESTATIC(idx_b1, idx_b2, idx_b3, idx_b4, argc)</strong> - Invoke the method referenced at constant pool <i>idx</i> with <i>argc</i> arguments, using static dispatch.</p>
-   * <p><i> ..., (VALUE * argc) -> ...</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - static dispatch is no longer used in DeeLang.
-   */
-  public static final byte INVOKESTATIC     = 0x50;
-
-  /**
    * <p><strong>INVOKEDYNAMIC_B(idx, argc)</strong> - Invoke the method referenced at constant pool <i>idx</i> with <i>argc</i> arguments, using dynamic dispatch.</p>
    * <p><i> ..., RECEIVER, (VALUE * argc) -> ...</i></p>
    */
@@ -334,33 +233,6 @@ public final class Opcodes {
   public static final byte INVOKESELF_L       = 0x56;
 
   /**
-   * <p><strong>INVOKEDYNAMIC(idx_b1, idx_b2, idx_b3, idx_b4, argc)</strong> - Invoke the method referenced at constant pool <i>idx</i> with <i>argc</i> arguments, using dynamic dispatch.</p>
-   * <p><i> ..., RECEIVER, (VALUE * argc) -> ...</i></p>
-   * 
-   * @deprecated This is an alias for INVOKEDYNAMIC_L
-   */
-  @Deprecated
-  public static final byte INVOKEDYNAMIC    = 0x55;
-
-  /**
-   * <p><strong>INVOKESELF(idx_b1, idx_b2, idx_b3, idx_b4, argc)</strong> - Invoke the method referenced at constant pool <i>idx</i> with <i>argc</i> arguments directly on the current context's <i>SELF</i>.</p>
-   * <p><i> ..., (VALUE * argc) -> ...</i></p>
-   * 
-   * @deprecated This is an alias for INVOKESELF_L
-   */
-  @Deprecated
-  public static final byte INVOKESELF       = 0x56;
-  
-  /**
-   * <p><strong>BLOCKRETURN</strong> - Return from block execution.</p>
-   * <p><i> ... -> ...</i></p>
-   * 
-   * @deprecated The compiler never generates this instruction, and the VM does not support it - Blocks are fixed length and begin with an <code>ENTERBLOCK_x</code> instruction.
-   */
-  @Deprecated
-  public static final byte BLOCKRETURN      = 0x5a;
-  
-  /**
    * <p><strong>ENTERBLOCK_B(len)</strong> - Enter a block with the given length.</p>
    * <p><i> ... -> ...</i></p>
    */
@@ -395,13 +267,4 @@ public final class Opcodes {
    * <p><i> ... -> ...</i></p>
    */
   public static final byte JUMP_L           = 0x6f;
-
-  /**
-   * <p><strong>JUMP(ofs_b1, ofs_b2, ofs_b3, ofs_b4)</strong> - Jump to the specified offset in the bytecode. Offset is relative to pc following JUMP insn, and can be forward only.</p>
-   * <p><i> ... -> ...</i></p>
-   * 
-   * @deprecated This is an alias for JUMP_L 
-   */
-  @Deprecated
-  public static final byte JUMP             = 0x6f;
 }
