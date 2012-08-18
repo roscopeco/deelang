@@ -511,6 +511,7 @@ public class Options {
  * @throws IllegalArgumentException If either <code>setName</code> is <code>null</code>, or the set is unknown.
  */
 
+  @SuppressWarnings("incomplete-switch")
   public boolean check(String setName, boolean ignoreUnmatched, boolean requireDataLast) {
 
     if (setName == null) throw new IllegalArgumentException(CLASS + ": setName may not be null");
