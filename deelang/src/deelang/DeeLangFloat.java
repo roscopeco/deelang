@@ -111,8 +111,14 @@ public class DeeLangFloat extends DeeLangObject {
   
   @Override
   public DeeLangObject __opPOW(DeeLangObject other) {
-    // TODO look at this... 
-    throw new ArithmeticException();
+    if (other instanceof DeeLangInteger) {
+      return new DeeLangFloat(getContext(), Math.pow(this.dbl, ((DeeLangInteger)other).integer));      
+    } else if (other instanceof DeeLangFloat) {
+      return new DeeLangFloat(getContext(), Math.pow(this.dbl, ((DeeLangFloat)other).dbl));
+    } else {
+      // TODO more type coercion...
+      throw new ArithmeticException();
+    }
   }
   
   /**
