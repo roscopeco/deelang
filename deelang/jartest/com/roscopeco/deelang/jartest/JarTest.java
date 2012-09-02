@@ -16,9 +16,9 @@
  */
 package com.roscopeco.deelang.jartest;
 
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
@@ -44,7 +44,7 @@ public class JarTest {
     CompiledScript script;
     
     try {
-      script = Compiler.staticCompile(code);
+      script = Compiler.staticCompileDVM(code);
     } catch (CompilerError e) {
       System.err.println("DeeLang Compiler Exception: " + e);
       e.printStackTrace(System.err);

@@ -18,9 +18,9 @@
 package com.roscopeco.deelang;
 
 import com.roscopeco.deelang.UnsupportedOperationException;
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;
@@ -71,7 +71,7 @@ public final class DeeLang {
    */
   public static CompiledScript compileScript(String code) 
       throws ParserError, CompilerError {
-    return Compiler.staticCompile(Parser.staticParse(code));
+    return Compiler.staticCompileDVM(Parser.staticParse(code));
   }
   
   /**
@@ -98,6 +98,6 @@ public final class DeeLang {
    * @throws RuntimeError To indicate an error at runtime.
    */
   public static void runScript(String code, ContextInitialiser initialiser) throws ParserError, CompilerError, RuntimeError {
-    runScript(Compiler.staticCompile(code), initialiser);
+    runScript(Compiler.staticCompileDVM(code), initialiser);
   }
 }

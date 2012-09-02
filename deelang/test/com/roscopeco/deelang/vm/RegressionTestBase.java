@@ -8,7 +8,7 @@ public class RegressionTestBase {
   
   public RuntimeContext createContext(String code) throws ParserError, CompilerError {
     VM vm = new VM();
-    return vm.createContext(Compiler.staticCompile(code));
+    return vm.createContext(Compiler.staticCompileDVM(code));
   }
   
   public RuntimeContext runTest(RuntimeContext ctx) {

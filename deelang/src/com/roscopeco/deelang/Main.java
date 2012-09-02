@@ -18,9 +18,9 @@ package com.roscopeco.deelang;
 
 import org.antlr.runtime.tree.Tree;
 
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;
@@ -121,7 +121,7 @@ public class Main {
     }
     
     try {
-      script = Compiler.staticCompile(codeAST);
+      script = Compiler.staticCompileDVM(codeAST);
       System.out.println( ScriptDumper.dumpScript(script));
     } catch (CompilerError e) {
       System.err.println("DeeLang Compiler Exception: " + e);

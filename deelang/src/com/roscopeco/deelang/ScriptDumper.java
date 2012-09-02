@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import com.roscopeco.deelang.compiler.CompiledScript;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 
 /**
  * Dumps compiled scripts to strings.

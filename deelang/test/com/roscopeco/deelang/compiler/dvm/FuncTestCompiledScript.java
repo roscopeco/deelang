@@ -1,16 +1,19 @@
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import org.junit.Test;
 
+import com.roscopeco.deelang.compiler.Compiler;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+
 import static org.junit.Assert.*;
 
 public class FuncTestCompiledScript {
   @Test
   public void testStoreLoadRoundTrip() throws Exception {
-    CompiledScript script = Compiler.staticCompile("foo(a+b)");
+    CompiledScript script = Compiler.staticCompileDVM("foo(a+b)");
     
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     script.store(os);
@@ -25,8 +28,8 @@ public class FuncTestCompiledScript {
 
   @Test
   public void testEquals() throws Exception {
-    CompiledScript script = Compiler.staticCompile("foo(a+b)");
-    CompiledScript other = Compiler.staticCompile("foo(a+b)");
+    CompiledScript script = Compiler.staticCompileDVM("foo(a+b)");
+    CompiledScript other = Compiler.staticCompileDVM("foo(a+b)");
     
     assertTrue(script.equals(other));
   }

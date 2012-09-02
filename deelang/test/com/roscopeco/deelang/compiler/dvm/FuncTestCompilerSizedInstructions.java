@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
 //import static org.junit.Assert.fail;
 

@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -6,14 +6,14 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 
 public class CompilerFuncTestBase {
   CompiledScript runTest(String code) throws ParserError, CompilerError {
-    return Compiler.staticCompile(code);
+    return Compiler.staticCompileDVM(code);
   }
   
   void runCodeComparisonTest(String code, byte[] expected) throws ParserError, CompilerError {
@@ -27,7 +27,7 @@ public class CompilerFuncTestBase {
                                     byte[] expectedCode, 
                                     CompiledScript.ConstPoolEntry[] expectedPool)
       throws ParserError, CompilerError {
-    CompiledScript script = Compiler.staticCompile(code);
+    CompiledScript script = Compiler.staticCompileDVM(code);
     
     assertThat("Incorrect code length", script.getCode().length, is(expectedCode.length));
     assertThat("Incorrect constpool length", script.getConstPool().length, is(expectedPool.length));
@@ -41,7 +41,7 @@ public class CompilerFuncTestBase {
                                           String[] expectedLocals,
                                           CompiledScript.ConstPoolEntry[] expectedPool)
           throws ParserError, CompilerError {
-    CompiledScript script = Compiler.staticCompile(code);
+    CompiledScript script = Compiler.staticCompileDVM(code);
     
     assertThat("Incorrect code length", script.getCode().length, is(expectedCode.length));
     assertThat("Incorrect locals length", script.getLocalsTable().length, is(expectedLocals.length));

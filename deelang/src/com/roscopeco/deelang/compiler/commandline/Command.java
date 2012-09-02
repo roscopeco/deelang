@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import com.roscopeco.deelang.ScriptDumper;
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 
 /**
@@ -73,7 +73,7 @@ public class Command {
   
   public void doCompile() throws IOException, ParserError, CompilerError {
     String code = new Scanner( new File(infile), "UTF-8" ).useDelimiter("\\A").next();
-    CompiledScript script = Compiler.staticCompile(code);
+    CompiledScript script = Compiler.staticCompileDVM(code);
 
     if (dumpMode) {
       // Dump to STDOUT

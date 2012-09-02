@@ -18,13 +18,15 @@ package com.roscopeco.deelang.compiler;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.roscopeco.deelang.compiler.dvm.DVMCompilationUnit;
+
 /**
  * <p>Abstract base-class to be implemented by classes that are 
  * capable of visiting a DeeLang abstract syntax tree.</p>
  * 
  * <p>Implementations of this interface can be used with 
  * {@link Compiler} to perform actual compilation. The default
- * implementation is {@link Compiler.CompilationUnit}, which
+ * implementation is {@link DVMCompilationUnit}, which
  * creates the compiled script in the callback methods defined 
  * here.</p>
  * 

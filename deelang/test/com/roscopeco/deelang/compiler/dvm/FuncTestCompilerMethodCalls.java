@@ -1,10 +1,10 @@
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
 import org.junit.Test;
 
 import com.roscopeco.deelang.Opcodes;
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 
 public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {

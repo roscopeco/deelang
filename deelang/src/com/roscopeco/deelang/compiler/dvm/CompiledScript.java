@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,6 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+
+import com.roscopeco.deelang.compiler.BadScriptSignatureException;
+import com.roscopeco.deelang.compiler.CodeUnderflowException;
+import com.roscopeco.deelang.compiler.Compiler;
+import com.roscopeco.deelang.compiler.ScriptLoaderException;
+import com.roscopeco.deelang.compiler.UnknownConstPoolTypeException;
 
 /**
  * A compiled script. Encapsulates a fully compiled and resolved
