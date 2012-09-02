@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="gen_src"/>
 	<classpathentry kind="src" output="bin/test" path="jartest"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.4.jar"/>
+	<classpathentry kind="lib" path="lib/dexmaker-20120622.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin/main"/>
