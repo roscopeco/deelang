@@ -23,12 +23,12 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.antlr.runtime.tree.Tree;
+
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-
-import org.antlr.runtime.tree.Tree;
 
 
 /**
@@ -147,6 +147,14 @@ public class Compiler {
      * The DataOutputStream that code is generated to.
      */
     protected DataOutputStream codeStrm = new DataOutputStream(code);
+    
+    /* Keeps track of the current stream being used to generate code. 
+     * Used when generating blocks etc to prevent code going directly to
+     * the output stream - we need to find the length of the block to
+     * generate an appropriate JUMP insn before we actually write it.
+     */
+    private ArrayDeque<DataOutputStream> strmBackStack = new ArrayDeque<DataOutputStream>();
+    private DataOutputStream strm = codeStrm;
     
     /**
      * <p>Used to pass data back to higher tree nodes during the compile.
@@ -353,7 +361,7 @@ public class Compiler {
     }
     
     @Override
-    protected void visitDecimalLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitDecimalLiteral(Tree ast) throws CompilerError {
       int index = getOrAllocConstPoolIndex(Integer.parseInt(ast.getText()), CompiledScript.CONST_POOL_INT);
       try {
         writeSizedNoExtra(strm, Opcodes.IPUSHCONST_B, Opcodes.IPUSHCONST_W, Opcodes.IPUSHCONST_L, index);
@@ -363,7 +371,7 @@ public class Compiler {
     }
 
     @Override
-    protected void visitHexLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitHexLiteral(Tree ast) throws CompilerError {
       String value = ast.getText();
       // Lexer handles this now...
       //value = value.substring(2, value.length());
@@ -377,7 +385,7 @@ public class Compiler {
     }
 
     @Override
-    protected void visitOctalLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitOctalLiteral(Tree ast) throws CompilerError {
       int index = getOrAllocConstPoolIndex(Integer.parseInt(ast.getText(), 8), CompiledScript.CONST_POOL_INT);
       
       try {
@@ -388,7 +396,7 @@ public class Compiler {
     }
 
     @Override
-    protected void visitFloatLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitFloatLiteral(Tree ast) throws CompilerError {
       int index = getOrAllocConstPoolIndex(Double.parseDouble(ast.getText()), CompiledScript.CONST_POOL_FLOAT);
       
       try {
@@ -399,12 +407,12 @@ public class Compiler {
     }
 
     @Override
-    protected void visitCharacterLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
-      visitStringLiteral(strm, ast);
+    protected void visitCharacterLiteral(Tree ast) throws CompilerError {
+      visitStringLiteral(ast);
     }
 
     @Override
-    protected void visitStringLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitStringLiteral(Tree ast) throws CompilerError {
       String value = ast.getText();
       value = StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1));
       int index = getOrAllocConstPoolIndex(value, CompiledScript.CONST_POOL_STRING);
@@ -417,19 +425,19 @@ public class Compiler {
     }
 
     @Override
-    protected void visitRegexpLiteral(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitRegexpLiteral(Tree ast) throws CompilerError {
       throw new UnsupportedError("Regular expressions are not yet implemented");
     }
 
     @Override
-    protected void visitChain(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitChain(Tree ast) throws CompilerError {
       // Do nothing - receiver is already on stack
     }
 
     @Override
-    protected void visitAssignLocal(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitAssignLocal(Tree ast) throws CompilerError {
       String name = ast.getChild(0).getText();
-      visit(strm, this, ast.getChild(1));
+      visit(this, ast.getChild(1));
       try {
         strm.write(new byte[] { Opcodes.STORE, getOrAllocLocalSlot(name) });
       } catch (IOException e) {
@@ -438,7 +446,7 @@ public class Compiler {
     }
 
     @Override
-    protected void visitIdentifier(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitIdentifier(Tree ast) throws CompilerError {
       byte slot = getOrAllocLocalSlot(ast.getText());
       try {
         strm.write(new byte[] { Opcodes.LOAD, slot });
@@ -448,9 +456,9 @@ public class Compiler {
     }
     
     @Override
-    protected void visitAssignField(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitAssignField(Tree ast) throws CompilerError {
       String name = ast.getChild(0).getText();
-      visit(strm, this, ast.getChild(1));
+      visit(this, ast.getChild(1));
       try {
         writeSizedNoExtra(strm, Opcodes.PUTFIELD_B, Opcodes.PUTFIELD_W, Opcodes.PUTFIELD_L, 
             getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
@@ -460,9 +468,9 @@ public class Compiler {
     }
     
     @Override
-    protected void visitFieldAccess(DataOutputStream strm, Tree ast)
+    protected void visitFieldAccess(Tree ast)
         throws CompilerError {
-      visit(strm, this, ast.getChild(0));
+      visit(this, ast.getChild(0));
       try {
         writeSizedNoExtra(strm, Opcodes.GETFIELD_B, Opcodes.GETFIELD_W, Opcodes.GETFIELD_L, 
             getOrAllocConstPoolIndex(ast.getChild(1).getText(), CompiledScript.CONST_POOL_FIELD));
@@ -506,7 +514,7 @@ public class Compiler {
     }
 
     @Override
-    protected void visitMethodCall(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitMethodCall(Tree ast) throws CompilerError {
       String method;
       Tree methodAST = ast.getChild(1);
       Tree receiverAST = ast.getChild(0);
@@ -516,9 +524,9 @@ public class Compiler {
       index = getOrAllocConstPoolIndex(method, CompiledScript.CONST_POOL_METHOD);
 
       backPassData.addFirst(new BackPassFrame(new MethCallBackPassData(method)));
-      visit(strm, this, receiverAST);
+      visit(this, receiverAST);
       for (int i = 0; i < methodAST.getChildCount(); i++) {
-        visit(strm, this, methodAST.getChild(i));
+        visit(this, methodAST.getChild(i));
       }
       BackPassFrame kidData = backPassData.removeFirst();
       MethCallBackPassData bpd = (MethCallBackPassData)kidData.data;
@@ -548,13 +556,13 @@ public class Compiler {
     }
     
     @Override
-    protected void visitSelf(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitSelf(Tree ast) throws CompilerError {
       MethCallBackPassData mcbpd = ((MethCallBackPassData)backPassData.peekFirst().data);
       mcbpd.selfCall = true;
     }
     
     @Override
-    protected void visitArgs(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitArgs(Tree ast) throws CompilerError {
       /* method args - put count in backpass data and visit kids... */  
       MethCallBackPassData mcbpd = ((MethCallBackPassData)backPassData.peekFirst().data);
       int argc = ast.getChildCount();
@@ -563,40 +571,54 @@ public class Compiler {
       }
       mcbpd.argc = (byte)ast.getChildCount();
       for (int i = 0; i < ast.getChildCount(); i++) {
-        visit(strm, this, ast.getChild(i));
+        visit(this, ast.getChild(i));
       }
     }
 
     @Override
-    protected void visitBlock(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitBlock(Tree ast) throws CompilerError {
       // generate the bytecode to the same unit (to make sure locals are allocated correctly
       // and const pool is kept up to date) but use a different stream for the block code.
       // we can then return the code in the backpass data and use it to calculate our
       // goto targets etc.
       MethCallBackPassData mcbpd = ((MethCallBackPassData)backPassData.peekFirst().data);
       ByteArrayOutputStream bas = new ByteArrayOutputStream();
-      DataOutputStream dos = new DataOutputStream(bas);
+
+      // Save the current output stream, and set a new one to grab the block code
+      strmBackStack.push(strm);
+      strm = new DataOutputStream(bas);
+      
       for (int i = 0; i < ast.getChildCount(); i++) {
-        visit(dos, this, ast.getChild(i));
+        visit(this, ast.getChild(i));
       }
+      
+      // restore the previous stream, and set the block in the backpass data.
+      strm = strmBackStack.pop();
       mcbpd.block = bas.toByteArray();
     }
 
     @Override
-    protected void visitOrBlock(DataOutputStream strm, Tree ast) throws CompilerError {
+    protected void visitOrBlock(Tree ast) throws CompilerError {
       MethCallBackPassData mcbpd = ((MethCallBackPassData)backPassData.peekFirst().data);
       ByteArrayOutputStream bas = new ByteArrayOutputStream();
-      DataOutputStream dos = new DataOutputStream(bas);
+
+      // Save the current output stream, and set a new one to grab the block code
+      strmBackStack.push(strm);
+      strm = new DataOutputStream(bas);
+      
       for (int i = 0; i < ast.getChildCount(); i++) {
-        visit(dos, this, ast.getChild(i));
+        visit(this, ast.getChild(i));
       }
+
+      // restore the previous stream, and set the block in the backpass data.
+      strm = strmBackStack.pop();
       mcbpd.orBlock = bas.toByteArray();
     }
 
     @Override
-    protected void visitAdd(DataOutputStream strm, Tree ast) throws CompilerError {
-      visit(strm, this, ast.getChild(0));
-      visit(strm, this, ast.getChild(1));
+    protected void visitAdd(Tree ast) throws CompilerError {
+      visit(this, ast.getChild(0));
+      visit(this, ast.getChild(1));
       
       try {
         writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -608,9 +630,9 @@ public class Compiler {
     }
 
     @Override
-    protected void visitSub(DataOutputStream strm, Tree ast) throws CompilerError {
-      visit(strm, this, ast.getChild(0));
-      visit(strm, this, ast.getChild(1));
+    protected void visitSub(Tree ast) throws CompilerError {
+      visit(this, ast.getChild(0));
+      visit(this, ast.getChild(1));
       
       try {
         writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -621,9 +643,9 @@ public class Compiler {
     }
 
     @Override
-    protected void visitMul(DataOutputStream strm, Tree ast) throws CompilerError {
-      visit(strm, this, ast.getChild(0));
-      visit(strm, this, ast.getChild(1));
+    protected void visitMul(Tree ast) throws CompilerError {
+      visit(this, ast.getChild(0));
+      visit(this, ast.getChild(1));
       
       try {
         writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -634,9 +656,9 @@ public class Compiler {
     }
 
     @Override
-    protected void visitDiv(DataOutputStream strm, Tree ast) throws CompilerError {
-      visit(strm, this, ast.getChild(0));
-      visit(strm, this, ast.getChild(1));
+    protected void visitDiv(Tree ast) throws CompilerError {
+      visit(this, ast.getChild(0));
+      visit(this, ast.getChild(1));
       
       try {
         writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -647,9 +669,9 @@ public class Compiler {
     }
 
     @Override
-    protected void visitMod(DataOutputStream strm, Tree ast) throws CompilerError {
-      visit(strm, this, ast.getChild(0));
-      visit(strm, this, ast.getChild(1));
+    protected void visitMod(Tree ast) throws CompilerError {
+      visit(this, ast.getChild(0));
+      visit(this, ast.getChild(1));
       
       try {
         writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -660,9 +682,9 @@ public class Compiler {
     }
 
     @Override
-    protected void visitPow(DataOutputStream strm, Tree ast) throws CompilerError {
-      visit(strm, this, ast.getChild(0));
-      visit(strm, this, ast.getChild(1));
+    protected void visitPow(Tree ast) throws CompilerError {
+      visit(this, ast.getChild(0));
+      visit(this, ast.getChild(1));
       
       try {
         writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -709,7 +731,7 @@ public class Compiler {
    * @throws CompilerError If an error occurs during compilation.
    */
   public CompiledScript compile(Tree ast) throws CompilerError {
-    return compile(new CompilationUnit(), ast).buildScript();
+    return ((CompilationUnit) compile(new CompilationUnit(), ast)).buildScript();
   }
   
   /**
@@ -726,19 +748,19 @@ public class Compiler {
    * 
    * @throws CompilerError If an error occurs during compilation.
    */
-  public CompilationUnit compile(CompilationUnit unit, Tree ast) throws CompilerError {
+  public ASTVisitor compile(ASTVisitor unit, Tree ast) throws CompilerError {
     try {
       if (ast != null) {
         if (ast.getType() == 0) {
           // is multiple statement script
           assert debug("Compiling multi-line script");
           for (int i = 0; i < ast.getChildCount(); i++) {
-            visit(unit.codeStrm, unit, ast.getChild(i));
+            visit(unit, ast.getChild(i));
           }
         } else {
           // is single statement script
           assert debug("Compiling single line script");
-          visit(unit.codeStrm, unit, ast);
+          visit(unit, ast);
         }
       }
     } catch (Exception t) {
@@ -747,101 +769,101 @@ public class Compiler {
     return unit;
   }
   
-  /* Helper to pring debug info for visitor when assertions are on */
-  private boolean debugVisitor(CompilationUnit unit, Tree ast) {
+  /* Helper to print debug info for visitor when assertions are on */
+  private boolean debugVisitor(ASTVisitor unit, Tree ast) {
     return debug(" - VISIT: " + ast.toString() + " [" + DeeLangParser.tokenNames[ast.getType()] + "]");
   }
     
-  protected void visit(DataOutputStream strm, CompilationUnit unit, Tree ast) throws CompilerError {
+  protected void visit(ASTVisitor unit, Tree ast) throws CompilerError {
     assert debugVisitor(unit, ast);
     
     switch (ast.getType()) {
     /* ********** LITERALS ********** */
     case DeeLangParser.DECIMAL_LITERAL:
-      unit.visitDecimalLiteral(strm, ast);
+      unit.visitDecimalLiteral(ast);
       return;
     case DeeLangParser.HEX_LITERAL:
-      unit.visitHexLiteral(strm, ast);
+      unit.visitHexLiteral(ast);
       return;
     case DeeLangParser.OCTAL_LITERAL:
-      unit.visitOctalLiteral(strm, ast);
+      unit.visitOctalLiteral(ast);
       return;
     case DeeLangParser.FLOATING_POINT_LITERAL:
-      unit.visitFloatLiteral(strm, ast);
+      unit.visitFloatLiteral(ast);
       return;
     case DeeLangParser.CHARACTER_LITERAL:
-      unit.visitCharacterLiteral(strm, ast);
+      unit.visitCharacterLiteral(ast);
       return;
     case DeeLangParser.STRING_LITERAL:
-      unit.visitStringLiteral(strm, ast);
+      unit.visitStringLiteral(ast);
       return;
       
       
     /* ********** SPECIAL TOKEN FOR VAR AND METHOD ******* */
     case DeeLangParser.CHAIN:
-      unit.visitChain(strm, ast);
+      unit.visitChain(ast);
       return;
       
       
     /* ********** VARIABLES ********** */
     case DeeLangParser.ASSIGN_FIELD:
-      unit.visitAssignField(strm, ast);
+      unit.visitAssignField(ast);
       return;
       
     case DeeLangParser.ASSIGN_LOCAL:
-      unit.visitAssignLocal(strm, ast);
+      unit.visitAssignLocal(ast);
       return;
       
     case DeeLangParser.IDENTIFIER:
       // var access
-      unit.visitIdentifier(strm, ast);
+      unit.visitIdentifier(ast);
       return;
       
     case DeeLangParser.FIELD_ACCESS:
       // member access
-      unit.visitFieldAccess(strm, ast);
+      unit.visitFieldAccess(ast);
       return;
 
     /* ********** METHODS ********** */
     case DeeLangParser.METHOD_CALL:
-      unit.visitMethodCall(strm, ast);
+      unit.visitMethodCall(ast);
       return;
       
     case DeeLangParser.SELF:
-      unit.visitSelf(strm, ast);
+      unit.visitSelf(ast);
       return;
 
     case DeeLangParser.ARGS:
-      unit.visitArgs(strm, ast);
+      unit.visitArgs(ast);
       return;
       
     case DeeLangParser.BLOCK:
-      unit.visitBlock(strm, ast);
+      unit.visitBlock(ast);
       return;
       
     case DeeLangParser.ORBLOCK:
-      unit.visitOrBlock(strm, ast);
+      unit.visitOrBlock(ast);
       return;
       
       
     /* ********** ARITHMETIC ********** */
     case DeeLangParser.ADD:
-      unit.visitAdd(strm, ast);
+      unit.visitAdd(ast);
       return;
     case DeeLangParser.SUB:
-      unit.visitSub(strm, ast);
+      unit.visitSub(ast);
       return;
     case DeeLangParser.MUL:
-      unit.visitMul(strm, ast);
+      unit.visitMul(ast);
       return;
     case DeeLangParser.DIV:
-      unit.visitDiv(strm, ast);
+      unit.visitDiv(ast);
       return;
     case DeeLangParser.MOD:
-      unit.visitMod(strm, ast);
+      unit.visitMod(ast);
       return;
     case DeeLangParser.POW:
-      unit.visitPow(strm, ast);
+      unit.visitPow(ast);
       return;
     default:
       throw(new UnsupportedError("Unknown AST type: " + ast.getType()));

@@ -16,8 +16,6 @@
  */
 package com.roscopeco.deelang.compiler;
 
-import java.io.DataOutputStream;
-
 import org.antlr.runtime.tree.Tree;
 
 /**
@@ -35,32 +33,32 @@ import org.antlr.runtime.tree.Tree;
  *
  */
 public abstract class ASTVisitor {
-  protected abstract void visitDecimalLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitHexLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitOctalLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitFloatLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitCharacterLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitStringLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitRegexpLiteral(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitDecimalLiteral(Tree ast) throws CompilerError;
+  protected abstract void visitHexLiteral(Tree ast) throws CompilerError;
+  protected abstract void visitOctalLiteral(Tree ast) throws CompilerError;
+  protected abstract void visitFloatLiteral(Tree ast) throws CompilerError;
+  protected abstract void visitCharacterLiteral(Tree ast) throws CompilerError;
+  protected abstract void visitStringLiteral(Tree ast) throws CompilerError;
+  protected abstract void visitRegexpLiteral(Tree ast) throws CompilerError;
   
-  protected abstract void visitChain(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitChain(Tree ast) throws CompilerError;
 
-  protected abstract void visitAssignLocal(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitIdentifier(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitAssignLocal(Tree ast) throws CompilerError;
+  protected abstract void visitIdentifier(Tree ast) throws CompilerError;
 
-  protected abstract void visitAssignField(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitFieldAccess(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitAssignField(Tree ast) throws CompilerError;
+  protected abstract void visitFieldAccess(Tree ast) throws CompilerError;
   
-  protected abstract void visitMethodCall(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitSelf(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitArgs(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitBlock(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitOrBlock(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitMethodCall(Tree ast) throws CompilerError;
+  protected abstract void visitSelf(Tree ast) throws CompilerError;
+  protected abstract void visitArgs(Tree ast) throws CompilerError;
+  protected abstract void visitBlock(Tree ast) throws CompilerError;
+  protected abstract void visitOrBlock(Tree ast) throws CompilerError;
   
-  protected abstract void visitAdd(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitSub(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitMul(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitDiv(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitMod(DataOutputStream strm, Tree ast) throws CompilerError;
-  protected abstract void visitPow(DataOutputStream strm, Tree ast) throws CompilerError;
+  protected abstract void visitAdd(Tree ast) throws CompilerError;
+  protected abstract void visitSub(Tree ast) throws CompilerError;
+  protected abstract void visitMul(Tree ast) throws CompilerError;
+  protected abstract void visitDiv(Tree ast) throws CompilerError;
+  protected abstract void visitMod(Tree ast) throws CompilerError;
+  protected abstract void visitPow(Tree ast) throws CompilerError;
 }
