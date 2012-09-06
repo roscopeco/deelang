@@ -1,4 +1,4 @@
-/* DeeLangException.java
+/* DeeLangRuntimeException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,36 +14,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package deelang;
+package dee.vm.lang;
 
 /**
- * Base-class for checked DeeLang runtime exceptions.
+ * Base class for unchecked DeeLang runtime exceptions.
  * 
  * @author rosco
  * @created 26 Oct 2011
  *
  */
-public class DeeLangException extends Exception {
+public class DeeLangRuntimeException extends RuntimeException {
 
   /**
    * 
    */
-  private static final long serialVersionUID = 6789381977097026652L;
+  private static final long serialVersionUID = 3526638940326709602L;
 
-  public DeeLangException() {
-
+  public DeeLangRuntimeException() {
   }
 
-  public DeeLangException(String message) {
-    super(message);
+  public DeeLangRuntimeException(String arg0) {
+    super(arg0);
   }
 
-  public DeeLangException(Throwable cause) {
-    super(cause);
+  public DeeLangRuntimeException(Throwable arg0) {
+    super(arg0);
   }
 
-  public DeeLangException(String message, Throwable cause) {
-    super(message, cause);
+  public DeeLangRuntimeException(String arg0, Throwable arg1) {
+    super(arg0, arg1);
   }
 
 }

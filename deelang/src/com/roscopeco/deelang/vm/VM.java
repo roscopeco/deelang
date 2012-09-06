@@ -26,9 +26,9 @@ import java.util.NoSuchElementException;
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 
-import deelang.DeeLangFloat;
-import deelang.DeeLangInteger;
-import deelang.DeeLangString;
+import dee.vm.lang.DeeLangFloat;
+import dee.vm.lang.DeeLangInteger;
+import dee.vm.lang.DeeLangString;
 
 /**
  * The DeeLang Virtual Machine. 

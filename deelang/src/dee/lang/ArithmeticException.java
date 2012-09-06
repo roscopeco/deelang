@@ -14,21 +14,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package deelang;
+package dee.lang;
 
 /**
  * Thrown to indicate that an illegal arithmetic operation was 
  * attempted.
  * 
  * @author rosco
- * @created 26 Oct 2011
+ * @created 3 September 2012
  *
  */
-public class ArithmeticException extends DeeLangRuntimeException {
-
-  /**
-   * 
-   */
+public class ArithmeticException extends DeelangRuntimeException {
   private static final long serialVersionUID = 7106875001255689903L;
 
   public ArithmeticException() {

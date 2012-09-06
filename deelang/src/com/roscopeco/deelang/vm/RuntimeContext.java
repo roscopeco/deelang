@@ -25,9 +25,9 @@ import java.util.HashMap;
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.dvm.CompiledScript;
 
-import deelang.DeeLangFloat;
-import deelang.DeeLangInteger;
-import deelang.DeeLangObject;
+import dee.vm.lang.DeeLangFloat;
+import dee.vm.lang.DeeLangInteger;
+import dee.vm.lang.DeeLangObject;
 
 /**
  * <p>RuntimeContext within which the VM runs scripts. The context

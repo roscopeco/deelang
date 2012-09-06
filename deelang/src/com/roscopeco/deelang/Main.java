@@ -27,9 +27,9 @@ import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
 
-import deelang.DeeLangInteger;
-import deelang.DeeLangObject;
-import deelang.DeeLangString;
+import dee.vm.lang.DeeLangInteger;
+import dee.vm.lang.DeeLangObject;
+import dee.vm.lang.DeeLangString;
 
 /**
  * Just a testbed/sandbox for use during development. NOT FOR INCLUSION IN DISTRIBUTION!

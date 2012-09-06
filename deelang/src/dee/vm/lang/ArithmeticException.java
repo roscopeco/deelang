@@ -1,4 +1,4 @@
-/* RuntimeError.java
+/* ArithmeticException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,40 +14,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.vm;
+package dee.vm.lang;
 
 /**
- * <p>Base-class for Errors thrown by the VM at runtime to indicate
- * abnormal low-level conditions.</p>
- * 
- * <p>Note that this class subclasses <code>java.lang.Error</code>, so
- * these errors are unchecked. Most exceptions thrown at runtime will
- * be subclasses of {@link dee.vm.lang.DeeLangException}.</p>
+ * Thrown to indicate that an illegal arithmetic operation was 
+ * attempted.
  * 
  * @author rosco
- * @created 27 Oct 2011
+ * @created 26 Oct 2011
  *
  */
-public class RuntimeError extends Error {
+public class ArithmeticException extends DeeLangRuntimeException {
 
   /**
    * 
    */
-  private static final long serialVersionUID = 7203811400226307616L;
+  private static final long serialVersionUID = 7106875001255689903L;
 
-  public RuntimeError() {
+  public ArithmeticException() {
   }
 
-  public RuntimeError(String arg0) {
-    super(arg0);
+  public ArithmeticException(String message) {
+    super(message);
   }
 
-  public RuntimeError(Throwable arg0) {
-    super(arg0);
+  public ArithmeticException(Throwable cause) {
+    super(cause);
   }
 
-  public RuntimeError(String arg0, Throwable arg1) {
-    super(arg0, arg1);
+  public ArithmeticException(String message, Throwable cause) {
+    super(message, cause);
   }
-
 }

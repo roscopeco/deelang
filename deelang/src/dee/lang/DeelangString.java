@@ -1,4 +1,4 @@
-/* DeeLangString.java
+/* DeelangString.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,27 +14,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package deelang;
+package dee.lang;
 
-import com.roscopeco.deelang.vm.RuntimeContext;
+import com.roscopeco.deelang.runtime.Binding;
 
 /**
- * A String in the Dee VM. As in Java, strings are immutable.
+ * A Deelang String. As in Java, strings are immutable.
  * 
  * @author rosco
- * @created 27 Oct 2011
+ * @created 3 September 2012
  *
  */
-public class DeeLangString extends DeeLangObject {
+public class DeelangString extends DeelangObject {
   private String string;
   
-  public DeeLangString(RuntimeContext context) {
-    super(context);
+  public DeelangString(Binding binding) {
+    super(binding);
     this.string = "";
   }
   
-  public DeeLangString(RuntimeContext context, String string) {
-    super(context);
+  public DeelangString(Binding binding, String string) {
+    super(binding);
     this.string = string;
   }
   
@@ -53,12 +53,12 @@ public class DeeLangString extends DeeLangObject {
   
   /**
    * Performs string concatenation. Coerces the <code>other</code>
-   * parameter to a DeeLangString via the {@link DeeLangObject#toS()}
+   * parameter to a DeelangString via the {@link DeelangObject#toS()}
    * method.
    */
   @Override
-  public DeeLangObject __opADD(DeeLangObject other) {
-    return new DeeLangString(getContext(), string + other.toS());
+  public DeelangObject __opADD(DeelangObject other) {
+    return new DeelangString(getBinding(), string + other.toS());
   }
 
   /**
@@ -66,10 +66,10 @@ public class DeeLangString extends DeeLangObject {
    * <code>"one".__opMUL(2)</code> returns "oneone".</p>
    * 
    * <p><code>other</code> is coerced to an integer using the 
-   * {@link DeeLangObject#toI()} method.</p>
+   * {@link DeelangObject#toI()} method.</p>
    */
   @Override
-  public DeeLangObject __opMUL(DeeLangObject other) {
+  public DeelangObject __opMUL(DeelangObject other) {
     StringBuffer buf = new StringBuffer();
     int num = other.toI().integer;
     String s = toS().string;
@@ -78,7 +78,7 @@ public class DeeLangString extends DeeLangObject {
       buf.append(s);
     }
     
-    return new DeeLangString(getContext(), s);
+    return new DeelangString(getBinding(), s);
   }
   
   /**
@@ -86,8 +86,8 @@ public class DeeLangString extends DeeLangObject {
    * using Java's <code>Integer.parseInt</code>.
    */
   @Override
-  public DeeLangInteger toI() {
-    return new DeeLangInteger(getContext(), Integer.parseInt(string));
+  public DeelangInteger toI() {
+    return new DeelangInteger(getBinding(), Integer.parseInt(string));
   }
 
   /**
@@ -95,15 +95,15 @@ public class DeeLangString extends DeeLangObject {
    * using Java's <code>Double.parseDouble</code>.
    */
   @Override
-  public DeeLangFloat toF() {
-    return new DeeLangFloat(getContext(), Double.parseDouble(string));
+  public DeelangFloat toF() {
+    return new DeelangFloat(getBinding(), Double.parseDouble(string));
   }
   
   /**
    * Returns <code>this</code>.
    */
   @Override
-  public DeeLangString toS() {
+  public DeelangString toS() {
     return this;
   }
   

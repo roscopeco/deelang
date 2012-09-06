@@ -24,8 +24,8 @@ import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
 
-import deelang.DeeLangInteger;
-import deelang.DeeLangObject;
+import dee.vm.lang.DeeLangInteger;
+import dee.vm.lang.DeeLangObject;
 
 public class JarTest {  
   static String code =

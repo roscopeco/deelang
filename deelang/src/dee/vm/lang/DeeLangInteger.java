@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package deelang;
+package dee.vm.lang;
 
 import com.roscopeco.deelang.vm.RuntimeContext;
 
