@@ -49,7 +49,7 @@
 		<javac destdir="${main.classes.dir}" includeantruntime="false">
 			<src path="${main.src.dir}"/>
 			<src path="${gen.src.dir}"/>
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar"/>
 		</javac>
 	</target>
 
@@ -57,7 +57,12 @@
 	<target name="compile-tests" description="Compile the test code" depends="_make-bindirs, compile-main">
 		<javac destdir="${test.classes.dir}" includeantruntime="false">
 			<src path="${test.src.dir}"/>
-			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}"/>
+		    <classpath>
+		        <pathelement location="${main.classes.dir}"/>
+			    <fileset dir="${lib.dir}">
+			        <include name="*.jar"/>
+			    </fileset>
+		    </classpath>
 		</javac>
 	</target>
 
@@ -74,7 +79,13 @@
 	<target name="compile" description="Compile all code" depends="compile-main, compile-tests, compile-jartests"/>
 	<target name="test" description="Run JUnit4 tests" depends="compile-tests">
 		<junit printsummary="true" fork="true">
-			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}:${test.classes.dir}"/>
+		    <classpath>
+		        <pathelement location="${main.classes.dir}"/>
+		        <pathelement location="${test.classes.dir}"/>
+			    <fileset dir="${lib.dir}">
+			        <include name="*.jar"/>
+			    </fileset>
+		    </classpath>
 			<test name="com.roscopeco.deelang.AllTests"/>
 		</junit>
 	</target>
@@ -97,30 +108,38 @@
 		<!-- Build nocli jar -->
 		<jar destfile="${bin.dir}/${jar.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
 
-		<!-- Add ANTLR runtime and license and build complete jar -->
+		<!-- Add ANTLR runtime and Dexmaker and licenses and build complete jar -->
 		<!-- This jar gets the manifest with the Main-Class attribute, so it can run as a commandline compiler. -->
 		<unjar src="${lib.dir}/antlr-runtime-3.4.jar" dest="${build.dir}"/>
+		<unjar src="${lib.dir}/dexmaker-20120622.jar" dest="${build.dir}"/>
 		<delete dir="${build.dir}/org/antlr/runtime/debug"/>
+		<delete dir="${build.dir}/com/google/dexmaker/mockito"/>
+		<delete dir="${build.dir}/com/google/dexmaker/stock"/>
+		<delete dir="${build.dir}/mockito-extensions"/>				
 		<delete dir="${build.dir}/META-INF"/>
 		<copy todir="${build.dir}">
 			<fileset dir="${basedir}">
 				<include name="LICENSE.antlr"/>
+				<include name="LICENSE.dexmaker"/>
 			</fileset>
 		</copy>
 		<jar destfile="${bin.dir}/${jar.complete.name}" basedir="${build.dir}" includes="**/*" manifest="${main.src.dir}/manifest"/>
 
 		<!-- Build nocli complete jar -->
 		<jar destfile="${bin.dir}/${jar.complete.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
+		
+		<!--  Build novm-nocli -->
+		<delete dir="${build.dir}/dee/vm"/>
 	</target>
 
 	<target name="test-jars" description="Ensure that generated Jars work as expected" depends="jar, compile-jartests">
 		<!-- test non-complete withcli jar -->
 		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${bin.dir}/${jar.name}:${test.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${bin.dir}/${jar.name}:${test.classes.dir}"/>
 		</java>
 		<!-- test non-complete nocli jar -->
 		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${bin.dir}/${jar.nocli.name}:${test.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${bin.dir}/${jar.nocli.name}:${test.classes.dir}"/>
 		</java>
 		<!-- test complete withcli jar -->
 		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
