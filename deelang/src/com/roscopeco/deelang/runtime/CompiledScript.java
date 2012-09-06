@@ -1,6 +1,5 @@
-package com.roscopeco.deelang.compiler.dex;
+package com.roscopeco.deelang.runtime;
 
-import com.roscopeco.deelang.runtime.Binding;
 
 public abstract class CompiledScript implements Runnable {
   protected final Binding binding;
