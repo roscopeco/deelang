@@ -5,5 +5,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+  FuncTestCompilerLiterals.class
 })
 public class FunctionalTests {}
