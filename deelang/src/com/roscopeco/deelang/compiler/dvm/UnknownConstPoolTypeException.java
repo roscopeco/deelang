@@ -1,4 +1,4 @@
-/* IllegalAssignmentException.java
+/* UnknownConstPoolTypeException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,28 +14,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
-public class IllegalAssignmentException extends CompilerError {
+public class UnknownConstPoolTypeException extends ScriptLoaderException {
 
   /**
    * 
    */
-  private static final long serialVersionUID = -3407193102967917434L;
+  private static final long serialVersionUID = -2458887925158184007L;
 
-  public IllegalAssignmentException() {
+  public UnknownConstPoolTypeException() {
   }
 
-  public IllegalAssignmentException(String arg0, Throwable arg1) {
+  public UnknownConstPoolTypeException(String arg0) {
+    super(arg0);
+  }
+
+  public UnknownConstPoolTypeException(Throwable arg0) {
+    super(arg0);
+  }
+
+  public UnknownConstPoolTypeException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-  }
-
-  public IllegalAssignmentException(String arg0) {
-    super(arg0);
-  }
-
-  public IllegalAssignmentException(Throwable arg0) {
-    super(arg0);
   }
 
 }

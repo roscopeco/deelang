@@ -13,13 +13,7 @@ import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.ASTVisitor;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
-import com.roscopeco.deelang.compiler.IllegalConstPoolTypeBug;
-import com.roscopeco.deelang.compiler.MaxBlockSizeExceededException;
-import com.roscopeco.deelang.compiler.MaxConstPoolSizeExceededException;
-import com.roscopeco.deelang.compiler.MaxLocalsExceededException;
-import com.roscopeco.deelang.compiler.OutputError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
-import com.roscopeco.deelang.compiler.TooManyArgsError;
 import com.roscopeco.deelang.compiler.UnsupportedError;
 
 /**

@@ -1,4 +1,4 @@
-/* MaxBlockSizeExceededException.java
+/* TooManyArgsError.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,27 +14,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
-public class MaxBlockSizeExceededException extends CompilerError {
+import com.roscopeco.deelang.compiler.CompilerError;
+
+public class TooManyArgsError extends CompilerError {
 
   /**
    * 
    */
-  private static final long serialVersionUID = 3226134712870031490L;
+  private static final long serialVersionUID = 6320402036862175437L;
 
-  public MaxBlockSizeExceededException() {
+  public TooManyArgsError() {
   }
 
-  public MaxBlockSizeExceededException(String arg0, Throwable arg1) {
+  public TooManyArgsError(String arg0, Throwable arg1) {
     super(arg0, arg1);
   }
 
-  public MaxBlockSizeExceededException(String arg0) {
+  public TooManyArgsError(String arg0) {
     super(arg0);
   }
 
-  public MaxBlockSizeExceededException(Throwable arg0) {
+  public TooManyArgsError(Throwable arg0) {
     super(arg0);
   }
 

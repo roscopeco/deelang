@@ -23,11 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.roscopeco.deelang.compiler.BadScriptSignatureException;
-import com.roscopeco.deelang.compiler.CodeUnderflowException;
 import com.roscopeco.deelang.compiler.Compiler;
-import com.roscopeco.deelang.compiler.ScriptLoaderException;
-import com.roscopeco.deelang.compiler.UnknownConstPoolTypeException;
 
 /**
  * A compiled script. Encapsulates a fully compiled and resolved

@@ -1,4 +1,4 @@
-/* UnknownConstPoolTypeException.java
+/* OutputError.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,28 +14,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
-public class UnknownConstPoolTypeException extends ScriptLoaderException {
+import com.roscopeco.deelang.compiler.CompilerError;
+
+/**
+ * Thrown to indicate that the compiler could not write it's output
+ * to an OutputStream.
+ *  
+ * @author rosco
+ * @created 19 Oct 2011
+ */
+public class OutputError extends CompilerError {
 
   /**
    * 
    */
-  private static final long serialVersionUID = -2458887925158184007L;
+  private static final long serialVersionUID = -5843388492617198308L;
 
-  public UnknownConstPoolTypeException() {
+  public OutputError() {
   }
 
-  public UnknownConstPoolTypeException(String arg0) {
-    super(arg0);
-  }
-
-  public UnknownConstPoolTypeException(Throwable arg0) {
-    super(arg0);
-  }
-
-  public UnknownConstPoolTypeException(String arg0, Throwable arg1) {
+  public OutputError(String arg0, Throwable arg1) {
     super(arg0, arg1);
+  }
+
+  public OutputError(String arg0) {
+    super(arg0);
+  }
+
+  public OutputError(Throwable arg0) {
+    super(arg0);
   }
 
 }

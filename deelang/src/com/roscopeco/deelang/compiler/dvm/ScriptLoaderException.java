@@ -1,4 +1,4 @@
-/* BadScriptSignatureException.java
+/* ScriptLoaderException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,27 +14,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler;
+package com.roscopeco.deelang.compiler.dvm;
 
-public class BadScriptSignatureException extends ScriptLoaderException {
+public class ScriptLoaderException extends Exception {
 
   /**
    * 
    */
-  private static final long serialVersionUID = -2458887925158184007L;
+  private static final long serialVersionUID = -6234108340485192230L;
 
-  public BadScriptSignatureException() {
+  public ScriptLoaderException() {
   }
 
-  public BadScriptSignatureException(String arg0) {
+  public ScriptLoaderException(String arg0) {
     super(arg0);
   }
 
-  public BadScriptSignatureException(Throwable arg0) {
+  public ScriptLoaderException(Throwable arg0) {
     super(arg0);
   }
 
-  public BadScriptSignatureException(String arg0, Throwable arg1) {
+  public ScriptLoaderException(String arg0, Throwable arg1) {
     super(arg0, arg1);
   }
 
