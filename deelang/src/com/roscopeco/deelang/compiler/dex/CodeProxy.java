@@ -89,8 +89,8 @@ final class CodeProxy {
 
   private final ReturnVoid RETURNVOID = new ReturnVoid();
   
-  private Code code;
-  private ArrayList<Instruction> insns = new ArrayList<Instruction>();
+  Code code;
+  ArrayList<Instruction> insns = new ArrayList<Instruction>();
   
   public CodeProxy(Code code) {
     this.code = code;    
