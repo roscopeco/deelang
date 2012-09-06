@@ -1,6 +1,5 @@
 package com.roscopeco.deelang.compiler.dex;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.roscopeco.deelang.compiler.CompilerError;
@@ -8,14 +7,10 @@ import com.roscopeco.deelang.parser.ParserError;
 
 public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
 
-  @Before
-  public void setUp() throws Exception {
-  }
-
   @Test
   public void testIntegerLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("1", 
-        "extends com.roscopeco.deelang.compiler.dex.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         new String[] {        
             "public V run()\n" +
             "                this:v3   //DexCompiledScript\n" +
@@ -30,7 +25,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   @Test
   public void testHexLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("0xF",
-        "extends com.roscopeco.deelang.compiler.dex.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         new String[] {        
             "public V run()\n" +
             "                this:v3   //DexCompiledScript\n" +
@@ -46,7 +41,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   @Test
   public void testOctalLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("010",
-        "extends com.roscopeco.deelang.compiler.dex.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         new String[] {        
             "public V run()\n" +
             "                this:v3   //DexCompiledScript\n" +
@@ -62,7 +57,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   @Test
   public void testFloatLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("1.2", 
-        "extends com.roscopeco.deelang.compiler.dex.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         new String[] {        
             "public V run()\n" +
             "                this:v4   //DexCompiledScript\n" +
@@ -79,7 +74,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testCharLiteral() throws ParserError, CompilerError {
     // treated as a string...
     runCodeComparisonTest("'o'", 
-        "extends com.roscopeco.deelang.compiler.dex.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         new String[] {        
             "public V run()\n" +
             "                this:v1   //DexCompiledScript\n" +
@@ -92,7 +87,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   @Test
   public void testStringLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("\"onetwothree\"", 
-        "extends com.roscopeco.deelang.compiler.dex.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         new String[] {        
             "public V run()\n" +
             "                this:v1   //DexCompiledScript\n" +
