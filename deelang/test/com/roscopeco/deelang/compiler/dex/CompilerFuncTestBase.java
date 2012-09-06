@@ -23,7 +23,7 @@ public class CompilerFuncTestBase {
         new DexCompilationUnit(c, "UNITTESTS"), Parser.staticParse(code));
   }
   
-  void runCodeComparisonTest(String code, String superClz, String[] methods) throws ParserError, CompilerError {
+  void runCodeComparisonTest(String code, String superClz, String... methods) throws ParserError, CompilerError {
     DexFileReader rdr = new DexFileReader(runTest(code).getCode());
     final ByteArrayOutputStream bos = new ByteArrayOutputStream();
     
