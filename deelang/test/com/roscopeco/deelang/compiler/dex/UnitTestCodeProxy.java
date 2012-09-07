@@ -3,7 +3,6 @@ package com.roscopeco.deelang.compiler.dex;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -21,6 +20,7 @@ import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.InvokeVirtual;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.LoadConstant;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.NewInstance;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.ReturnVoid;
@@ -38,6 +38,14 @@ public class UnitTestCodeProxy {
   @Mock
   private Local<Object> mockLocal2;
   
+  @SuppressWarnings("rawtypes")
+  @Mock
+  private Local mockTarget;
+  
+  @SuppressWarnings("rawtypes")
+  @Mock
+  private Local mockInstance;
+  
   @Mock
   private Instruction mockInsn;
   
@@ -45,7 +53,10 @@ public class UnitTestCodeProxy {
   private FieldId<Object, Object> mockFieldId;
   
   @Mock
-  private MethodId<Object, Void> mockMethodId;
+  private MethodId<Object, Void> mockCtorId;
+
+  @Mock
+  private MethodId<Object, Object> mockMethodId;
   
   private CodeProxy proxy;
   private Object object;
@@ -88,27 +99,27 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testMark() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testJump() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testAddCatchClause() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testRemoveCatchClause() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testThrowValue() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
@@ -132,32 +143,32 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testMove() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testOpUnaryOpLocalOfTLocalOfT() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testOpBinaryOpLocalOfTLocalOfTLocalOfT() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testCompare() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testCompareFloatingPoint() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testCompareLongs() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
@@ -181,23 +192,23 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testIput() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testSget() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testSput() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
   
   @Test
   public void testNewInstance() {
     assertThat(proxy.insns.size(), is(0));
-    proxy.newInstance(mockLocal, mockMethodId);
+    proxy.newInstance(mockLocal, mockCtorId);
     
     assertThat(proxy.insns.size(), is(1));
     
@@ -207,78 +218,106 @@ public class UnitTestCodeProxy {
     NewInstance<Object> ig = (NewInstance<Object>)i;
     
     assertThat(ig.target, is(mockLocal));
-    assertThat(ig.constructor, is(mockMethodId));
+    assertThat(ig.constructor, is(mockCtorId));
     assertThat(ig.args.length, is(0));
     
     ig.generate();
-    verify(mockCode).newInstance(mockLocal, mockMethodId);
+    verify(mockCode).newInstance(mockLocal, mockCtorId);
     
     // test with 1 arg
-    proxy.newInstance(mockLocal, mockMethodId, mockLocal2);
+    proxy.newInstance(mockLocal, mockCtorId, mockLocal2);
     ig = (NewInstance<Object>)proxy.insns.get(1);
     ig.generate();
-    verify(mockCode).newInstance(mockLocal, mockMethodId, mockLocal2);    
+    verify(mockCode).newInstance(mockLocal, mockCtorId, mockLocal2);    
 
     // test with 2 args
-    proxy.newInstance(mockLocal, mockMethodId, mockLocal2, mockLocal);
+    proxy.newInstance(mockLocal, mockCtorId, mockLocal2, mockLocal);
     ig = (NewInstance<Object>)proxy.insns.get(2);
     ig.generate();
-    verify(mockCode).newInstance(mockLocal, mockMethodId, mockLocal2, mockLocal);    
+    verify(mockCode).newInstance(mockLocal, mockCtorId, mockLocal2, mockLocal);    
   }
 
   @Test
   public void testInvokeStatic() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testInvokeVirtual() {
-    fail("Not yet implemented");
+    assertThat(proxy.insns.size(), is(0));
+    proxy.invokeVirtual(mockMethodId, mockTarget, mockInstance);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(InvokeVirtual.class)));
+
+    InvokeVirtual<Object, Object> ig = (InvokeVirtual<Object, Object>)i;
+    
+    assertThat(ig.method, is(mockMethodId));
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.instance, is(mockInstance));    
+    assertThat(ig.args.length, is(0));
+    
+    ig.generate();
+    verify(mockCode).invokeVirtual(mockMethodId, mockTarget, mockInstance);
+    
+    // test with 1 arg
+    proxy.invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal);
+    ig = (InvokeVirtual<Object, Object>)proxy.insns.get(1);
+    ig.generate();
+    verify(mockCode).invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal);    
+
+    // test with 2 args
+    proxy.invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);
+    ig = (InvokeVirtual<Object, Object>)proxy.insns.get(2);
+    ig.generate();
+    verify(mockCode).invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);    
   }
 
   @Test
   public void testInvokeDirect() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testInvokeSuper() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testInvokeInterface() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testInstanceOfType() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testCast() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testArrayLength() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testNewArray() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testAget() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testAput() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
@@ -297,17 +336,17 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testReturnValue() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testMonitorEnter() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
   @Test
   public void testMonitorExit() {
-    fail("Not yet implemented");
+    // TODO implement this test
   }
 
 }

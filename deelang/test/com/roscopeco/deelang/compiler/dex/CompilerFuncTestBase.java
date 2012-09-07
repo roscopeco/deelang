@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 import com.googlecode.dex2jar.reader.DexFileReader;
 import com.googlecode.dex2jar.util.Dump;
@@ -12,19 +13,57 @@ import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
+import com.roscopeco.deelang.runtime.Binding;
+import com.roscopeco.deelang.runtime.CompiledScript;
 
+import dee.lang.DeelangInteger;
+import dee.lang.DeelangObject;
+
+/**
+ * Base class for functional tests on the DEX compiler.
+ * 
+ * When running tests, if the functest-print-dex system property is set,
+ * this will also dump the generated dex code to STDOUT.
+ * 
+ * You can set this property using the -D java commandline switch,
+ * e.g. java -Dfunctest-print-dex -cp {classpath} TestRunner
+ * 
+ * @author Rosco
+ */
 public class CompilerFuncTestBase {
-  /* dex\n035\0 */
-  protected static final byte[] DEX_SIG = new byte[] { 100, 101, 120, 10, 48, 51, 53, 0 };
+  public static final class Foo extends DeelangObject {
+    public Foo(Binding binding) {
+      super(binding);
+    }
+    
+    public DeelangObject foo() { return null; }  
+    public void foo(DeelangInteger a) { };
+    public void foo(DeelangInteger a, DeelangInteger b) { };
+  }
+  
+  DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz) throws ParserError, CompilerError {
+    Compiler c = new Compiler();
+    return (DexCompilationUnit) c.compile(
+        new DexCompilationUnit(c, "UNITTESTS", superClz, Foo.class), Parser.staticParse(code));
+  }
   
   DexCompilationUnit runTest(String code) throws ParserError, CompilerError {
     Compiler c = new Compiler();
     return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS"), Parser.staticParse(code));
+        new DexCompilationUnit(c, "UNITTESTS", Foo.class), Parser.staticParse(code));
   }
   
-  void runCodeComparisonTest(String code, String superClz, String... methods) throws ParserError, CompilerError {
-    DexFileReader rdr = new DexFileReader(runTest(code).getCode());
+  void runCodeComparisonTest(String code, Class<? extends CompiledScript> superClz, 
+      String expectSuper, String... methods) throws ParserError, CompilerError {
+    
+    // Test here rather than passing default through from non-superClz overload,
+    // to check that the non-superClz constructor on CompUnit handles this correctly.
+    DexFileReader rdr;
+    if (superClz == null) {
+      rdr = new DexFileReader(runTest(code).getCode());
+    } else {
+      rdr = new DexFileReader(runTest(code, superClz).getCode());      
+    }
     final ByteArrayOutputStream bos = new ByteArrayOutputStream();
     
     rdr.accept(new Dump(new WriterManager() {
@@ -34,16 +73,27 @@ public class CompilerFuncTestBase {
       }
     }));
     
+    if (System.getProperty("functest-print-dex") != null) {
+      System.out.println(bos.toString());
+    }
+    
     String result = bos.toString().replaceAll("\r", "");
     
-    if (!result.contains(superClz)) {
-      fail("Superclass '" + superClz + "' not found in\n\n" + result);
+    if (!result.contains(expectSuper)) {
+      fail("Superclass '" + expectSuper + "' not found in\n\n" + result);
     }
     
     for (String method : methods) {
-      if (!result.contains(method)) {
+      String methodrx = java.util.regex.Pattern.quote(method).replaceAll("__UUID__", "\\\\E[0-9a-f\\\\-]+\\\\Q");
+      Pattern p = Pattern.compile(methodrx, Pattern.MULTILINE);
+      if (!p.matcher(result).find()) {
         fail("Didn't find\n\n" + method + "\n\n in\n\n" + result);
       }
     }
+  }
+  
+  void runCodeComparisonTest(String code, String expectSuper, String... methods) 
+      throws ParserError, CompilerError {
+    this.runCodeComparisonTest(code, null, expectSuper, methods);
   }
 }

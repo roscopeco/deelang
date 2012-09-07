@@ -7,7 +7,7 @@ import org.junit.Test;
 public class FuncTestHashBinding {
   @Test
   public void testGetSetLocal() {
-    HashBinding b = new HashBinding();
+    HashBinding b = new HashBinding(null);
 
     assertNull(b.getLocal("TEST"));
     

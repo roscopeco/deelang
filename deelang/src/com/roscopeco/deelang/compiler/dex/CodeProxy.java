@@ -86,6 +86,25 @@ final class CodeProxy {
       code.newInstance(target, constructor, args);
     }
   }
+  
+  class InvokeVirtual<D, R> implements Instruction {
+    final MethodId<D, R> method;
+    final Local<? super R> target;
+    final Local<? extends D> instance;
+    final Local<?>[] args;
+    
+    InvokeVirtual(MethodId<D, R> method, Local<? super R> target, Local<? extends D> instance, Local<?>... args) {
+      this.method = method;
+      this.target = target;
+      this.instance = instance;
+      this.args = args;
+    }
+    
+    @Override
+    public void generate() {
+      code.invokeVirtual(method, target, instance, args);      
+    }
+  }
 
   private final ReturnVoid RETURNVOID = new ReturnVoid();
   
@@ -187,6 +206,7 @@ final class CodeProxy {
 
   public <D, R> void invokeVirtual(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
+    insns.add(new InvokeVirtual<D, R>(method, target, instance, args));
   }
 
   public <D, R> void invokeDirect(MethodId<D, R> method, Local<? super R> target,
