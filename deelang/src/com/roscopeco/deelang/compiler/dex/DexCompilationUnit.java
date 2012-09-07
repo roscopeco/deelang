@@ -539,7 +539,9 @@ public class DexCompilationUnit extends ASTVisitor {
         if (void.class.equals(retClz)) {
           throw new CompilerError("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
         } else {
-          target = getArgRegister(retType, callerbpd.argi);
+          MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument();
+          arg.reg = target = getArgRegister(retType, callerbpd.argi);;
+          arg.type = retClz;
         }
       } else {
         if (void.class.equals(retClz)) {
