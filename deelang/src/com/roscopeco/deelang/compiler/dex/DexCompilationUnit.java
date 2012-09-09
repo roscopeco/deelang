@@ -156,19 +156,46 @@ public class DexCompilationUnit extends ASTVisitor {
    * BackPassFrame for METH_CALL processing.
    */
   protected class MethCallBackPassData extends BackPassFrame {    
-    protected class Argument {
-      Local<?> reg;
-      Class<?> type;
+    protected class Argument<T> {
+      Class<T> jtype;
+      TypeId<T> type;
+      
+      public Argument(Class<T> jtype) {
+        this.jtype = jtype;
+        this.type = TypeId.get(jtype);
+      }
       
       public String toString() {
         return type.toString();
       }
+      
+      @SuppressWarnings("unchecked")
+      public Local<T> getArgRegister(int argi) {
+        // TODO this is a complete mess. There are better ways to do this than the sparse array thing...
+        SparseArrayList<Local<?>> typeRegs = argRegisters.get(type);
+        Local<T> reg;
+        
+        if (typeRegs == null) {
+          typeRegs = new SparseArrayList<Local<?>>();
+          typeRegs.set(argi, reg = codeProxy.newLocal(type));
+          argRegisters.put(type, typeRegs);
+        } else {
+          if ((argi >= typeRegs.size()) || (reg = (Local<T>)typeRegs.get(argi)) == null) {
+            typeRegs.set(argi, reg = codeProxy.newLocal(type));
+          }
+        }
+        
+        return reg;
+      }
     }
+    
+    private HashMap<TypeId<?>, SparseArrayList<Local<?>>> argRegisters = 
+        new HashMap<TypeId<?>, SparseArrayList<Local<?>>>();
     
     String methName;
     int argc;   // arg count
     int argi;   // current arg, -1 for none.
-    Argument[] args;
+    Argument<?>[] args;
     boolean selfCall;
     protected MethCallBackPassData(String name) { 
       this.methName = name; 
@@ -176,7 +203,7 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
 
-  private static final MethCallBackPassData.Argument[] EMPTY_ARGS = new MethCallBackPassData.Argument[0];
+  private static final MethCallBackPassData.Argument<?>[] EMPTY_ARGS = new MethCallBackPassData.Argument[0];
 
   /**
    * Stack of BackPassFrames used by the visitor implementation to 
@@ -189,19 +216,15 @@ public class DexCompilationUnit extends ASTVisitor {
    * stack, or null if there is no frame/it isn't a MethCallBackPassData.
    */
   protected MethCallBackPassData getMethCallBackPassData() {
-    if (!backPassData.isEmpty()) {
-      BackPassFrame frame = backPassData.getFirst();
-      if (frame == null) {
-        return null;
-      } else {
-        if (frame instanceof MethCallBackPassData) {
-          return (MethCallBackPassData)frame;
-        } else {
-          return null;
-        }
-      }
-    } else {
+    BackPassFrame frame = backPassData.peekFirst();
+    if (frame == null) {
       return null;
+    } else {
+      if (frame instanceof MethCallBackPassData) {
+        return (MethCallBackPassData)frame;
+      } else {
+        return null;
+      }
     }
   }
   
@@ -232,7 +255,7 @@ public class DexCompilationUnit extends ASTVisitor {
   private Local<Integer> accInt;
   private Local<Double> accDbl;
   // TODO not really necessary separating string and object...
-  private Local<String> accStr;
+  //private Local<String> accStr;
   private Local<Object> accObj;
   
   /**
@@ -257,9 +280,10 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
 
+  /*
   /** 
    * Get the 'accumulator' for string types, or create if not previously used 
-   */
+   *
   protected Local<String> getAccStr() {
     if (accStr == null) {
       return accStr = codeProxy.newLocal(TypeId.STRING);
@@ -267,9 +291,10 @@ public class DexCompilationUnit extends ASTVisitor {
       return accStr;
     }
   }
+  */
   
   /** 
-   * Get the 'accumulator' for int types, or create if not previously used 
+   * Get the 'accumulator' for reference types, or create if not previously used 
    */
   protected Local<Object> getAccObj() {
     if (accObj == null) {
@@ -291,42 +316,25 @@ public class DexCompilationUnit extends ASTVisitor {
     return codeProxy.getParameter(1, TYPEID_BINDING);
   }
   
-  private HashMap<TypeId<?>, SparseArrayList<Local<?>>> argRegisters = 
-      new HashMap<TypeId<?>, SparseArrayList<Local<?>>>();
-  
-  /**
-   * Get the register for the specified method argument.
-   */
-  @SuppressWarnings("unchecked")
-  protected <T> Local<T> getArgRegister(TypeId<T> type, int argi) {
-    // TODO this is a complete mess. There are better ways to do this than the sparse array thing...
-    SparseArrayList<Local<?>> typeRegs = argRegisters.get(type);
-    Local<T> reg;
-    
-    if (typeRegs == null) {
-      typeRegs = new SparseArrayList<Local<?>>();
-      typeRegs.add(reg = codeProxy.newLocal(type));
-      argRegisters.put(type, typeRegs);
-    } else {
-      if ((argi >= typeRegs.size()) || (reg = (Local<T>)typeRegs.get(argi)) == null) {
-        typeRegs.set(argi, reg = codeProxy.newLocal(type));
-      }
-    }
-    
-    return reg;
-  }
-  
   private void generateIntLiteral(int value) {
     Local<DeelangInteger> ldl;
+    boolean transientLocal = false;
     
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
-      // TODO use accumulator??!?
+      // TODO check if is assignment or whatever...
+      
+      // TODO once we've checked if this is an assignment or
+      //      whatever else might need this literal, we will
+      //      know if it's just a literal that gets created
+      //      and never assigned or used. In that case, we 
+      //      could simply optimise it away...
+      transientLocal = true;
       ldl = codeProxy.newLocal(TYPEID_DL_INTEGER);
     } else {
-      MethCallBackPassData.Argument arg = mcbpd.args[mcbpd.argi] = mcbpd.new Argument();
-      arg.reg = ldl = getArgRegister(TYPEID_DL_INTEGER, mcbpd.argi);
-      arg.type = DeelangInteger.class;
+      MethCallBackPassData.Argument<DeelangInteger> arg = mcbpd.new Argument<DeelangInteger>(DeelangInteger.class);
+      mcbpd.args[mcbpd.argi] = arg;
+      ldl = arg.getArgRegister(mcbpd.argi);
     }
     
     Local<Integer> li = getAccInt();
@@ -334,6 +342,9 @@ public class DexCompilationUnit extends ASTVisitor {
     
     codeProxy.loadConstant(li, value);
     codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
+    if (transientLocal) {
+      codeProxy.freeLocal(ldl);
+    }
   }
   
   @Override
@@ -358,15 +369,17 @@ public class DexCompilationUnit extends ASTVisitor {
   protected void visitFloatLiteral(Tree ast)
       throws CompilerError {    
     Local<DeelangFloat> ldl;
+    boolean transientLocal = false;
     
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
-      // TODO use accumulator??!?
-      ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);
+      // TODO See comments in visitIntLiteral
+      transientLocal = true;
+      ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);      
     } else {
-      MethCallBackPassData.Argument arg = mcbpd.args[mcbpd.argi] = mcbpd.new Argument();
-      arg.reg = ldl = getArgRegister(TYPEID_DL_FLOAT, mcbpd.argi);
-      arg.type = DeelangFloat.class;
+      MethCallBackPassData.Argument<DeelangFloat> arg = mcbpd.new Argument<DeelangFloat>(DeelangFloat.class);
+      mcbpd.args[mcbpd.argi] = arg;
+      ldl = arg.getArgRegister(mcbpd.argi);
     }
     
     Local<Double> ld = getAccDbl();
@@ -374,6 +387,9 @@ public class DexCompilationUnit extends ASTVisitor {
     
     codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
     codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
+    if (transientLocal) {
+      codeProxy.freeLocal(ldl);
+    }
   }
 
   @Override
@@ -387,23 +403,28 @@ public class DexCompilationUnit extends ASTVisitor {
   protected void visitStringLiteral(Tree ast)
       throws CompilerError {
     Local<DeelangString> ldl;
+    boolean transientLocal = false;
     
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
       // TODO use accumulator??!?
+      transientLocal = true;
       ldl = codeProxy.newLocal(TYPEID_DL_STRING);
     } else {
-      MethCallBackPassData.Argument arg = mcbpd.args[mcbpd.argi] = mcbpd.new Argument();
-      arg.reg = ldl = getArgRegister(TYPEID_DL_STRING, mcbpd.argi);
-      arg.type = DeelangString.class;
+      MethCallBackPassData.Argument<DeelangString> arg = mcbpd.new Argument<DeelangString>(DeelangString.class);
+      mcbpd.args[mcbpd.argi] = arg;
+      ldl = arg.getArgRegister(mcbpd.argi);
     }
     
-    Local<String> ld = getAccStr();
+    Local<Object> ld = getAccObj();
     Local<Binding> binding = getBinding();
 
     String value = ast.getText();
     codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
     codeProxy.newInstance(ldl, DL_STRING_INIT, binding, ld);
+    if (transientLocal) {
+      codeProxy.freeLocal(ldl);
+    }
   }
 
   @Override
@@ -448,13 +469,13 @@ public class DexCompilationUnit extends ASTVisitor {
   }
 
   // TODO this is only returning FIRST match, not necessarily BEST match!
-  private Method findMethod(Class<?> clz, String name, MethCallBackPassData.Argument[] args) {
+  private Method findMethod(Class<?> clz, String name, MethCallBackPassData.Argument<?>[] args) {
     do {
       outer: for (Method m : clz.getMethods()) {
         Class<?>[] paramTypes = m.getParameterTypes();
         if (m.getName().equals(name) && paramTypes.length == args.length) {
           for (int i = 0; i < args.length; i++) {
-            if (!paramTypes[i].isAssignableFrom(args[i].type)) {
+            if (!paramTypes[i].isAssignableFrom(args[i].jtype)) {
               // can't satisfy; loop again
               continue outer;            
             }
@@ -474,27 +495,27 @@ public class DexCompilationUnit extends ASTVisitor {
   private static final TypeId<?>[] EMPTY_TIDS = new TypeId<?>[0]; 
   private static final Local<?>[] EMPTY_LOCALS = new Local<?>[0]; 
   
-  private TypeId<?>[] mapClassesToTypes(MethCallBackPassData.Argument[] clzs) {
+  private TypeId<?>[] mapClassesToTypes(MethCallBackPassData.Argument<?>[] clzs) {
     int len = clzs.length;
     if (len == 0) {
       return EMPTY_TIDS;
     } else {
       TypeId<?>[] tids = new TypeId<?>[len];
       for (int i = 0; i < len; i++) {
-        tids[i] = TypeId.get(clzs[i].type);
+        tids[i] = TypeId.get(clzs[i].jtype);
       }
       return tids;
     }
   }
   
-  private Local<?>[] mapBpdArgsToLocals(MethCallBackPassData.Argument[] args) {
+  private Local<?>[] mapBpdArgsToLocals(MethCallBackPassData.Argument<?>[] args) {
     int len = args.length;
     if (len == 0) {
       return EMPTY_LOCALS;
     } else {
       Local<?>[] locs = new Local<?>[len];
       for (int i = 0; i < len; i++) {
-        locs[i] = args[i].reg;
+        locs[i] = args[i].getArgRegister(i);
       }
       return locs;
     }    
@@ -539,9 +560,8 @@ public class DexCompilationUnit extends ASTVisitor {
         if (void.class.equals(retClz)) {
           throw new CompilerError("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
         } else {
-          MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument();
-          arg.reg = target = getArgRegister(retType, callerbpd.argi);;
-          arg.type = retClz;
+          MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument(retClz);
+          target = arg.getArgRegister(callerbpd.argi);
         }
       } else {
         if (void.class.equals(retClz)) {
@@ -554,6 +574,13 @@ public class DexCompilationUnit extends ASTVisitor {
     } else {
       // TODO generate invokeVirtual
       throw new UnsupportedError("Explicit receiver not yet supported");
+    }
+    
+    // TODO could probably get rid of indexed arg map now?
+    //      Failing that, copy args into a local before looping...
+    // Return locals to the pool for reuse
+    for (int i = 0; i < bpd.args.length; i++) {
+      codeProxy.freeLocal(bpd.args[i].getArgRegister(i));
     }
     
     // TODO block support

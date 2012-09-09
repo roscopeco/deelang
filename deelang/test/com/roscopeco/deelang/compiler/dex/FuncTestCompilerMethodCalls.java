@@ -51,4 +51,43 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "INVOKE_VIRTUAL      |     |v4.foo(v0,v2)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo(Ldee/lang/DeelangInteger;Ldee/lang/DeelangInteger;)V\n"+
         "RETURN_VOID         |     |return");
   }
+  
+  @Test
+  public void testNestedFuncCallOneArg() throws ParserError, CompilerError {
+    runCodeComparisonTest("foo(bar(1))", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v3   //DexCompiledScript__UUID__\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.bar(v0)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar(Ldee/lang/DeelangInteger;)Ldee/lang/DeelangInteger;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "INVOKE_VIRTUAL      |     |v4.foo(v2)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo(Ldee/lang/DeelangInteger;)V\n"+
+        "RETURN_VOID         |     |return");
+  }
+
+  @Test
+  public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArg() throws ParserError, CompilerError {
+    runCodeComparisonTest("foo(bar(1, baz(2)))", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v4   //DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v6,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "CONST               |     |v1=0x00000002  // int:2   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v2=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v2.<init>(v6,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v5.baz(v2)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.baz(Ldee/lang/DeelangInteger;)Ldee/lang/DeelangString;\n"+
+        "MOVE_RESULT         |     |v3=TEMP\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v5.bar(v0,v3)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar(Ldee/lang/DeelangInteger;Ldee/lang/DeelangString;)Ldee/lang/DeelangInteger;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "INVOKE_VIRTUAL      |     |v5.foo(v2)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo(Ldee/lang/DeelangInteger;)V\n"+
+        "RETURN_VOID         |     |return");
+  }
 }

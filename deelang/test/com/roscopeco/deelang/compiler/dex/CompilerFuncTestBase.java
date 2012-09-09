@@ -18,6 +18,7 @@ import com.roscopeco.deelang.runtime.CompiledScript;
 
 import dee.lang.DeelangInteger;
 import dee.lang.DeelangObject;
+import dee.lang.DeelangString;
 
 /**
  * Base class for functional tests on the DEX compiler.
@@ -37,8 +38,11 @@ public class CompilerFuncTestBase {
     }
     
     public DeelangObject foo() { return null; }  
-    public void foo(DeelangInteger a) { };
-    public void foo(DeelangInteger a, DeelangInteger b) { };
+    public void foo(DeelangInteger a) { }
+    public void foo(DeelangInteger a, DeelangInteger b) { }
+    public DeelangInteger bar(DeelangInteger a) { return a; }
+    public DeelangInteger bar(DeelangInteger a, DeelangString b) { return a; }
+    public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); } 
   }
   
   DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz) throws ParserError, CompilerError {
