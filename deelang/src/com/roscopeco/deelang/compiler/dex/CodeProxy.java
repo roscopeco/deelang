@@ -33,13 +33,13 @@ final class CodeProxy {
   }
   
   
-  class ReturnVoid implements Instruction {
-    public void generate() {
+  final class ReturnVoid implements Instruction {
+    public final void generate() {
       code.returnVoid();
     }
   }
   
-  class LoadConstant<T> implements Instruction {
+  final class LoadConstant<T> implements Instruction {
     final Local<T> target;
     final T value;
     
@@ -49,12 +49,12 @@ final class CodeProxy {
     }
 
     @Override
-    public void generate() {
+    public final void generate() {
       code.loadConstant(target, value);
     }
   }
   
-  class Iget<D, V> implements Instruction {
+  final class Iget<D, V> implements Instruction {
     final FieldId<D, V> fieldId;
     final Local<V> target;
     final  Local<D> instance;
@@ -66,12 +66,12 @@ final class CodeProxy {
     }
 
     @Override
-    public void generate() {
+    public final void generate() {
       code.iget(fieldId, target, instance);
     }
   }
   
-  class NewInstance<T> implements Instruction {
+  final class NewInstance<T> implements Instruction {
     final Local<T> target;
     final MethodId<T, Void> constructor;
     final Local<?>[] args;
@@ -83,12 +83,12 @@ final class CodeProxy {
     }
     
     @Override
-    public void generate() {
+    public final void generate() {
       code.newInstance(target, constructor, args);
     }
   }
   
-  class InvokeVirtual<D, R> implements Instruction {
+  final class InvokeVirtual<D, R> implements Instruction {
     final MethodId<D, R> method;
     final Local<? super R> target;
     final Local<? extends D> instance;
@@ -102,7 +102,7 @@ final class CodeProxy {
     }
     
     @Override
-    public void generate() {
+    public final void generate() {
       code.invokeVirtual(method, target, instance, args);      
     }
   }
@@ -110,23 +110,23 @@ final class CodeProxy {
   private final ReturnVoid RETURNVOID = new ReturnVoid();
   
   Code code;
-  ArrayList<Instruction> insns = new ArrayList<Instruction>();
+  final ArrayList<Instruction> insns = new ArrayList<Instruction>();
   
   public CodeProxy(Code code) {
     this.code = code;    
   }
   
-  public void doGenerate() {
+  public final void doGenerate() {
     for (Instruction insn : insns) {
       insn.generate();
     }    
   }
   
   /* * CODE API * */
-  ArrayDeque<Local<?>> localsPool = new ArrayDeque<Local<?>>();
+  final ArrayDeque<Local<?>> localsPool = new ArrayDeque<Local<?>>();
   
   @SuppressWarnings("unchecked")
-  public <T> Local<T> newLocal(TypeId<T> type) {
+  public final <T> Local<T> newLocal(TypeId<T> type) {
     if (localsPool.isEmpty()) {
       return code.newLocal(type);
     } else {
@@ -134,141 +134,141 @@ final class CodeProxy {
     }
   }
   
-  public void freeLocal(Local<?> l) {
+  public final void freeLocal(Local<?> l) {
     localsPool.addFirst(l);
   }
 
-  public <T> Local<T> getParameter(int index, TypeId<T> type) {
+  public final <T> Local<T> getParameter(int index, TypeId<T> type) {
     return code.getParameter(index, type);
   }
 
-  public <T> Local<T> getThis(TypeId<T> type) {
+  public final <T> Local<T> getThis(TypeId<T> type) {
     return code.getThis(type);
   }
 
-  public void mark(Label label) {
+  public final void mark(Label label) {
   }
 
-  public void jump(Label target) {
+  public final void jump(Label target) {
   }
 
-  public void addCatchClause(TypeId<? extends Throwable> toCatch, Label catchClause) {
+  public final void addCatchClause(TypeId<? extends Throwable> toCatch, Label catchClause) {
   }
 
-  public Label removeCatchClause(TypeId<? extends Throwable> toCatch) {
+  public final Label removeCatchClause(TypeId<? extends Throwable> toCatch) {
     // TODO implement this (LabelProxy?)
     return null;
   }
 
-  public void throwValue(Local<? extends Throwable> toThrow) {
+  public final void throwValue(Local<? extends Throwable> toThrow) {
   }
 
-  public <T> void loadConstant(Local<T> target, T value) {
+  public final <T> void loadConstant(Local<T> target, T value) {
     insns.add(new LoadConstant<T>(target, value));
   }
 
-  public <T> void move(Local<T> target, Local<T> source) {
+  public final <T> void move(Local<T> target, Local<T> source) {
   }
 
   // instructions: unary and binary
 
-  public <T> void op(UnaryOp op, Local<T> target, Local<T> source) {
+  public final <T> void op(UnaryOp op, Local<T> target, Local<T> source) {
   }
 
-  public <T> void op(BinaryOp op, Local<T> target, Local<T> a, Local<T> b) {
+  public final <T> void op(BinaryOp op, Local<T> target, Local<T> a, Local<T> b) {
   }
 
   // instructions: branches
 
-  public <T> void compare(Comparison comparison, Label trueLabel, Local<T> a, Local<T> b) {
+  public final <T> void compare(Comparison comparison, Label trueLabel, Local<T> a, Local<T> b) {
   }
 
-  public <T extends Number> void compareFloatingPoint(Local<Integer> target, 
+  public final <T extends Number> void compareFloatingPoint(Local<Integer> target, 
                                                       Local<T> a, 
                                                       Local<T> b, 
                                                       int nanValue) {    
   }
 
-  public void compareLongs(Local<Integer> target, Local<Long> a, Local<Long> b) {
+  public final void compareLongs(Local<Integer> target, Local<Long> a, Local<Long> b) {
   }
 
   // instructions: fields
 
-  public <D, V> void iget(FieldId<D, V> fieldId, Local<V> target, Local<D> instance) {
+  public final <D, V> void iget(FieldId<D, V> fieldId, Local<V> target, Local<D> instance) {
     insns.add(new Iget<D,V>(fieldId, target, instance));    
   }
 
-  public <D, V> void iput(FieldId<D, V> fieldId, Local<D> instance, Local<V> source) {
+  public final <D, V> void iput(FieldId<D, V> fieldId, Local<D> instance, Local<V> source) {
   }
 
-  public <V> void sget(FieldId<?, V> fieldId, Local<V> target) {
+  public final <V> void sget(FieldId<?, V> fieldId, Local<V> target) {
   }
 
-  public <V> void sput(FieldId<?, V> fieldId, Local<V> source) {
+  public final <V> void sput(FieldId<?, V> fieldId, Local<V> source) {
   }
 
   // instructions: invoke
 
-  public <T> void newInstance(Local<T> target, MethodId<T, Void> constructor, Local<?>... args) {
+  public final <T> void newInstance(Local<T> target, MethodId<T, Void> constructor, Local<?>... args) {
     insns.add(new NewInstance<T>(target, constructor, args));    
   }
 
-  public <R> void invokeStatic(MethodId<?, R> method, Local<? super R> target, Local<?>... args) {
+  public final <R> void invokeStatic(MethodId<?, R> method, Local<? super R> target, Local<?>... args) {
   }
 
-  public <D, R> void invokeVirtual(MethodId<D, R> method, Local<? super R> target,
+  public final <D, R> void invokeVirtual(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
     insns.add(new InvokeVirtual<D, R>(method, target, instance, args));
   }
 
-  public <D, R> void invokeDirect(MethodId<D, R> method, Local<? super R> target,
+  public final <D, R> void invokeDirect(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
   }
 
-  public <D, R> void invokeSuper(MethodId<D, R> method, Local<? super R> target,
+  public final <D, R> void invokeSuper(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
   }
 
-  public <D, R> void invokeInterface(MethodId<D, R> method, Local<? super R> target,
+  public final <D, R> void invokeInterface(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
   }
 
   // instructions: types
 
-  public void instanceOfType(Local<?> target, Local<?> source, TypeId<?> type) {
+  public final void instanceOfType(Local<?> target, Local<?> source, TypeId<?> type) {
   }
 
-  public void cast(Local<?> target, Local<?> source) {
+  public final void cast(Local<?> target, Local<?> source) {
   }
 
   // instructions: arrays
 
-  public <T> void arrayLength(Local<Integer> target, Local<T> array) {
+  public final <T> void arrayLength(Local<Integer> target, Local<T> array) {
   }
 
-  public <T> void newArray(Local<T> target, Local<Integer> length) {
+  public final <T> void newArray(Local<T> target, Local<Integer> length) {
   }
 
-  public void aget(Local<?> target, Local<?> array, Local<Integer> index) {
+  public final void aget(Local<?> target, Local<?> array, Local<Integer> index) {
   }
 
-  public void aput(Local<?> array, Local<Integer> index, Local<?> source) {
+  public final void aput(Local<?> array, Local<Integer> index, Local<?> source) {
   }
 
   // instructions: return
 
-  public void returnVoid() {
+  public final void returnVoid() {
     insns.add(RETURNVOID);
   }
 
-  public void returnValue(Local<?> result) {
+  public final void returnValue(Local<?> result) {
   }
 
   // instructions; synchronized
 
-  public void monitorEnter(Local<?> monitor) {
+  public final void monitorEnter(Local<?> monitor) {
   }
 
-  public void monitorExit(Local<?> monitor) {
+  public final void monitorExit(Local<?> monitor) {
   }
 }
