@@ -228,84 +228,7 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
   
-  /*
-  /**
-   * Get the register for the specified var, or alloc the next available
-   * if it's not in there.
-   * 
-   * @param varName The name of the local variable.
-   * @return The allocated register.
-   * @throws CompilerError to indicate that the maximum number of locals (255) has been exceeded.
-   *
-  protected Local<?> getOrAllocRegister(String varName) throws CompilerError {
-    Local<?> reg;
-    if ((reg = locals.get(varName)) == null) {
-      // new register
-      // What is max number of registers in Dex?
-      //if (localCount == 255) {
-      //  throw new MaxLocalsExceededException("Local variable limit exceeded");
-      //} else {
-        locals.put(varName, (reg = codeProxy.newLocal(TypeId.OBJECT)));
-      //}
-    }
-    return reg;
-  }
-  */
-  
-  private Local<Integer> accInt;
-  private Local<Double> accDbl;
-  // TODO not really necessary separating string and object...
-  //private Local<String> accStr;
-  private Local<Object> accObj;
-  
-  /**
-   *  Get the 'accumulator' for int types, or create if not previously used 
-   */
-  protected Local<Integer> getAccInt() {
-    if (accInt == null) {
-      return accInt = codeProxy.newLocal(TypeId.INT);
-    } else {
-      return accInt;
-    }
-  }
-  
-  /** 
-   * Get the 'accumulator' for double types, or create if not previously used 
-   */
-  protected Local<Double> getAccDbl() {
-    if (accDbl == null) {
-      return accDbl = codeProxy.newLocal(TypeId.DOUBLE);
-    } else {
-      return accDbl;
-    }
-  }
-
-  /*
-  /** 
-   * Get the 'accumulator' for string types, or create if not previously used 
-   *
-  protected Local<String> getAccStr() {
-    if (accStr == null) {
-      return accStr = codeProxy.newLocal(TypeId.STRING);
-    } else {
-      return accStr;
-    }
-  }
-  */
-  
-  /** 
-   * Get the 'accumulator' for reference types, or create if not previously used 
-   */
-  protected Local<Object> getAccObj() {
-    if (accObj == null) {
-      return accObj = codeProxy.newLocal(TypeId.OBJECT);
-    } else {
-      return accObj;
-    }
-  }
-  
   protected Local<? extends DeelangObject> getSelf() {
-    // TODO doubt this will work, parameter not actually DLOBJECT, but a subclass...
     return codeProxy.getParameter(0, TYPEID_DL_OBJECT);
   }
   
@@ -337,11 +260,12 @@ public class DexCompilationUnit extends ASTVisitor {
       ldl = arg.getArgRegister(mcbpd.argi);
     }
     
-    Local<Integer> li = getAccInt();
+    Local<Integer> li = codeProxy.newLocal(TypeId.INT);
     Local<Binding> binding = getBinding();
     
     codeProxy.loadConstant(li, value);
     codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
+    codeProxy.freeLocal(li);
     if (transientLocal) {
       codeProxy.freeLocal(ldl);
     }
@@ -382,11 +306,12 @@ public class DexCompilationUnit extends ASTVisitor {
       ldl = arg.getArgRegister(mcbpd.argi);
     }
     
-    Local<Double> ld = getAccDbl();
+    Local<Double> ld = codeProxy.newLocal(TypeId.DOUBLE);
     Local<Binding> binding = getBinding();
     
     codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
     codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
+    codeProxy.freeLocal(ld);
     if (transientLocal) {
       codeProxy.freeLocal(ldl);
     }
@@ -416,12 +341,13 @@ public class DexCompilationUnit extends ASTVisitor {
       ldl = arg.getArgRegister(mcbpd.argi);
     }
     
-    Local<Object> ld = getAccObj();
+    Local<Object> ld = codeProxy.newLocal(TypeId.OBJECT);
     Local<Binding> binding = getBinding();
 
     String value = ast.getText();
     codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
     codeProxy.newInstance(ldl, DL_STRING_INIT, binding, ld);
+    codeProxy.freeLocal(ld);
     if (transientLocal) {
       codeProxy.freeLocal(ldl);
     }
@@ -436,36 +362,31 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitChain(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitAssignLocal(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");    
   }
 
   @Override
   protected void visitIdentifier(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitAssignField(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitFieldAccess(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   // TODO this is only returning FIRST match, not necessarily BEST match!
@@ -610,50 +531,42 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitBlock(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitOrBlock(Tree ast)
       throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitAdd(Tree ast) throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitSub(Tree ast) throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitMul(Tree ast) throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitDiv(Tree ast) throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitMod(Tree ast) throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 
   @Override
   protected void visitPow(Tree ast) throws CompilerError {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedError("Not yet implemented");
   }
 }
