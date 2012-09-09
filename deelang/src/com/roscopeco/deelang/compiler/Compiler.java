@@ -120,22 +120,18 @@ public class Compiler {
    * @throws CompilerError If an error occurs during compilation.
    */
   public ASTVisitor compile(ASTVisitor unit, Tree ast) throws CompilerError {
-    try {
-      if (ast != null) {
-        if (ast.getType() == 0) {
-          // is multiple statement script
-          assert debug("Compiling multi-line script");
-          for (int i = 0; i < ast.getChildCount(); i++) {
-            visit(unit, ast.getChild(i));
-          }
-        } else {
-          // is single statement script
-          assert debug("Compiling single line script");
-          visit(unit, ast);
+    if (ast != null) {
+      if (ast.getType() == 0) {
+        // is multiple statement script
+        assert debug("Compiling multi-line script");
+        for (int i = 0; i < ast.getChildCount(); i++) {
+          visit(unit, ast.getChild(i));
         }
+      } else {
+        // is single statement script
+        assert debug("Compiling single line script");
+        visit(unit, ast);
       }
-    } catch (Exception t) {
-      throw new CompilerError(t);
     }
     return unit;
   }
