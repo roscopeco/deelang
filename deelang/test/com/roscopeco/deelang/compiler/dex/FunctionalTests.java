@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
   FuncTestCompilerLiterals.class,
+  FuncTestCompilerVarsAndFields.class,
   FuncTestCompilerMethodCalls.class,
   FuncTestCompilerCustomSuperclass.class
 })

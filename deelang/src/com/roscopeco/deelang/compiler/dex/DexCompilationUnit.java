@@ -6,20 +6,22 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.antlr.runtime.tree.Tree;
 
 import com.google.dexmaker.DexMaker;
-import com.google.dexmaker.FieldId;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
 import com.roscopeco.deelang.compiler.ASTVisitor;
 import com.roscopeco.deelang.compiler.Compiler;
+import com.roscopeco.deelang.compiler.CompilerBug;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
+import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.runtime.Binding;
 import com.roscopeco.deelang.runtime.CompiledScript;
 
@@ -33,27 +35,29 @@ public class DexCompilationUnit extends ASTVisitor {
   
   private DexMaker dexMaker;
   private CodeProxy codeProxy;
+  private Binding binding;
   private final TypeId<?> compiledScriptTypeId;
   private final Class<? extends DeelangObject> selfClz;
 
   /* PUBLIC API */
   
-  public DexCompilationUnit(Compiler compiler, String sourceName, Class<? extends CompiledScript> superClass, Class<? extends DeelangObject> selfClz) {
+  public DexCompilationUnit(Compiler compiler, String sourceName, Class<? extends CompiledScript> superClass, Binding binding) {
     this.compiler = compiler;
     dexMaker = new DexMaker();
     
     // TODO UUID is probably overkill here, and may not be performant enough on Android?
     compiledScriptTypeId = TypeId.get("LDexCompiledScript" + UUID.randomUUID() + ";");
     
-    this.selfClz = selfClz;
+    this.binding = binding;
+    this.selfClz = binding.getSelf().getClass();
     
     dexMaker.declare(compiledScriptTypeId, sourceName, Modifier.PUBLIC, TypeId.get(superClass));
     MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_BINDING);
     codeProxy = new CodeProxy(dexMaker.declare(run, Modifier.PUBLIC));
   }
   
-  public DexCompilationUnit(Compiler compiler, String sourceName, Class<? extends DeelangObject> selfClz) {
-    this(compiler, sourceName, CompiledScript.class, selfClz);    
+  public DexCompilationUnit(Compiler compiler, String sourceName, Binding binding) {
+    this(compiler, sourceName, CompiledScript.class, binding);
   }
   
   private byte[] codeCache;
@@ -109,6 +113,14 @@ public class DexCompilationUnit extends ASTVisitor {
   protected DexMaker getDexMaker() {
     return dexMaker;
   }
+  
+  protected Binding getBinding() {
+    return binding;
+  }
+
+  protected Class<? extends DeelangObject> getSelfClz() {
+    return selfClz;
+  }
 
   protected static final TypeId<Binding> TYPEID_BINDING = TypeId.get(Binding.class);
   protected static final TypeId<CompiledScript> TYPEID_COMPILEDSCRIPT = TypeId.get(CompiledScript.class);
@@ -117,19 +129,14 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final TypeId<DeelangInteger> TYPEID_DL_INTEGER = TypeId.get(DeelangInteger.class);
   protected static final TypeId<DeelangFloat> TYPEID_DL_FLOAT = TypeId.get(DeelangFloat.class);
   protected static final TypeId<DeelangString> TYPEID_DL_STRING = TypeId.get(DeelangString.class);
-  
-  protected static final FieldId<CompiledScript, Binding> FIELDID_COMPILEDSCRIPT_BINDING = 
-      TYPEID_COMPILEDSCRIPT.getField(TYPEID_BINDING, "binding");
+
+  protected static final MethodId<Binding, Object> BINDING_GET_LOCAL = TYPEID_BINDING.getMethod(TypeId.OBJECT, "getLocal", TypeId.STRING);
+  protected static final MethodId<Binding, Void> BINDING_SET_LOCAL = TYPEID_BINDING.getMethod(TypeId.VOID, "getLocal", TypeId.STRING, TypeId.OBJECT);
   
   protected static final MethodId<DeelangInteger, Void> DL_INTEGER_INIT = TYPEID_DL_INTEGER.getConstructor(TYPEID_BINDING, TypeId.INT);
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
   protected static final MethodId<DeelangString, Void> DL_STRING_INIT = TYPEID_DL_STRING.getConstructor(TYPEID_BINDING, TypeId.STRING);
       
-  /** 
-   * Holds the local var name to slot mappings.
-   */
-  /*protected final HashMap<String, Local<?>> locals = new HashMap<String, Local<?>>();*/
-
   /**
    * <p>Used to pass data back to higher tree nodes during the compile.
    * This is used in different ways for different AST types, for example
@@ -154,22 +161,26 @@ public class DexCompilationUnit extends ASTVisitor {
   /**
    * BackPassFrame for METH_CALL processing.
    */
-  protected class MethCallBackPassData extends BackPassFrame {    
-    protected class Argument<T> {
-      Class<T> jtype;
-      TypeId<T> type;
-      Local<T> reg;
+  protected final class MethCallBackPassData extends BackPassFrame {    
+    protected final class Argument<T> {
+      protected Class<T> jtype;
+      protected TypeId<T> type;
+      protected Local<T> reg;
       
-      public Argument(Class<T> jtype) {
+      public Argument(Class<T> jtype, Local<T> register) {
         this.jtype = jtype;
         this.type = TypeId.get(jtype);
       }
                   
-      public String toString() {
+      public Argument(Class<T> jtype) {
+        this(jtype, null);
+      }
+                  
+      public final String toString() {
         return type.toString();
       }
       
-      public Local<T> getArgRegister(int argi) {
+      public final Local<T> getArgRegister() {
         if (reg == null) {
           reg = codeProxy.newLocal(type);
         }
@@ -182,7 +193,7 @@ public class DexCompilationUnit extends ASTVisitor {
     int argc;   // arg count
     int argi;   // current arg, -1 for none.
     Argument<?>[] args;
-    boolean selfCall;
+    
     protected MethCallBackPassData(String name) { 
       this.methName = name; 
       this.args = EMPTY_ARGS;
@@ -219,9 +230,9 @@ public class DexCompilationUnit extends ASTVisitor {
   }
   
   /** 
-   * Get the Binding parameter. 
+   * Get the runtime Binding parameter. 
    */
-  protected Local<Binding> getBinding() {
+  protected Local<Binding> getRuntimeBindingRegister() {
     return codeProxy.getParameter(1, TYPEID_BINDING);
   }
   
@@ -243,11 +254,11 @@ public class DexCompilationUnit extends ASTVisitor {
     } else {
       MethCallBackPassData.Argument<DeelangInteger> arg = mcbpd.new Argument<DeelangInteger>(DeelangInteger.class);
       mcbpd.args[mcbpd.argi] = arg;
-      ldl = arg.getArgRegister(mcbpd.argi);
+      ldl = arg.getArgRegister();
     }
     
     Local<Integer> li = codeProxy.newLocal(TypeId.INT);
-    Local<Binding> binding = getBinding();
+    Local<Binding> binding = getRuntimeBindingRegister();
     
     codeProxy.loadConstant(li, value);
     codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
@@ -289,11 +300,11 @@ public class DexCompilationUnit extends ASTVisitor {
     } else {
       MethCallBackPassData.Argument<DeelangFloat> arg = mcbpd.new Argument<DeelangFloat>(DeelangFloat.class);
       mcbpd.args[mcbpd.argi] = arg;
-      ldl = arg.getArgRegister(mcbpd.argi);
+      ldl = arg.getArgRegister();
     }
     
     Local<Double> ld = codeProxy.newLocal(TypeId.DOUBLE);
-    Local<Binding> binding = getBinding();
+    Local<Binding> binding = getRuntimeBindingRegister();
     
     codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
     codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
@@ -309,7 +320,6 @@ public class DexCompilationUnit extends ASTVisitor {
     visitStringLiteral(ast);
   }
   
-
   @Override
   protected void visitStringLiteral(Tree ast)
       throws CompilerError {
@@ -324,11 +334,11 @@ public class DexCompilationUnit extends ASTVisitor {
     } else {
       MethCallBackPassData.Argument<DeelangString> arg = mcbpd.new Argument<DeelangString>(DeelangString.class);
       mcbpd.args[mcbpd.argi] = arg;
-      ldl = arg.getArgRegister(mcbpd.argi);
+      ldl = arg.getArgRegister();
     }
     
     Local<Object> ld = codeProxy.newLocal(TypeId.OBJECT);
-    Local<Binding> binding = getBinding();
+    Local<Binding> binding = getRuntimeBindingRegister();
 
     String value = ast.getText();
     codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
@@ -350,6 +360,56 @@ public class DexCompilationUnit extends ASTVisitor {
       throws CompilerError {
     throw new UnsupportedError("Not yet implemented");
   }
+  
+  protected final class LocalMapping<T> {
+    protected Local<T> reg;
+    protected Class<T> jtype;
+    protected TypeId<T> type;
+    
+    protected LocalMapping(Class<T> jtype) {
+      updateType(jtype);
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected final void updateType(Class<?> jtype) {
+      // Both these casts are bogus - But they'll work anyway thanks to erasure.
+      // Basically this just tricks the generics system... Maybe generics should
+      // be completely removed here and we'll just deal with raw types....
+      this.jtype = (Class<T>)jtype;
+      reg = codeProxy.newLocal(type = (TypeId<T>)TypeId.get(jtype));      
+    }
+  }
+  
+  private final HashMap<String, LocalMapping<?>> localsMap = new HashMap<String, LocalMapping<?>>();
+  
+  
+  @SuppressWarnings("unchecked")
+  protected <T> LocalMapping<T> getOrAllocLocalRegister(Class<T> type, String name) {
+    LocalMapping<T> localMap;
+    if ((localMap = (LocalMapping<T>)localsMap.get(name)) == null) {
+      localsMap.put(name, localMap = new LocalMapping<T>(type));
+    }
+    return localMap;
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  protected LocalMapping<?> getLocalRegister(String name) {
+    LocalMapping loc = localsMap.get(name);
+    
+    if (loc == null) {
+      Object o;
+      if ((o = binding.getLocal(name)) != null) {
+        // first use of binding var - we need alloc it a register and copy it in...
+        Local<String> temp = codeProxy.newLocal(TypeId.STRING);
+        loc = getOrAllocLocalRegister(o.getClass(), name);
+        codeProxy.loadConstant(temp, name);
+        codeProxy.invokeInterface(BINDING_GET_LOCAL, loc.reg, getRuntimeBindingRegister(), temp);
+        codeProxy.freeLocal(temp);          
+      }         
+    }
+    
+    return loc;
+  }
 
   @Override
   protected void visitAssignLocal(Tree ast)
@@ -357,10 +417,27 @@ public class DexCompilationUnit extends ASTVisitor {
     throw new UnsupportedError("Not yet implemented");    
   }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   protected void visitIdentifier(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    String name = ast.getText();
+    MethCallBackPassData mcbpd = getMethCallBackPassData();
+    if (mcbpd == null) {
+      // TODO check assignment etc - see visitDecimalLiteral comments
+      
+      // Local read but unused - generate nothing.
+      // TODO will need to track this, for chaining...?
+    } else {      
+      LocalMapping reg = getLocalRegister(name);
+      
+      if (reg != null) {
+        MethCallBackPassData.Argument arg = mcbpd.new Argument(reg.jtype, reg.reg);
+        mcbpd.args[mcbpd.argi] = arg;
+      } else {
+        throw new UnknownVariableException(ast.getText());
+      }
+    }
   }
 
   @Override
@@ -422,7 +499,7 @@ public class DexCompilationUnit extends ASTVisitor {
     } else {
       Local<?>[] locs = new Local<?>[len];
       for (int i = 0; i < len; i++) {
-        locs[i] = args[i].getArgRegister(i);
+        locs[i] = args[i].getArgRegister();
       }
       return locs;
     }    
@@ -435,59 +512,80 @@ public class DexCompilationUnit extends ASTVisitor {
     String method;
     Tree methodAST = ast.getChild(1);
     Tree receiverAST = ast.getChild(0);
-    
     method = methodAST.getText();
+    Class<?> receiverClz; 
+    Local receiverReg;    
+
+    // Determine whether this is a self or explicit receiver call
+    if (receiverAST.getType() == DeeLangParser.SELF) {
+      receiverClz = selfClz;
+      receiverReg = getSelf();
+    } else {
+      String varName = receiverAST.getText();
+      LocalMapping loc = getLocalRegister(varName);
+      
+      if (loc == null) {
+        throw new UnknownVariableException(varName);
+      }
+      
+      receiverClz = loc.jtype;
+      receiverReg = loc.reg;            
+    }
+        
+    // Set up back pass data, then visit kids to collate arg info
     MethCallBackPassData bpd;
     backPassData.addFirst(bpd = new MethCallBackPassData(method));
-    this.compiler.visit(this, receiverAST);
     for (int i = 0; i < methodAST.getChildCount(); i++) {
       this.compiler.visit(this, methodAST.getChild(i));
     }
     bpd = (MethCallBackPassData)backPassData.removeFirst();
     MethCallBackPassData callerbpd = getMethCallBackPassData();
         
-    if (bpd.selfCall) {
-      Method bindMethod = findMethod(selfClz, method, bpd.args);
-      if (bindMethod == null) {
-        throw new CompilerError("Cannot bind method call '" + selfClz.getName() + "." + method + "' with arguments " + Arrays.toString(bpd.args));
-      }
-      
-      Class<?> retClz;
-      TypeId<?> decType = TypeId.get(bindMethod.getDeclaringClass());
-      TypeId<?> retType = TypeId.get(retClz = bindMethod.getReturnType());
-      
-      // TODO looping twice here through same data... 
-      TypeId<?>[] argTypes = mapClassesToTypes(bpd.args);
-      Local<?>[] args = mapBpdArgsToLocals(bpd.args);
-      
-      MethodId mid = decType.getMethod(retType, method, argTypes);
-      
-      Local target;
-      if (callerbpd != null) {
-        if (void.class.equals(retClz)) {
-          throw new CompilerError("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
-        } else {
-          MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument(retClz);
-          target = arg.getArgRegister(callerbpd.argi);
-        }
-      } else {
-        if (void.class.equals(retClz)) {
-          target = null;
-        } else {
-          target = codeProxy.newLocal(retType);
-        }
-      }
-      codeProxy.invokeVirtual(mid, target, getSelf(), args);
-    } else {
-      // TODO generate invokeVirtual
-      throw new UnsupportedError("Explicit receiver not yet supported");
+    // Find method to call
+    Method bindMethod = findMethod(receiverClz, method, bpd.args);
+    if (bindMethod == null) {
+      throw new CompilerError("Cannot bind method call '" + receiverClz.getName() + "." + method + "' with arguments " + Arrays.toString(bpd.args));
     }
     
+    // Set up declaring class and return type
+    Class<?> retClz;
+    TypeId<?> decType = TypeId.get(bindMethod.getDeclaringClass());
+    TypeId<?> retType = TypeId.get(retClz = bindMethod.getReturnType());
+    
+    // Map arguments
+    // TODO looping twice here through same data... 
+    TypeId<?>[] argTypes = mapClassesToTypes(bpd.args);
+    Local<?>[] args = mapBpdArgsToLocals(bpd.args);
+    
+    MethodId mid = decType.getMethod(retType, method, argTypes);
+    
+    // Sort out where method return is going to go
+    Local target;
+    if (callerbpd != null) {
+      if (void.class.equals(retClz)) {
+        throw new CompilerError("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
+      } else {
+        MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument(retClz);
+        target = arg.getArgRegister();
+      }
+    } else {
+      if (void.class.equals(retClz)) {
+        target = null;
+      } else {
+        target = codeProxy.newLocal(retType);
+      }
+    }
+    
+    // Generate call insn
+    codeProxy.invokeVirtual(mid, target, receiverReg, args);
+    
+    // Free arg registers for reuse
+    // TODO Need to be checking we don't free any actual local registers here!
     // TODO could probably get rid of indexed arg map now?
     //      Failing that, copy args into a local before looping...
     // Return locals to the pool for reuse
     for (int i = 0; i < bpd.args.length; i++) {
-      codeProxy.freeLocal(bpd.args[i].getArgRegister(i));
+      codeProxy.freeLocal(bpd.args[i].getArgRegister());
     }
     
     // TODO block support
@@ -497,8 +595,7 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitSelf(Tree ast)
       throws CompilerError {
-    MethCallBackPassData mcbpd = (MethCallBackPassData)backPassData.getFirst();
-    mcbpd.selfCall = true;    
+    throw new CompilerBug("SELF visited");
   }
 
   @Override

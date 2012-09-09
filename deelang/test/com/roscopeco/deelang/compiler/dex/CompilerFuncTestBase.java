@@ -15,6 +15,7 @@ import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.runtime.Binding;
 import com.roscopeco.deelang.runtime.CompiledScript;
+import com.roscopeco.deelang.runtime.HashBinding;
 
 import dee.lang.DeelangInteger;
 import dee.lang.DeelangObject;
@@ -45,19 +46,38 @@ public class CompilerFuncTestBase {
     public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); } 
   }
   
+  public Binding getTestBinding() {
+    HashBinding b = new HashBinding();
+    b.setSelf(new Foo(b));
+    b.setLocal("foo", b.getSelf());
+    return b;
+  }
+  
+  DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz, Binding binding) throws ParserError, CompilerError {
+    Compiler c = new Compiler();
+    return (DexCompilationUnit) c.compile(
+        new DexCompilationUnit(c, "UNITTESTS", superClz, binding), Parser.staticParse(code));
+  }
+  
   DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz) throws ParserError, CompilerError {
     Compiler c = new Compiler();
     return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS", superClz, Foo.class), Parser.staticParse(code));
+        new DexCompilationUnit(c, "UNITTESTS", superClz, getTestBinding()), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code) throws ParserError, CompilerError {
     Compiler c = new Compiler();
     return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS", Foo.class), Parser.staticParse(code));
+        new DexCompilationUnit(c, "UNITTESTS", getTestBinding()), Parser.staticParse(code));
   }
   
-  void runCodeComparisonTest(String code, Class<? extends CompiledScript> superClz, 
+  DexCompilationUnit runTest(String code, Binding binding) throws ParserError, CompilerError {
+    Compiler c = new Compiler();
+    return (DexCompilationUnit) c.compile(
+        new DexCompilationUnit(c, "UNITTESTS", binding), Parser.staticParse(code));
+  }
+  
+  void runCodeComparisonTest(String code, Binding binding, Class<? extends CompiledScript> superClz, 
       String expectSuper, String... methods) throws ParserError, CompilerError {
     
     // Test here rather than passing default through from non-superClz overload,
@@ -98,6 +118,11 @@ public class CompilerFuncTestBase {
   
   void runCodeComparisonTest(String code, String expectSuper, String... methods) 
       throws ParserError, CompilerError {
-    this.runCodeComparisonTest(code, null, expectSuper, methods);
+    this.runCodeComparisonTest(code, null, null, expectSuper, methods);
+  }
+  
+  void runCodeComparisonTest(String code, Binding binding, String expectSuper, String... methods) 
+      throws ParserError, CompilerError {
+    this.runCodeComparisonTest(code, binding, null, expectSuper, methods);
   }
 }

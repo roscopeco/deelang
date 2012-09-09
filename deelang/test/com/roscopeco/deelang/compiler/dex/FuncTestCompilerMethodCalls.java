@@ -90,4 +90,20 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "INVOKE_VIRTUAL      |     |v4.foo(v1)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo(Ldee/lang/DeelangInteger;)V\n"+
         "RETURN_VOID         |     |return");
   }
+  
+  @Test
+  public void testBasicMethCallNoArgs() throws ParserError, CompilerError {
+    runCodeComparisonTest("foo.foo()", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v2   //DexCompiledScript__UUID__\n"+
+        "                    :v3   //dee.lang.DeelangObject\n"+
+        "                    :v4   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST_STRING        |     |v0=\"foo\"\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v4.getLocal(v0)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "MOVE_RESULT         |     |v1=TEMP\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.foo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo()Ldee/lang/DeelangObject;\n"+
+        "MOVE_RESULT         |     |v0=TEMP\n"+
+        "RETURN_VOID         |     |return");
+    }
 }

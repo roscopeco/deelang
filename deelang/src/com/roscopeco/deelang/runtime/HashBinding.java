@@ -6,12 +6,8 @@ import dee.lang.DeelangObject;
 
 public class HashBinding implements Binding {
   private final HashMap<String, Object> binding = new HashMap<String, Object>();
-  private final DeelangObject self;
+  private DeelangObject self;
   
-  public HashBinding(DeelangObject self) {
-    this.self = self;
-  }
-
   @Override
   public Object getLocal(String name) {
     return binding.get(name);
@@ -25,5 +21,9 @@ public class HashBinding implements Binding {
   @Override
   public DeelangObject getSelf() {
     return self;
+  }
+  
+  public void setSelf(DeelangObject self) {
+    this.self = self;
   }
 }

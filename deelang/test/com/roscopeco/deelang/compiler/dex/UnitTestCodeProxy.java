@@ -21,7 +21,7 @@ import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
-import com.roscopeco.deelang.compiler.dex.CodeProxy.InvokeVirtual;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Invoke;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.LoadConstant;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.NewInstance;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.ReturnVoid;
@@ -256,7 +256,36 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testInvokeStatic() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.invokeStatic(mockMethodId, mockTarget);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Invoke.class)));
+
+    Invoke<Object, Object> ig = (Invoke<Object, Object>)i;
+    
+    assertThat(ig.kind, is(Invoke.KIND_STATIC));
+    assertThat(ig.method, is(mockMethodId));
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.instance, is(nullValue()));    
+    assertThat(ig.args.length, is(0));
+    
+    ig.generate();
+    verify(mockCode).invokeStatic(mockMethodId, mockTarget);
+    
+    // test with 1 arg
+    proxy.invokeStatic(mockMethodId, mockTarget, mockLocal);
+    ig = (Invoke<Object, Object>)proxy.insns.get(1);
+    ig.generate();
+    verify(mockCode).invokeStatic(mockMethodId, mockTarget, mockLocal);    
+
+    // test with 2 args
+    proxy.invokeStatic(mockMethodId, mockTarget, mockLocal, mockLocal2);
+    ig = (Invoke<Object, Object>)proxy.insns.get(2);
+    ig.generate();
+    verify(mockCode).invokeStatic(mockMethodId, mockTarget, mockLocal, mockLocal2);    
   }
 
   @Test
@@ -267,10 +296,11 @@ public class UnitTestCodeProxy {
     assertThat(proxy.insns.size(), is(1));
     
     Instruction i = proxy.insns.get(0);
-    assertThat(i, is(instanceOf(InvokeVirtual.class)));
+    assertThat(i, is(instanceOf(Invoke.class)));
 
-    InvokeVirtual<Object, Object> ig = (InvokeVirtual<Object, Object>)i;
+    Invoke<Object, Object> ig = (Invoke<Object, Object>)i;
     
+    assertThat(ig.kind, is(Invoke.KIND_VIRTUAL));
     assertThat(ig.method, is(mockMethodId));
     assertThat(ig.target, is(mockTarget));
     assertThat(ig.instance, is(mockInstance));    
@@ -281,30 +311,117 @@ public class UnitTestCodeProxy {
     
     // test with 1 arg
     proxy.invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal);
-    ig = (InvokeVirtual<Object, Object>)proxy.insns.get(1);
+    ig = (Invoke<Object, Object>)proxy.insns.get(1);
     ig.generate();
     verify(mockCode).invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal);    
 
     // test with 2 args
     proxy.invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);
-    ig = (InvokeVirtual<Object, Object>)proxy.insns.get(2);
+    ig = (Invoke<Object, Object>)proxy.insns.get(2);
     ig.generate();
     verify(mockCode).invokeVirtual(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);    
   }
 
   @Test
   public void testInvokeDirect() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.invokeDirect(mockMethodId, mockTarget, mockInstance);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Invoke.class)));
+
+    Invoke<Object, Object> ig = (Invoke<Object, Object>)i;
+    
+    assertThat(ig.kind, is(Invoke.KIND_DIRECT));
+    assertThat(ig.method, is(mockMethodId));
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.instance, is(mockInstance));    
+    assertThat(ig.args.length, is(0));
+    
+    ig.generate();
+    verify(mockCode).invokeDirect(mockMethodId, mockTarget, mockInstance);
+    
+    // test with 1 arg
+    proxy.invokeDirect(mockMethodId, mockTarget, mockInstance, mockLocal);
+    ig = (Invoke<Object, Object>)proxy.insns.get(1);
+    ig.generate();
+    verify(mockCode).invokeDirect(mockMethodId, mockTarget, mockInstance, mockLocal);    
+
+    // test with 2 args
+    proxy.invokeDirect(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);
+    ig = (Invoke<Object, Object>)proxy.insns.get(2);
+    ig.generate();
+    verify(mockCode).invokeDirect(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);    
   }
 
   @Test
   public void testInvokeSuper() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.invokeSuper(mockMethodId, mockTarget, mockInstance);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Invoke.class)));
+
+    Invoke<Object, Object> ig = (Invoke<Object, Object>)i;
+    
+    assertThat(ig.kind, is(Invoke.KIND_SUPER));
+    assertThat(ig.method, is(mockMethodId));
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.instance, is(mockInstance));    
+    assertThat(ig.args.length, is(0));
+    
+    ig.generate();
+    verify(mockCode).invokeSuper(mockMethodId, mockTarget, mockInstance);
+    
+    // test with 1 arg
+    proxy.invokeSuper(mockMethodId, mockTarget, mockInstance, mockLocal);
+    ig = (Invoke<Object, Object>)proxy.insns.get(1);
+    ig.generate();
+    verify(mockCode).invokeSuper(mockMethodId, mockTarget, mockInstance, mockLocal);    
+
+    // test with 2 args
+    proxy.invokeSuper(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);
+    ig = (Invoke<Object, Object>)proxy.insns.get(2);
+    ig.generate();
+    verify(mockCode).invokeSuper(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);    
   }
 
   @Test
   public void testInvokeInterface() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.invokeInterface(mockMethodId, mockTarget, mockInstance);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Invoke.class)));
+
+    Invoke<Object, Object> ig = (Invoke<Object, Object>)i;
+    
+    assertThat(ig.kind, is(Invoke.KIND_INTERFACE));
+    assertThat(ig.method, is(mockMethodId));
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.instance, is(mockInstance));    
+    assertThat(ig.args.length, is(0));
+    
+    ig.generate();
+    verify(mockCode).invokeInterface(mockMethodId, mockTarget, mockInstance);
+    
+    // test with 1 arg
+    proxy.invokeInterface(mockMethodId, mockTarget, mockInstance, mockLocal);
+    ig = (Invoke<Object, Object>)proxy.insns.get(1);
+    ig.generate();
+    verify(mockCode).invokeInterface(mockMethodId, mockTarget, mockInstance, mockLocal);    
+
+    // test with 2 args
+    proxy.invokeInterface(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);
+    ig = (Invoke<Object, Object>)proxy.insns.get(2);
+    ig.generate();
+    verify(mockCode).invokeInterface(mockMethodId, mockTarget, mockInstance, mockLocal, mockLocal2);    
   }
 
   @Test

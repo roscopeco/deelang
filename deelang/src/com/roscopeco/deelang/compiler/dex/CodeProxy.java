@@ -88,13 +88,21 @@ final class CodeProxy {
     }
   }
   
-  final class InvokeVirtual<D, R> implements Instruction {
+  final class Invoke<D, R> implements Instruction {
+    public static final int KIND_DIRECT = 0;
+    public static final int KIND_STATIC = 1;
+    public static final int KIND_SUPER = 2;
+    public static final int KIND_VIRTUAL = 3;
+    public static final int KIND_INTERFACE = 4;
+    
+    final int kind;
     final MethodId<D, R> method;
     final Local<? super R> target;
     final Local<? extends D> instance;
     final Local<?>[] args;
     
-    InvokeVirtual(MethodId<D, R> method, Local<? super R> target, Local<? extends D> instance, Local<?>... args) {
+    Invoke(int kind, MethodId<D, R> method, Local<? super R> target, Local<? extends D> instance, Local<?>... args) {
+      this.kind = kind;
       this.method = method;
       this.target = target;
       this.instance = instance;
@@ -103,7 +111,23 @@ final class CodeProxy {
     
     @Override
     public final void generate() {
-      code.invokeVirtual(method, target, instance, args);      
+      switch (kind) {
+      case KIND_DIRECT:
+        code.invokeDirect(method, target, instance, args);      
+        break;
+      case KIND_STATIC:
+        code.invokeStatic(method, target, args);      
+        break;
+      case KIND_VIRTUAL:
+        code.invokeVirtual(method, target, instance, args);      
+        break;
+      case KIND_INTERFACE:
+        code.invokeInterface(method, target, instance, args);      
+        break;
+      case KIND_SUPER:
+        code.invokeSuper(method, target, instance, args);      
+        break;
+      }
     }
   }
 
@@ -213,24 +237,29 @@ final class CodeProxy {
     insns.add(new NewInstance<T>(target, constructor, args));    
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public final <R> void invokeStatic(MethodId<?, R> method, Local<? super R> target, Local<?>... args) {
+    insns.add(new Invoke(Invoke.KIND_STATIC, method, target, null, args));
   }
 
   public final <D, R> void invokeVirtual(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
-    insns.add(new InvokeVirtual<D, R>(method, target, instance, args));
+    insns.add(new Invoke<D, R>(Invoke.KIND_VIRTUAL, method, target, instance, args));
   }
 
   public final <D, R> void invokeDirect(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
+    insns.add(new Invoke<D, R>(Invoke.KIND_DIRECT, method, target, instance, args));
   }
 
   public final <D, R> void invokeSuper(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
+    insns.add(new Invoke<D, R>(Invoke.KIND_SUPER, method, target, instance, args));
   }
 
   public final <D, R> void invokeInterface(MethodId<D, R> method, Local<? super R> target,
           Local<? extends D> instance, Local<?>... args) {
+    insns.add(new Invoke<D, R>(Invoke.KIND_INTERFACE, method, target, instance, args));
   }
 
   // instructions: types
