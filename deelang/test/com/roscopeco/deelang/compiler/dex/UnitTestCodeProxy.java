@@ -82,19 +82,19 @@ public class UnitTestCodeProxy {
   @Test
   public void testNewLocal() {
     when(mockCode.newLocal(TypeId.OBJECT)).thenReturn(mockLocal);
-    assertThat(mockCode.newLocal(TypeId.OBJECT), is(mockLocal));    
+    assertThat(proxy.newLocal(TypeId.OBJECT), is(mockLocal));
   }
 
   @Test
   public void testGetParameter() {
     when(mockCode.getParameter(0, TypeId.OBJECT)).thenReturn(mockLocal);
-    assertThat(mockCode.getParameter(0, TypeId.OBJECT), is(mockLocal));    
+    assertThat(proxy.getParameter(0, TypeId.OBJECT), is(mockLocal));    
   }
 
   @Test
   public void testGetThis() {
     when(mockCode.getThis(TypeId.OBJECT)).thenReturn(mockLocal);
-    assertThat(mockCode.getThis(TypeId.OBJECT), is(mockLocal));    
+    assertThat(proxy.getThis(TypeId.OBJECT), is(mockLocal));    
   }
 
   @Test
