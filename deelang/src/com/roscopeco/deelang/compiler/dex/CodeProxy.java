@@ -1,5 +1,6 @@
 package com.roscopeco.deelang.compiler.dex;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 import com.google.dexmaker.BinaryOp;
@@ -122,8 +123,19 @@ final class CodeProxy {
   }
   
   /* * CODE API * */
+  ArrayDeque<Local<?>> localsPool = new ArrayDeque<Local<?>>();
+  
+  @SuppressWarnings("unchecked")
   public <T> Local<T> newLocal(TypeId<T> type) {
-    return code.newLocal(type);
+    if (localsPool.isEmpty()) {
+      return code.newLocal(type);
+    } else {
+      return (Local<T>)localsPool.removeFirst();
+    }
+  }
+  
+  public void freeLocal(Local<?> l) {
+    localsPool.addFirst(l);
   }
 
   public <T> Local<T> getParameter(int index, TypeId<T> type) {

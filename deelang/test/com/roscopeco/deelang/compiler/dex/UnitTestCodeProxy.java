@@ -1,9 +1,10 @@
 package com.roscopeco.deelang.compiler.dex;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import org.junit.Before;
@@ -83,6 +84,22 @@ public class UnitTestCodeProxy {
   public void testNewLocal() {
     when(mockCode.newLocal(TypeId.OBJECT)).thenReturn(mockLocal);
     assertThat(proxy.newLocal(TypeId.OBJECT), is(mockLocal));
+    
+    assertThat(proxy.localsPool.size(), is(0));
+  }
+
+  @Test
+  public void testFreeLocal() {
+    when(mockCode.newLocal(TypeId.OBJECT)).thenReturn(mockLocal);
+    Local<Object> l = proxy.newLocal(TypeId.OBJECT);    
+    proxy.freeLocal(l);
+    assertThat(proxy.localsPool.size(), is(1));
+    l = proxy.newLocal(TypeId.OBJECT);
+    assertThat(proxy.localsPool.size(), is(0));
+    
+    // newLocal should only have been called once. Second local should
+    // have come from the pool.
+    verify(mockCode, times(1)).newLocal(TypeId.OBJECT);
   }
 
   @Test
