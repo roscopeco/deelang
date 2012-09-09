@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 
 import org.antlr.runtime.tree.Tree;
@@ -159,38 +158,25 @@ public class DexCompilationUnit extends ASTVisitor {
     protected class Argument<T> {
       Class<T> jtype;
       TypeId<T> type;
+      Local<T> reg;
       
       public Argument(Class<T> jtype) {
         this.jtype = jtype;
         this.type = TypeId.get(jtype);
       }
-      
+                  
       public String toString() {
         return type.toString();
       }
       
-      @SuppressWarnings("unchecked")
       public Local<T> getArgRegister(int argi) {
-        // TODO this is a complete mess. There are better ways to do this than the sparse array thing...
-        SparseArrayList<Local<?>> typeRegs = argRegisters.get(type);
-        Local<T> reg;
-        
-        if (typeRegs == null) {
-          typeRegs = new SparseArrayList<Local<?>>();
-          typeRegs.set(argi, reg = codeProxy.newLocal(type));
-          argRegisters.put(type, typeRegs);
-        } else {
-          if ((argi >= typeRegs.size()) || (reg = (Local<T>)typeRegs.get(argi)) == null) {
-            typeRegs.set(argi, reg = codeProxy.newLocal(type));
-          }
+        if (reg == null) {
+          reg = codeProxy.newLocal(type);
         }
         
         return reg;
       }
     }
-    
-    private HashMap<TypeId<?>, SparseArrayList<Local<?>>> argRegisters = 
-        new HashMap<TypeId<?>, SparseArrayList<Local<?>>>();
     
     String methName;
     int argc;   // arg count
