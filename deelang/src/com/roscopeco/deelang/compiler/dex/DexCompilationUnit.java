@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.google.dexmaker.Code;
 import com.google.dexmaker.DexMaker;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
@@ -37,21 +38,32 @@ public class DexCompilationUnit extends ASTVisitor {
   private CodeProxy codeProxy;
   private Binding binding;
   private final TypeId<?> compiledScriptTypeId;
+  private final String compiledScriptName;
   private final Class<? extends DeelangObject> selfClz;
 
   /* PUBLIC API */
   
+  @SuppressWarnings("unchecked")
   public DexCompilationUnit(Compiler compiler, String sourceName, Class<? extends CompiledScript> superClass, Binding binding) {
     this.compiler = compiler;
     dexMaker = new DexMaker();
     
     // TODO UUID is probably overkill here, and may not be performant enough on Android?
-    compiledScriptTypeId = TypeId.get("LDexCompiledScript" + UUID.randomUUID() + ";");
+    compiledScriptName = "DexCompiledScript" + UUID.randomUUID();
+    compiledScriptTypeId = TypeId.get("L" + compiledScriptName + ";");
     
     this.binding = binding;
     this.selfClz = binding.getSelf().getClass();
     
     dexMaker.declare(compiledScriptTypeId, sourceName, Modifier.PUBLIC, TypeId.get(superClass));
+    
+    // Generate constructor
+    MethodId<?, Void> init = compiledScriptTypeId.getConstructor(TYPEID_BINDING);
+    Code initCode = dexMaker.declare(init, Modifier.PUBLIC);
+    initCode.invokeDirect(COMPILEDSCRIPT_INIT, null, (Local<CompiledScript>)initCode.getThis(compiledScriptTypeId), initCode.getParameter(0, TYPEID_BINDING));
+    initCode.returnVoid();
+    
+    // Declare run method and get a code proxy
     MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_BINDING);
     codeProxy = new CodeProxy(dexMaker.declare(run, Modifier.PUBLIC));
   }
@@ -90,7 +102,7 @@ public class DexCompilationUnit extends ASTVisitor {
   }
   
   public Class<? extends CompiledScript> getScript() {
-    return getScript(null, null);
+    return getScript(getClass().getClassLoader(), null);
   }
   
   public Class<? extends CompiledScript> getScript(ClassLoader loader) {
@@ -99,9 +111,17 @@ public class DexCompilationUnit extends ASTVisitor {
   
   @SuppressWarnings("unchecked")
   public Class<? extends CompiledScript> getScript(ClassLoader loader, File dexDir) {
+    // TODO revisit this, needs to be unified between getCode and getScript
+    if (codeCache == null) {
+      codeProxy.returnVoid();
+      codeProxy.doGenerate();
+      
+      codeCache = dexMaker.generate();
+    }
+    
     try {
       return (Class<? extends CompiledScript>)
-          dexMaker.generateAndLoad(loader, dexDir).loadClass("DexCompiledScript");
+          dexMaker.generateAndLoad(loader, dexDir).loadClass(compiledScriptName);
     } catch (IOException e) {
       throw new RuntimeException("IOException while loading generated class", e);
     } catch (ClassNotFoundException e) {
@@ -133,6 +153,7 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final MethodId<Binding, Object> BINDING_GET_LOCAL = TYPEID_BINDING.getMethod(TypeId.OBJECT, "getLocal", TypeId.STRING);
   protected static final MethodId<Binding, Void> BINDING_SET_LOCAL = TYPEID_BINDING.getMethod(TypeId.VOID, "getLocal", TypeId.STRING, TypeId.OBJECT);
   
+  protected static final MethodId<CompiledScript, Void> COMPILEDSCRIPT_INIT = TYPEID_COMPILEDSCRIPT.getConstructor(TYPEID_BINDING);
   protected static final MethodId<DeelangInteger, Void> DL_INTEGER_INIT = TYPEID_DL_INTEGER.getConstructor(TYPEID_BINDING, TypeId.INT);
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
   protected static final MethodId<DeelangString, Void> DL_STRING_INIT = TYPEID_DL_STRING.getConstructor(TYPEID_BINDING, TypeId.STRING);
@@ -392,7 +413,7 @@ public class DexCompilationUnit extends ASTVisitor {
     return localMap;
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({"rawtypes"})
   protected LocalMapping<?> getLocalRegister(String name) {
     LocalMapping loc = localsMap.get(name);
     
@@ -401,9 +422,14 @@ public class DexCompilationUnit extends ASTVisitor {
       if ((o = binding.getLocal(name)) != null) {
         // first use of binding var - we need alloc it a register and copy it in...
         Local<String> temp = codeProxy.newLocal(TypeId.STRING);
+        Local<Object> tempObj = codeProxy.newLocal(TypeId.OBJECT);
         loc = getOrAllocLocalRegister(o.getClass(), name);
         codeProxy.loadConstant(temp, name);
-        codeProxy.invokeInterface(BINDING_GET_LOCAL, loc.reg, getRuntimeBindingRegister(), temp);
+        codeProxy.invokeInterface(BINDING_GET_LOCAL, tempObj, getRuntimeBindingRegister(), temp);
+        
+        // TODO this is using registers inefficiently...
+        codeProxy.cast(loc.reg, tempObj);
+        codeProxy.freeLocal(tempObj);
         codeProxy.freeLocal(temp);          
       }         
     }

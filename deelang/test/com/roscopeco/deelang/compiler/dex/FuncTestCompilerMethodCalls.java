@@ -96,14 +96,17 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
     runCodeComparisonTest("foo.foo()", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v2   //DexCompiledScript__UUID__\n"+
-        "                    :v3   //dee.lang.DeelangObject\n"+
-        "                    :v4   //com.roscopeco.deelang.runtime.Binding\n"+
-        "CONST_STRING        |     |v0=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v4.getLocal(v0)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "                this:v4   //DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST_STRING        |     |v1=\"foo\"\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v6.getLocal(v1)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "MOVE                |     |v0 = v2\n"+
+        "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
+        "MOVE                |     |v3 = v0\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v3.foo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo()Ldee/lang/DeelangObject;\n"+
         "MOVE_RESULT         |     |v1=TEMP\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v1.foo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo()Ldee/lang/DeelangObject;\n"+
-        "MOVE_RESULT         |     |v0=TEMP\n"+
         "RETURN_VOID         |     |return");
     }
 }

@@ -130,7 +130,22 @@ final class CodeProxy {
       }
     }
   }
+  
+  final class Cast implements Instruction {
+    final Local<?> target;
+    final Local<?> source;
+    
+    Cast(Local<?> target, Local<?> source) {
+      this.target = target;
+      this.source = source;      
+    }
 
+    @Override
+    public void generate() {
+      code.cast(target, source);
+    }
+  }
+  
   private final ReturnVoid RETURNVOID = new ReturnVoid();
   
   Code code;
@@ -268,6 +283,7 @@ final class CodeProxy {
   }
 
   public final void cast(Local<?> target, Local<?> source) {
+    insns.add(new Cast(target, source));
   }
 
   // instructions: arrays

@@ -19,6 +19,7 @@ import com.google.dexmaker.FieldId;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Cast;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Invoke;
@@ -431,7 +432,21 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testCast() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.cast(mockTarget, mockInstance);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Cast.class)));
+
+    Cast ig = (Cast)i;
+    
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.source, is(mockInstance));    
+    
+    ig.generate();
+    verify(mockCode).cast(mockTarget, mockInstance);
   }
 
   @Test
