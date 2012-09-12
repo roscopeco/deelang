@@ -92,11 +92,14 @@ public class UnitTestCodeProxy {
   @Test
   public void testFreeLocal() {
     when(mockCode.newLocal(TypeId.OBJECT)).thenReturn(mockLocal);
-    Local<Object> l = proxy.newLocal(TypeId.OBJECT);    
+    when(mockLocal.getType()).thenReturn(TypeId.OBJECT);
+    
+    Local<Object> l = proxy.newLocal(TypeId.OBJECT);
+    assertThat(proxy.localsPool.get(TypeId.OBJECT), is(nullValue()));
     proxy.freeLocal(l);
-    assertThat(proxy.localsPool.size(), is(1));
+    assertThat(proxy.localsPool.get(TypeId.OBJECT).size(), is(1));
     l = proxy.newLocal(TypeId.OBJECT);
-    assertThat(proxy.localsPool.size(), is(0));
+    assertThat(proxy.localsPool.get(TypeId.OBJECT).size(), is(0));
     
     // newLocal should only have been called once. Second local should
     // have come from the pool.

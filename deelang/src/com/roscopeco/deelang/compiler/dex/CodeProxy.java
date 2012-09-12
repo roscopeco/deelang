@@ -2,6 +2,8 @@ package com.roscopeco.deelang.compiler.dex;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import com.google.dexmaker.BinaryOp;
 import com.google.dexmaker.Code;
@@ -31,11 +33,18 @@ final class CodeProxy {
   interface Instruction {
     public void generate();
   }
-  
+
+  // TODO remove all the toString methods in here. They're for debugging,
+  //      and are never used at runtime, so they're just unnecessary bloat
+  //      in the dex once debugging is done...
   
   final class ReturnVoid implements Instruction {
     public final void generate() {
       code.returnVoid();
+    }
+    
+    public String toString() {
+      return "RETURNVOID []";
     }
   }
   
@@ -51,6 +60,10 @@ final class CodeProxy {
     @Override
     public final void generate() {
       code.loadConstant(target, value);
+    }
+    
+    public String toString() {
+      return "LOADCONSTANT [" + target + " = " + value + "]";
     }
   }
   
@@ -69,6 +82,10 @@ final class CodeProxy {
     public final void generate() {
       code.iget(fieldId, target, instance);
     }
+    
+    public String toString() {
+      return "IGET [" + target + " = " + instance + "." + fieldId + "]";
+    }
   }
   
   final class NewInstance<T> implements Instruction {
@@ -85,6 +102,10 @@ final class CodeProxy {
     @Override
     public final void generate() {
       code.newInstance(target, constructor, args);
+    }
+    
+    public String toString() {
+      return "NEWINSTANCE [" + target + " = " + constructor + "(" + Arrays.toString(args) + ")]";
     }
   }
   
@@ -129,6 +150,10 @@ final class CodeProxy {
         break;
       }
     }
+    
+    public String toString() {
+      return "INVOKE("+kind+") [" + target + " = " + instance + "." + method + "(" + Arrays.toString(args) + ")]";
+    }
   }
   
   final class Cast implements Instruction {
@@ -143,6 +168,10 @@ final class CodeProxy {
     @Override
     public void generate() {
       code.cast(target, source);
+    }
+    
+    public String toString() {
+      return "CAST [" + target + " = (" + target.getType() + ")" + source + "]";
     }
   }
   
@@ -162,19 +191,38 @@ final class CodeProxy {
   }
   
   /* * CODE API * */
-  final ArrayDeque<Local<?>> localsPool = new ArrayDeque<Local<?>>();
+  
+  /* 
+   * NOTE: Had to move back to a typed locals pool here, because 
+   * dx doesn't like it when we reuse locals with different types,
+   * as we were doing earlier. The platform seems to have no issue
+   * with it, but certain operations (e.g. loadconst) cannot be
+   * generated if we're trying to load e.g. an int into a register
+   * that's typed for Object.
+   * 
+   * This does have the effect of upping the number of registers
+   * in our generated methods. We may need to revisit this in order
+   * to deal with that...
+   */
+  final HashMap<TypeId<?>, ArrayDeque<Local<?>>> localsPool = new HashMap<TypeId<?>, ArrayDeque<Local<?>>>();
   
   @SuppressWarnings("unchecked")
   public final <T> Local<T> newLocal(TypeId<T> type) {
-    if (localsPool.isEmpty()) {
+    ArrayDeque<Local<?>> typedPool = localsPool.get(type);
+    if (typedPool == null || typedPool.isEmpty()) {
       return code.newLocal(type);
     } else {
-      return (Local<T>)localsPool.removeFirst();
+      return (Local<T>)typedPool.removeFirst();
     }
   }
   
   public final void freeLocal(Local<?> l) {
-    localsPool.addFirst(l);
+    ArrayDeque<Local<?>> typedPool = localsPool.get(l.getType());
+    if (typedPool == null) {
+      typedPool = new ArrayDeque<Local<?>>();
+      localsPool.put(l.getType(), typedPool);
+    }
+    typedPool.addFirst(l);
   }
 
   public final <T> Local<T> getParameter(int index, TypeId<T> type) {
