@@ -37,13 +37,12 @@ public class DexCompilationUnit extends ASTVisitor {
   private DexMaker dexMaker;
   private CodeProxy codeProxy;
   private Binding binding;
-  private final TypeId<?> compiledScriptTypeId;
+  private final TypeId<? extends CompiledScript> compiledScriptTypeId;
   private final String compiledScriptName;
   private final Class<? extends DeelangObject> selfClz;
 
   /* PUBLIC API */
   
-  @SuppressWarnings("unchecked")
   public DexCompilationUnit(Compiler compiler, String sourceName, Class<? extends CompiledScript> superClass, Binding binding) {
     this.compiler = compiler;
     dexMaker = new DexMaker();
@@ -60,7 +59,7 @@ public class DexCompilationUnit extends ASTVisitor {
     // Generate constructor
     MethodId<?, Void> init = compiledScriptTypeId.getConstructor(TYPEID_BINDING);
     Code initCode = dexMaker.declare(init, Modifier.PUBLIC);
-    initCode.invokeDirect(COMPILEDSCRIPT_INIT, null, (Local<CompiledScript>)initCode.getThis(compiledScriptTypeId), initCode.getParameter(0, TYPEID_BINDING));
+    initCode.invokeDirect(COMPILEDSCRIPT_INIT, null, initCode.getThis(compiledScriptTypeId), initCode.getParameter(0, TYPEID_BINDING));
     initCode.returnVoid();
     
     // Declare run method and get a code proxy
