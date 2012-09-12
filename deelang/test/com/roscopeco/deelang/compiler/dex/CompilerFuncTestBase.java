@@ -42,8 +42,12 @@ public class CompilerFuncTestBase {
     public void foo(DeelangInteger a) { }
     public void foo(DeelangInteger a, DeelangInteger b) { }
     public DeelangInteger bar(DeelangInteger a) { return a; }
+    public DeelangInteger bar(DeelangInteger a, DeelangInteger b) { return a; }
     public DeelangInteger bar(DeelangInteger a, DeelangString b) { return a; }
-    public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); } 
+    public DeelangInteger baz() { return null; }
+    public Foo boo() { return this; }
+    public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); }
+    public DeelangInteger quux(DeelangInteger a) { return a; }
   }
   
   public Binding getTestBinding() {
@@ -55,26 +59,22 @@ public class CompilerFuncTestBase {
   
   DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz, Binding binding) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS", superClz, binding), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit(c, "UNITTESTS", superClz, binding), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS", superClz, getTestBinding()), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit(c, "UNITTESTS", superClz, getTestBinding()), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS", getTestBinding()), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit(c, "UNITTESTS", getTestBinding()), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code, Binding binding) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return (DexCompilationUnit) c.compile(
-        new DexCompilationUnit(c, "UNITTESTS", binding), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit(c, "UNITTESTS", binding), Parser.staticParse(code));
   }
   
   void runCodeComparisonTest(String code, Binding binding, Class<? extends CompiledScript> superClz, 

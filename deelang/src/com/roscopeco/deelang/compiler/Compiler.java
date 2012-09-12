@@ -103,7 +103,25 @@ public class Compiler {
    * @throws CompilerError If an error occurs during compilation.
    */
   public CompiledScript compileDVM(Tree ast) throws CompilerError {
-    return ((DVMCompilationUnit) compile(new DVMCompilationUnit(this), ast)).buildScript();
+    return compile(new DVMCompilationUnit(this), ast).buildScript();
+  }
+  
+  /**
+   * Compile the script in the supplied String by parsing it with {@link Parser}
+   * and then compiling with the supplied {@link ASTVisitor}.  This is a 
+   * convenience method that calls through to {@link #compile(ASTVisitor, Tree)},
+   * parsing the code with {@link Parser#staticParse(String)}. 
+   * 
+   * @param unit An implementation of {@link ASTVisitor} to use during compilation.
+   * @param code The Deelang code to compile.
+   * 
+   * @return The visitor supplied to the method, for convenience.
+   * 
+   * @throws ParserError if an error occurs during parsing.
+   * @throws CompilerError If an error occurs during compilation.
+   */
+  public <T extends ASTVisitor> T compile(T unit, String code) throws ParserError, CompilerError {
+    return compile(unit, Parser.staticParse(code));    
   }
   
   /**
@@ -119,7 +137,7 @@ public class Compiler {
    * 
    * @throws CompilerError If an error occurs during compilation.
    */
-  public ASTVisitor compile(ASTVisitor unit, Tree ast) throws CompilerError {
+  public <T extends ASTVisitor> T compile(T unit, Tree ast) throws CompilerError {
     if (ast != null) {
       if (ast.getType() == 0) {
         // is multiple statement script
