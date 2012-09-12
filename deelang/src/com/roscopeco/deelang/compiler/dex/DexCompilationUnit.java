@@ -378,7 +378,7 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitChain(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    throw new CompilerBug("CHAIN visited");
   }
   
   protected final class LocalMapping<T> {
@@ -386,17 +386,23 @@ public class DexCompilationUnit extends ASTVisitor {
     protected Class<T> jtype;
     protected TypeId<T> type;
     
-    protected LocalMapping(Class<T> jtype) {
-      updateType(jtype);
+    /**
+     * Used when just using this as a type/register mapping. 
+     * Doesn't allocate any registers.
+     */
+    protected LocalMapping(Class<T> jtype, Local<T> reg) {
+      this.jtype = jtype;
+      this.reg = reg;
+      this.type = TypeId.get(jtype);
     }
     
-    @SuppressWarnings("unchecked")
-    protected final void updateType(Class<?> jtype) {
-      // Both these casts are bogus - But they'll work anyway thanks to erasure.
-      // Basically this just tricks the generics system... Maybe generics should
-      // be completely removed here and we'll just deal with raw types....
-      this.jtype = (Class<T>)jtype;
-      reg = codeProxy.newLocal(type = (TypeId<T>)TypeId.get(jtype));      
+    /**
+     * Used when mapping locals. Automatically allocates
+     * the register.
+     */
+    protected LocalMapping(Class<T> jtype) {
+      this.jtype = jtype;
+      this.reg = codeProxy.newLocal(this.type = TypeId.get(jtype));
     }
   }
   
@@ -530,6 +536,8 @@ public class DexCompilationUnit extends ASTVisitor {
     }    
   }
   
+  private LocalMapping<?> lastChainReceiver;
+  
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected void visitMethodCall(Tree ast)
@@ -541,10 +549,17 @@ public class DexCompilationUnit extends ASTVisitor {
     Class<?> receiverClz; 
     Local receiverReg;    
 
-    // Determine whether this is a self or explicit receiver call
+    // Determine whether this is a self, chained or explicit receiver call
     if (receiverAST.getType() == DeeLangParser.SELF) {
       receiverClz = selfClz;
       receiverReg = getSelf();
+    } else if (receiverAST.getType() == DeeLangParser.CHAIN) {
+      if (lastChainReceiver == null) {
+        throw new CompilerError("Cannot chain void method"); 
+      } else {
+        receiverReg = lastChainReceiver.reg;
+        receiverClz = lastChainReceiver.jtype;
+      }
     } else {
       String varName = receiverAST.getText();
       LocalMapping loc = getLocalRegister(varName);
@@ -599,6 +614,15 @@ public class DexCompilationUnit extends ASTVisitor {
       } else {
         target = codeProxy.newLocal(retType);
       }
+    }
+    
+    // Save the register and type in case the next instruction is chained.
+    // TODO don't think this will always work. Need to get test coverage on this...
+    //      We may need a stack, or stash it somewhere else or something...
+    if (target != null) {
+      lastChainReceiver = new LocalMapping(bindMethod.getReturnType(), target);
+    } else {
+      lastChainReceiver = null;
     }
     
     // Generate call insn
