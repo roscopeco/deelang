@@ -206,5 +206,12 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   /*
    * foo.bar().baz(quux().qix())
    * foo.field.bar()
+   * 1.bar()
+   * 
+   * Also, this case (currently won't work):
+   * someLocal = 1
+   * foo(someLocal)
+   * (... more stuff that allocs registers...)
+   * (... check somelocal wasn't freed with arg registers ...)
    */
 }

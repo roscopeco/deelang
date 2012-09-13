@@ -14,6 +14,7 @@ import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
 import com.google.dexmaker.UnaryOp;
+import com.roscopeco.deelang.compiler.CompilerBug;
 
 /**
  * Proxy over the Dexmaker Code class. This simply caches all code generation
@@ -175,6 +176,21 @@ final class CodeProxy {
     }
   }
   
+  final class Move<T> implements Instruction {
+    final Local<T> target;
+    final Local<T> source;
+    
+    Move(Local<T> target, Local<T> source) {
+      this.target = target;
+      this.source = source;
+    }
+
+    @Override
+    public void generate() {
+      code.move(target, source);
+    }
+  }
+  
   private final ReturnVoid RETURNVOID = new ReturnVoid();
   
   Code code;
@@ -255,6 +271,14 @@ final class CodeProxy {
   }
 
   public final <T> void move(Local<T> target, Local<T> source) {
+    // Generating move instructions where source and target are equal
+    // indicates we've messed up somewhere. It usually results in locals
+    // being overwritten or other wierd behaviour later in the code.
+    // For this reason, let's fail fast.
+    if (target.equals(source)) {
+      throw new CompilerBug("Won't generate move with same source and destination");
+    }
+    insns.add(new Move<T>(target, source));
   }
 
   // instructions: unary and binary

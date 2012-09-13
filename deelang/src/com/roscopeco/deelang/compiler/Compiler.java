@@ -16,28 +16,21 @@
  */
 package com.roscopeco.deelang.compiler;
 
-
 import org.antlr.runtime.tree.Tree;
 
 import com.roscopeco.deelang.compiler.dvm.DVMCompilationUnit;
 import com.roscopeco.deelang.compiler.dvm.CompiledScript;
-import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-
 
 /**
  * The DeeLang compiler. This class takes an AST output by
  * the DeeLang Parser and transforms it to a fully resolved,
  * compiled script in the format supported by the supplied
  * {@link ASTVisitor}.
- * <br/>
- * <strong>Note</strong>: Running this class with assertions enabled
- * will make it print debugging information!
  * 
  * @author rosco
  * @created 16 Oct 2011
- *
  */
 public class Compiler {
   /**
@@ -69,12 +62,6 @@ public class Compiler {
   
   public Compiler() { }  
   
-  /* Helper to print debug info when assertions are on */
-  private boolean debug(String log) {
-    System.out.println(log);
-    return true;
-  }
-  
   /**
    * Compile the script in the supplied String by parsing it with {@link Parser}
    * and then compiling to a {@link CompiledScript}.  This is a convenience method 
@@ -103,7 +90,7 @@ public class Compiler {
    * @throws CompilerError If an error occurs during compilation.
    */
   public CompiledScript compileDVM(Tree ast) throws CompilerError {
-    return compile(new DVMCompilationUnit(this), ast).buildScript();
+    return compile(new DVMCompilationUnit(), ast).buildScript();
   }
   
   /**
@@ -141,117 +128,14 @@ public class Compiler {
     if (ast != null) {
       if (ast.getType() == 0) {
         // is multiple statement script
-        assert debug("Compiling multi-line script");
         for (int i = 0; i < ast.getChildCount(); i++) {
-          visit(unit, ast.getChild(i));
+          unit.visit(ast.getChild(i));
         }
       } else {
         // is single statement script
-        assert debug("Compiling single line script");
-        visit(unit, ast);
+        unit.visit(ast);
       }
     }
     return unit;
-  }
-  
-  /* Helper to print debug info for visitor when assertions are on */
-  private boolean debugVisitor(ASTVisitor unit, Tree ast) {
-    return debug(" - VISIT: " + ast.toString() + " [" + DeeLangParser.tokenNames[ast.getType()] + "]");
-  }
-    
-  public void visit(ASTVisitor unit, Tree ast) throws CompilerError {
-    assert debugVisitor(unit, ast);
-    
-    switch (ast.getType()) {
-    /* ********** LITERALS ********** */
-    case DeeLangParser.DECIMAL_LITERAL:
-      unit.visitDecimalLiteral(ast);
-      return;
-    case DeeLangParser.HEX_LITERAL:
-      unit.visitHexLiteral(ast);
-      return;
-    case DeeLangParser.OCTAL_LITERAL:
-      unit.visitOctalLiteral(ast);
-      return;
-    case DeeLangParser.FLOATING_POINT_LITERAL:
-      unit.visitFloatLiteral(ast);
-      return;
-    case DeeLangParser.CHARACTER_LITERAL:
-      unit.visitCharacterLiteral(ast);
-      return;
-    case DeeLangParser.STRING_LITERAL:
-      unit.visitStringLiteral(ast);
-      return;
-      
-      
-    /* ********** SPECIAL TOKEN FOR VAR AND METHOD ******* */
-    case DeeLangParser.CHAIN:
-      unit.visitChain(ast);
-      return;
-      
-      
-    /* ********** VARIABLES ********** */
-    case DeeLangParser.ASSIGN_FIELD:
-      unit.visitAssignField(ast);
-      return;
-      
-    case DeeLangParser.ASSIGN_LOCAL:
-      unit.visitAssignLocal(ast);
-      return;
-      
-    case DeeLangParser.IDENTIFIER:
-      // var access
-      unit.visitIdentifier(ast);
-      return;
-      
-    case DeeLangParser.FIELD_ACCESS:
-      // member access
-      unit.visitFieldAccess(ast);
-      return;
-
-    /* ********** METHODS ********** */
-    case DeeLangParser.METHOD_CALL:
-      unit.visitMethodCall(ast);
-      return;
-      
-    case DeeLangParser.SELF:
-      unit.visitSelf(ast);
-      return;
-
-    case DeeLangParser.ARGS:
-      unit.visitArgs(ast);
-      return;
-      
-    case DeeLangParser.BLOCK:
-      unit.visitBlock(ast);
-      return;
-      
-    case DeeLangParser.ORBLOCK:
-      unit.visitOrBlock(ast);
-      return;
-      
-      
-    /* ********** ARITHMETIC ********** */
-    case DeeLangParser.ADD:
-      unit.visitAdd(ast);
-      return;
-    case DeeLangParser.SUB:
-      unit.visitSub(ast);
-      return;
-    case DeeLangParser.MUL:
-      unit.visitMul(ast);
-      return;
-    case DeeLangParser.DIV:
-      unit.visitDiv(ast);
-      return;
-    case DeeLangParser.MOD:
-      unit.visitMod(ast);
-      return;
-    case DeeLangParser.POW:
-      unit.visitPow(ast);
-      return;
-    default:
-      throw(new UnsupportedError("Unknown AST type: " + ast.getType()));
-    }
-  }
+  }  
 }

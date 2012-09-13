@@ -17,7 +17,6 @@ import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
 import com.roscopeco.deelang.compiler.ASTVisitor;
-import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerBug;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
@@ -32,8 +31,6 @@ import dee.lang.DeelangObject;
 import dee.lang.DeelangString;
 
 public class DexCompilationUnit extends ASTVisitor {
-  private final Compiler compiler;
-  
   private DexMaker dexMaker;
   private CodeProxy codeProxy;
   private Binding binding;
@@ -43,8 +40,7 @@ public class DexCompilationUnit extends ASTVisitor {
 
   /* PUBLIC API */
   
-  public DexCompilationUnit(Compiler compiler, String sourceName, Class<? extends CompiledScript> superClass, Binding binding) {
-    this.compiler = compiler;
+  public DexCompilationUnit(String sourceName, Class<? extends CompiledScript> superClass, Binding binding) {
     dexMaker = new DexMaker();
     
     // TODO UUID is probably overkill here, and may not be performant enough on Android?
@@ -67,8 +63,8 @@ public class DexCompilationUnit extends ASTVisitor {
     codeProxy = new CodeProxy(dexMaker.declare(run, Modifier.PUBLIC));
   }
   
-  public DexCompilationUnit(Compiler compiler, String sourceName, Binding binding) {
-    this(compiler, sourceName, CompiledScript.class, binding);
+  public DexCompilationUnit(String sourceName, Binding binding) {
+    this(sourceName, CompiledScript.class, binding);
   }
   
   private byte[] codeCache;
@@ -187,13 +183,29 @@ public class DexCompilationUnit extends ASTVisitor {
       protected TypeId<T> type;
       protected Local<T> reg;
       
-      public Argument(Class<T> jtype, Local<T> register) {
+      // Setting isTransient allows this register to be freed at the
+      // end of the method call. Don't set this true for any args 
+      // that are locals, or must otherwise be kept hanging around...
+      protected boolean isTransient = false;
+      
+      /**
+       * Used for non-transient register args (where we're supplying
+       * the register).
+       */
+      public Argument(Class<T> jtype, Local<T> reg) {
         this.jtype = jtype;
         this.type = TypeId.get(jtype);
+        this.reg = reg;
       }
                   
+      /**
+       * Used for transient-register args (i.e. literals etc) where
+       * we'll allocate the register later, and can safely free it
+       * after the method call.
+       */
       public Argument(Class<T> jtype) {
         this(jtype, null);
+        isTransient = true;
       }
                   
       public final String toString() {
@@ -220,6 +232,13 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
 
+  /**
+   * BackPassFrame for ASSIGN_LOCAL processing.
+   */
+  protected final class AssignLocalBackPassData extends BackPassFrame {
+    TypeRegisterMapping<?> src;
+  }
+  
   private static final MethCallBackPassData.Argument<?>[] EMPTY_ARGS = new MethCallBackPassData.Argument[0];
 
   /**
@@ -227,7 +246,9 @@ public class DexCompilationUnit extends ASTVisitor {
    * pass data back from children to parents. 
    */
   protected ArrayDeque<BackPassFrame> backPassData = new ArrayDeque<BackPassFrame>();
-
+  
+  // TODO These two methods should be rolled into one, this way of doing
+  //      things isn't efficient...
   /**
    * Return the current MethCallBackPassData on top of the backpass
    * stack, or null if there is no frame/it isn't a MethCallBackPassData.
@@ -239,6 +260,23 @@ public class DexCompilationUnit extends ASTVisitor {
     } else {
       if (frame instanceof MethCallBackPassData) {
         return (MethCallBackPassData)frame;
+      } else {
+        return null;
+      }
+    }
+  }
+  
+  /**
+   * Return the current AssignLocalBackPassData on top of the backpass
+   * stack, or null if there is no frame/it isn't an AssignLocalBackPassData.
+   */
+  protected AssignLocalBackPassData getAssignLocalBackPassData() {
+    BackPassFrame frame = backPassData.peekFirst();
+    if (frame == null) {
+      return null;
+    } else {
+      if (frame instanceof AssignLocalBackPassData) {
+        return (AssignLocalBackPassData)frame;
       } else {
         return null;
       }
@@ -257,34 +295,37 @@ public class DexCompilationUnit extends ASTVisitor {
   }
   
   private void generateIntLiteral(int value) {
-    Local<DeelangInteger> ldl;
-    boolean transientLocal = false;
+    Local<DeelangInteger> ldl = null;
     
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
-      // TODO check if is assignment or whatever...
-      
-      // TODO once we've checked if this is an assignment or
-      //      whatever else might need this literal, we will
-      //      know if it's just a literal that gets created
-      //      and never assigned or used. In that case, we 
-      //      could simply optimise it away...
-      transientLocal = true;
-      ldl = codeProxy.newLocal(TYPEID_DL_INTEGER);
+      AssignLocalBackPassData albpd = getAssignLocalBackPassData();
+      if (albpd != null) {
+        // is RHS in an assignment
+        // TODO this is a bit wasteful, the correct way to do this would be
+        //      to initialize the literal directly in the local's register.
+        //      Currently we initialize in a temp register, then visitAssignLocal
+        //      generates a move instruction...
+        ldl = codeProxy.newLocal(TYPEID_DL_INTEGER);
+        albpd.src = new TypeRegisterMapping<DeelangInteger>(DeelangInteger.class, ldl);
+      } else {
+        //      this is just a literal that gets created
+        //      and never assigned or used. In that case, we 
+        //      simply optimise it away...
+      }      
     } else {
       MethCallBackPassData.Argument<DeelangInteger> arg = mcbpd.new Argument<DeelangInteger>(DeelangInteger.class);
       mcbpd.args[mcbpd.argi] = arg;
       ldl = arg.getArgRegister();
     }
     
-    Local<Integer> li = codeProxy.newLocal(TypeId.INT);
-    Local<Binding> binding = getRuntimeBindingRegister();
-    
-    codeProxy.loadConstant(li, value);
-    codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
-    codeProxy.freeLocal(li);
-    if (transientLocal) {
-      codeProxy.freeLocal(ldl);
+    if (ldl != null) {
+      Local<Integer> li = codeProxy.newLocal(TypeId.INT);
+      Local<Binding> binding = getRuntimeBindingRegister();
+      
+      codeProxy.loadConstant(li, value);
+      codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
+      codeProxy.freeLocal(li);
     }
   }
   
@@ -309,28 +350,37 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitFloatLiteral(Tree ast)
       throws CompilerError {    
-    Local<DeelangFloat> ldl;
-    boolean transientLocal = false;
+    Local<DeelangFloat> ldl = null;
     
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
-      // TODO See comments in visitIntLiteral
-      transientLocal = true;
-      ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);      
+      AssignLocalBackPassData albpd = getAssignLocalBackPassData();
+      if (albpd != null) {
+        // is RHS in an assignment
+        // TODO this is a bit wasteful, the correct way to do this would be
+        //      to initialize the literal directly in the local's register.
+        //      Currently we initialize in a temp register, then visitAssignLocal
+        //      generates a move instruction...
+        ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);
+        albpd.src = new TypeRegisterMapping<DeelangFloat>(DeelangFloat.class, ldl);
+      } else {
+        //      this is just a literal that gets created
+        //      and never assigned or used. In that case, we 
+        //      simply optimise it away...
+      }      
     } else {
       MethCallBackPassData.Argument<DeelangFloat> arg = mcbpd.new Argument<DeelangFloat>(DeelangFloat.class);
       mcbpd.args[mcbpd.argi] = arg;
       ldl = arg.getArgRegister();
     }
     
-    Local<Double> ld = codeProxy.newLocal(TypeId.DOUBLE);
-    Local<Binding> binding = getRuntimeBindingRegister();
-    
-    codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
-    codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
-    codeProxy.freeLocal(ld);
-    if (transientLocal) {
-      codeProxy.freeLocal(ldl);
+    if (ldl != null) {
+      Local<Double> ld = codeProxy.newLocal(TypeId.DOUBLE);
+      Local<Binding> binding = getRuntimeBindingRegister();
+      
+      codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
+      codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
+      codeProxy.freeLocal(ld);
     }
   }
 
@@ -343,29 +393,38 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitStringLiteral(Tree ast)
       throws CompilerError {
-    Local<DeelangString> ldl;
-    boolean transientLocal = false;
+    Local<DeelangString> ldl = null;
     
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
-      // TODO use accumulator??!?
-      transientLocal = true;
-      ldl = codeProxy.newLocal(TYPEID_DL_STRING);
+      AssignLocalBackPassData albpd = getAssignLocalBackPassData();
+      if (albpd != null) {
+        // is RHS in an assignment
+        // TODO this is a bit wasteful, the correct way to do this would be
+        //      to initialize the literal directly in the local's register.
+        //      Currently we initialize in a temp register, then visitAssignLocal
+        //      generates a move instruction...
+        ldl = codeProxy.newLocal(TYPEID_DL_STRING);
+        albpd.src = new TypeRegisterMapping<DeelangString>(DeelangString.class, ldl);
+      } else {
+        //      this is just a literal that gets created
+        //      and never assigned or used. In that case, we 
+        //      simply optimise it away...
+      }      
     } else {
       MethCallBackPassData.Argument<DeelangString> arg = mcbpd.new Argument<DeelangString>(DeelangString.class);
       mcbpd.args[mcbpd.argi] = arg;
       ldl = arg.getArgRegister();
     }
     
-    Local<Object> ld = codeProxy.newLocal(TypeId.OBJECT);
-    Local<Binding> binding = getRuntimeBindingRegister();
-
-    String value = ast.getText();
-    codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
-    codeProxy.newInstance(ldl, DL_STRING_INIT, binding, ld);
-    codeProxy.freeLocal(ld);
-    if (transientLocal) {
-      codeProxy.freeLocal(ldl);
+    if (ldl != null) {
+      Local<Object> ld = codeProxy.newLocal(TypeId.OBJECT);
+      Local<Binding> binding = getRuntimeBindingRegister();
+  
+      String value = ast.getText();
+      codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
+      codeProxy.newInstance(ldl, DL_STRING_INIT, binding, ld);
+      codeProxy.freeLocal(ld);
     }
   }
 
@@ -381,7 +440,11 @@ public class DexCompilationUnit extends ASTVisitor {
     throw new CompilerBug("CHAIN visited");
   }
   
-  protected final class LocalMapping<T> {
+  /**
+   * Holds a type and a register. Used to track types through
+   * the compiler (mostly types of locals).
+   */
+  protected final class TypeRegisterMapping<T> {
     protected Local<T> reg;
     protected Class<T> jtype;
     protected TypeId<T> type;
@@ -390,7 +453,7 @@ public class DexCompilationUnit extends ASTVisitor {
      * Used when just using this as a type/register mapping. 
      * Doesn't allocate any registers.
      */
-    protected LocalMapping(Class<T> jtype, Local<T> reg) {
+    protected TypeRegisterMapping(Class<T> jtype, Local<T> reg) {
       this.jtype = jtype;
       this.reg = reg;
       this.type = TypeId.get(jtype);
@@ -400,27 +463,60 @@ public class DexCompilationUnit extends ASTVisitor {
      * Used when mapping locals. Automatically allocates
      * the register.
      */
-    protected LocalMapping(Class<T> jtype) {
+    protected TypeRegisterMapping(Class<T> jtype) {
       this.jtype = jtype;
       this.reg = codeProxy.newLocal(this.type = TypeId.get(jtype));
     }
   }
   
-  private final HashMap<String, LocalMapping<?>> localsMap = new HashMap<String, LocalMapping<?>>();
+  private final HashMap<String, TypeRegisterMapping<?>> localsMap = new HashMap<String, TypeRegisterMapping<?>>();
+
+  protected boolean isLocalNameValid(String name) {
+    return (localsMap.containsKey(name) || (getBinding().getLocal(name) != null));
+  }
   
-  
+  /**
+   * Get the register for the named local. If this local does not
+   * have a register, one will be allocated. This does not look
+   * in the binding for the local - it is intended for use when
+   * assigning locals.
+   * 
+   * @param type The local's type
+   * @param name The local's name
+   * 
+   * @return The register for the local.
+   */
   @SuppressWarnings("unchecked")
-  protected <T> LocalMapping<T> getOrAllocLocalRegister(Class<T> type, String name) {
-    LocalMapping<T> localMap;
-    if ((localMap = (LocalMapping<T>)localsMap.get(name)) == null) {
-      localsMap.put(name, localMap = new LocalMapping<T>(type));
+  protected <T> TypeRegisterMapping<T> getOrAllocLocalRegister(Class<T> type, String name) {
+    TypeRegisterMapping<T> localMap;
+    if ((localMap = (TypeRegisterMapping<T>)localsMap.get(name)) == null) {
+      localsMap.put(name, localMap = new TypeRegisterMapping<T>(type));
+    } else {
+      // Make sure register can hold this type. Allocate a new register and ditch
+      // the old one if not. 
+      // Although we might be able to just reuse the register, this seems to generate
+      // problems when generating certain dex instructions if the local type doesn't
+      // match the actual type...
+      if (!localMap.jtype.isAssignableFrom(type)) {
+        localsMap.put(name, localMap = new TypeRegisterMapping<T>(type));
+      }
     }
     return localMap;
   }
 
-  @SuppressWarnings({"rawtypes"})
-  protected LocalMapping<?> getLocalRegister(String name) {
-    LocalMapping loc = localsMap.get(name);
+  /**
+   * Get the register for the named local. If this local has not
+   * previously been assigned, this method will look in the supplied
+   * binding for it. If found there, code will be generated to allocate
+   * a local register, and fetch the initial value from the binding.
+   * 
+   * @param name The local name.
+   * 
+   * @return The register for the local.
+   */
+  @SuppressWarnings({"rawtypes"}) 
+  protected TypeRegisterMapping<?> getLocalRegister(String name) {
+    TypeRegisterMapping loc = localsMap.get(name);
     
     if (loc == null) {
       Object o;
@@ -441,11 +537,37 @@ public class DexCompilationUnit extends ASTVisitor {
     
     return loc;
   }
-
+  
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   protected void visitAssignLocal(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");    
+    String name = ast.getChild(0).getText();
+    Tree expr = ast.getChild(1);
+    TypeRegisterMapping lhs;
+    
+    // Set up back pass data, then visit kids to get expression
+    AssignLocalBackPassData bpd;
+    backPassData.addFirst(bpd = new AssignLocalBackPassData());
+    visit(expr);
+    bpd = (AssignLocalBackPassData)backPassData.removeFirst();
+    
+    if (bpd.src == null) {
+      throw new CompilerBug("No RHS in local assignment");
+    } else {
+      lhs = getOrAllocLocalRegister(bpd.src.jtype, name);
+      codeProxy.move(lhs.reg, bpd.src.reg);
+      codeProxy.freeLocal(bpd.src.reg);
+    }
+    
+    MethCallBackPassData callermcbpd;
+    if ((callermcbpd = getMethCallBackPassData()) != null) {
+      // Assignment being used as method arg, so set that up...
+      callermcbpd.args[callermcbpd.argi] = callermcbpd.new Argument(lhs.jtype, lhs.reg);
+    } else if ((bpd = getAssignLocalBackPassData()) != null) {
+      // Assignment is being chained with another assignment, set that up...
+      bpd.src = lhs;
+    }
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -455,12 +577,26 @@ public class DexCompilationUnit extends ASTVisitor {
     String name = ast.getText();
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
-      // TODO check assignment etc - see visitDecimalLiteral comments
+      AssignLocalBackPassData albpd = getAssignLocalBackPassData();
+      if (albpd != null) {
+        // is RHS in an assignment
+        TypeRegisterMapping reg = getLocalRegister(name);
+        
+        if (reg != null) {
+          albpd.src = reg;
+        } else {
+          throw new UnknownVariableException(ast.getText());
+        }
+      } else {
+        if (!isLocalNameValid(name)) {
+          throw new UnknownVariableException(ast.getText());
+        }
+      }
       
       // Local read but unused - generate nothing.
       // TODO will need to track this, for chaining...?
     } else {      
-      LocalMapping reg = getLocalRegister(name);
+      TypeRegisterMapping reg = getLocalRegister(name);
       
       if (reg != null) {
         MethCallBackPassData.Argument arg = mcbpd.new Argument(reg.jtype, reg.reg);
@@ -536,7 +672,10 @@ public class DexCompilationUnit extends ASTVisitor {
     }    
   }
   
-  private LocalMapping<?> lastChainReceiver;
+  // NOTE: Any methods that make use of this field MUST make sure
+  //       they unconditionally clear it to prevent stale references
+  //       hanging around!
+  private TypeRegisterMapping<?> lastChainReceiver;
   
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
@@ -562,7 +701,7 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     } else {
       String varName = receiverAST.getText();
-      LocalMapping loc = getLocalRegister(varName);
+      TypeRegisterMapping loc = getLocalRegister(varName);
       
       if (loc == null) {
         throw new UnknownVariableException(varName);
@@ -576,7 +715,7 @@ public class DexCompilationUnit extends ASTVisitor {
     MethCallBackPassData bpd;
     backPassData.addFirst(bpd = new MethCallBackPassData(method));
     for (int i = 0; i < methodAST.getChildCount(); i++) {
-      this.compiler.visit(this, methodAST.getChild(i));
+      visit(methodAST.getChild(i));
     }
     bpd = (MethCallBackPassData)backPassData.removeFirst();
     MethCallBackPassData callerbpd = getMethCallBackPassData();
@@ -603,16 +742,35 @@ public class DexCompilationUnit extends ASTVisitor {
     Local target;
     if (callerbpd != null) {
       if (void.class.equals(retClz)) {
-        throw new CompilerError("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
+        throw new IllegalMethodCallException("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
       } else {
         MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument(retClz);
         target = arg.getArgRegister();
       }
     } else {
-      if (void.class.equals(retClz)) {
-        target = null;
+      AssignLocalBackPassData calleralbpd = getAssignLocalBackPassData();
+      if (calleralbpd != null) {
+        if (void.class.equals(retClz)) {
+          throw new IllegalMethodCallException("Void method '"+method+"' called as RHS of assignment");
+        } else {
+          // Set up the target but don't return it to the pool yet.
+          // The next insn generated should be the move done by AssignLocal,
+          // which might realloc registers. After that, this target 
+          // can safely be reused and will be freed in visitAssignLocal.
+          //
+          // TODO this is inefficient. Should really be returning directly to the
+          //      LHS's register.
+          target = codeProxy.newLocal(retType);
+          calleralbpd.src = new TypeRegisterMapping(retClz, target);
+        }
       } else {
-        target = codeProxy.newLocal(retType);
+        if (void.class.equals(retClz)) {
+          target = null;
+        } else {
+          // Just transient (probably ignored) so immediately return the target to the pool.
+          target = codeProxy.newLocal(retType);
+          codeProxy.freeLocal(target);
+        }
       }
     }
     
@@ -620,7 +778,7 @@ public class DexCompilationUnit extends ASTVisitor {
     // TODO don't think this will always work. Need to get test coverage on this...
     //      We may need a stack, or stash it somewhere else or something...
     if (target != null) {
-      lastChainReceiver = new LocalMapping(bindMethod.getReturnType(), target);
+      lastChainReceiver = new TypeRegisterMapping(bindMethod.getReturnType(), target);
     } else {
       lastChainReceiver = null;
     }
@@ -629,12 +787,13 @@ public class DexCompilationUnit extends ASTVisitor {
     codeProxy.invokeVirtual(mid, target, receiverReg, args);
     
     // Free arg registers for reuse
-    // TODO Need to be checking we don't free any actual local registers here!
     // TODO could probably get rid of indexed arg map now?
     //      Failing that, copy args into a local before looping...
     // Return locals to the pool for reuse
     for (int i = 0; i < bpd.args.length; i++) {
-      codeProxy.freeLocal(bpd.args[i].getArgRegister());
+      if (bpd.args[i].isTransient) {
+        codeProxy.freeLocal(bpd.args[i].getArgRegister());
+      }
     }
     
     // TODO block support
@@ -656,7 +815,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     for (int i = 0; i < argc; i++) {
       mcbpd.argi = i;
-      compiler.visit(this, ast.getChild(i));      
+      visit(ast.getChild(i));      
     }
   }
 

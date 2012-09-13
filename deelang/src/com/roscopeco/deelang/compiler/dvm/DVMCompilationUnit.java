@@ -11,7 +11,6 @@ import org.antlr.runtime.tree.Tree;
 
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.ASTVisitor;
-import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
@@ -32,14 +31,9 @@ import com.roscopeco.deelang.compiler.UnsupportedError;
 public class DVMCompilationUnit extends ASTVisitor {
   private static final byte[] EMPTY_ARRAY = new byte[0];
   
-  private final Compiler compiler;
-
   /**
-   * @param compiler
    */
-  public DVMCompilationUnit(Compiler compiler) {
-    this.compiler = compiler;
-  }
+  public DVMCompilationUnit() { }
 
   /** key class for the constpool hash. Type is
    * the type from CompiledScript. Constant
@@ -393,7 +387,7 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitAssignLocal(Tree ast) throws CompilerError {
     String name = ast.getChild(0).getText();
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(1));
     try {
       strm.write(new byte[] { Opcodes.STORE, getOrAllocLocalSlot(name) });
     } catch (IOException e) {
@@ -414,7 +408,7 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitAssignField(Tree ast) throws CompilerError {
     String name = ast.getChild(0).getText();
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(1));
     try {
       writeSizedNoExtra(strm, Opcodes.PUTFIELD_B, Opcodes.PUTFIELD_W, Opcodes.PUTFIELD_L, 
           getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
@@ -426,7 +420,7 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitFieldAccess(Tree ast)
       throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
+    visit(ast.getChild(0));
     try {
       writeSizedNoExtra(strm, Opcodes.GETFIELD_B, Opcodes.GETFIELD_W, Opcodes.GETFIELD_L, 
           getOrAllocConstPoolIndex(ast.getChild(1).getText(), CompiledScript.CONST_POOL_FIELD));
@@ -480,9 +474,9 @@ public class DVMCompilationUnit extends ASTVisitor {
     index = getOrAllocConstPoolIndex(method, CompiledScript.CONST_POOL_METHOD);
 
     backPassData.addFirst(new BackPassFrame(new MethCallBackPassData(method)));
-    this.compiler.visit(this, receiverAST);
+    visit(receiverAST);
     for (int i = 0; i < methodAST.getChildCount(); i++) {
-      this.compiler.visit(this, methodAST.getChild(i));
+      visit(methodAST.getChild(i));
     }
     BackPassFrame kidData = backPassData.removeFirst();
     MethCallBackPassData bpd = (MethCallBackPassData)kidData.data;
@@ -527,7 +521,7 @@ public class DVMCompilationUnit extends ASTVisitor {
     }
     mcbpd.argc = (byte)ast.getChildCount();
     for (int i = 0; i < ast.getChildCount(); i++) {
-      this.compiler.visit(this, ast.getChild(i));
+      visit(ast.getChild(i));
     }
   }
 
@@ -545,7 +539,7 @@ public class DVMCompilationUnit extends ASTVisitor {
     strm = new DataOutputStream(bas);
     
     for (int i = 0; i < ast.getChildCount(); i++) {
-      this.compiler.visit(this, ast.getChild(i));
+      visit(ast.getChild(i));
     }
     
     // restore the previous stream, and set the block in the backpass data.
@@ -563,7 +557,7 @@ public class DVMCompilationUnit extends ASTVisitor {
     strm = new DataOutputStream(bas);
     
     for (int i = 0; i < ast.getChildCount(); i++) {
-      this.compiler.visit(this, ast.getChild(i));
+      visit(ast.getChild(i));
     }
 
     // restore the previous stream, and set the block in the backpass data.
@@ -573,8 +567,8 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitAdd(Tree ast) throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(0));
+    visit(ast.getChild(1));
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -587,8 +581,8 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitSub(Tree ast) throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(0));
+    visit(ast.getChild(1));
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -600,8 +594,8 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitMul(Tree ast) throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(0));
+    visit(ast.getChild(1));
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -613,8 +607,8 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitDiv(Tree ast) throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(0));
+    visit(ast.getChild(1));
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -626,8 +620,8 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitMod(Tree ast) throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(0));
+    visit(ast.getChild(1));
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -639,8 +633,8 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitPow(Tree ast) throws CompilerError {
-    this.compiler.visit(this, ast.getChild(0));
-    this.compiler.visit(this, ast.getChild(1));
+    visit(ast.getChild(0));
+    visit(ast.getChild(1));
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 

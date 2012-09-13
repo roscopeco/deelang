@@ -24,6 +24,7 @@ import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Invoke;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.LoadConstant;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Move;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.NewInstance;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.ReturnVoid;
 
@@ -164,7 +165,21 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testMove() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.move(mockLocal, mockLocal2);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Move.class)));
+
+    Move<Object> ig = (Move<Object>)i;
+    
+    assertThat(ig.target, is(mockLocal));
+    assertThat(ig.source, is(mockLocal2));
+    
+    ig.generate();
+    verify(mockCode).move(mockLocal, mockLocal2);
   }
 
   @Test

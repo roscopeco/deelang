@@ -16,7 +16,7 @@
  */
 package com.roscopeco.deelang.compiler;
 
-public class CompilerBug extends CompilerError {
+public class CompilerBug extends RuntimeException {
 
   /**
    * 

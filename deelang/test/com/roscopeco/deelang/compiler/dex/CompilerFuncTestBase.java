@@ -46,6 +46,7 @@ public class CompilerFuncTestBase {
     public DeelangInteger bar(DeelangInteger a, DeelangString b) { return a; }
     public DeelangInteger baz() { return null; }
     public Foo boo() { return this; }
+    public void voidy() { }
     public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); }
     public DeelangInteger quux(DeelangInteger a) { return a; }
   }
@@ -54,27 +55,29 @@ public class CompilerFuncTestBase {
     HashBinding b = new HashBinding();
     b.setSelf(new Foo(b));
     b.setLocal("foo", b.getSelf());
+    b.setLocal("a", b.getSelf());
+    b.setLocal("b", b.getSelf());
     return b;
   }
   
   DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz, Binding binding) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return c.compile(new DexCompilationUnit(c, "UNITTESTS", superClz, binding), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit("UNITTESTS", superClz, binding), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code, Class<? extends CompiledScript> superClz) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return c.compile(new DexCompilationUnit(c, "UNITTESTS", superClz, getTestBinding()), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit("UNITTESTS", superClz, getTestBinding()), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return c.compile(new DexCompilationUnit(c, "UNITTESTS", getTestBinding()), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit("UNITTESTS", getTestBinding()), Parser.staticParse(code));
   }
   
   DexCompilationUnit runTest(String code, Binding binding) throws ParserError, CompilerError {
     Compiler c = new Compiler();
-    return c.compile(new DexCompilationUnit(c, "UNITTESTS", binding), Parser.staticParse(code));
+    return c.compile(new DexCompilationUnit("UNITTESTS", binding), Parser.staticParse(code));
   }
   
   void runCodeComparisonTest(String code, Binding binding, Class<? extends CompiledScript> superClz, 
