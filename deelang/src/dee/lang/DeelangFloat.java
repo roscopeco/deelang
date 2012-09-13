@@ -26,9 +26,9 @@ import com.roscopeco.deelang.runtime.Binding;
  *
  */
 public class DeelangFloat extends DeelangObject {
-  Double dbl;
+  double dbl;
 
-  public DeelangFloat(Binding binding, Double dbl) {
+  public DeelangFloat(Binding binding, double dbl) {
     super(binding);
     this.dbl = dbl;
   }
@@ -39,7 +39,7 @@ public class DeelangFloat extends DeelangObject {
   
   @Override
   public String toString() {
-    return dbl.toString();
+    return Double.toString(dbl);
   }
   
   @Override
@@ -125,7 +125,7 @@ public class DeelangFloat extends DeelangObject {
    */
   @Override
   public DeelangInteger toI() {
-    return new DeelangInteger(getBinding(), this.dbl.intValue());
+    return new DeelangInteger(getBinding(), new Double(dbl).intValue());
   }
   
   /**

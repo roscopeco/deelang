@@ -10,20 +10,20 @@ import com.roscopeco.deelang.runtime.Binding;
  *
  */
 public class DeelangInteger extends DeelangObject {
-  final Integer integer;
+  final int integer;
   
-  public DeelangInteger(Binding binding, Integer integer) {
+  public DeelangInteger(Binding binding, int integer) {
     super(binding);
     this.integer = integer;
   }
   
-  public Integer getInteger() {
+  public int getInteger() {
     return integer;
   }
   
   @Override
   public String toString() {
-    return integer.toString();
+    return Integer.toString(integer);
   }
   
   public void times() {
@@ -128,7 +128,6 @@ public class DeelangInteger extends DeelangObject {
    */
   @Override
   public DeelangFloat toF() {
-    return new DeelangFloat(getBinding(), this.integer.doubleValue());
+    return new DeelangFloat(getBinding(), new Integer(integer).doubleValue());
   }
-
 }
