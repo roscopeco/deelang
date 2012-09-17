@@ -880,6 +880,8 @@ public class DexCompilationUnit extends ASTVisitor {
     dexMaker.declare(blkType, sourceName, Modifier.PUBLIC | Modifier.FINAL, TYPEID_BLOCK);
 
     blockBackPassData.push(new BlockBpd(codeProxy, blkType));
+    
+    // Generate constructor
     Code initCode = dexMaker.declare(blkType.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), Modifier.PUBLIC);
     initCode.invokeDirect(BLOCK_INIT, null, initCode.getThis(blkType), 
         initCode.getParameter(0, TYPEID_DL_OBJECT),
@@ -910,13 +912,21 @@ public class DexCompilationUnit extends ASTVisitor {
     // TODO this is gonna go wrong if the local's type is changed in the block!
     Local<Integer> aidx = codeProxy.newLocal(TypeId.INT);
     Local<Object[]> clAry = codeProxy.getParameter(2, TYPEID_OBJECT_A);
+    Local<Object> temp = null;
     codeProxy.mark(preloadStart);
     ArrayList<String> closedLocals = blbpd.closedLocals;
     int len = closedLocals.size();
+    if (len > 0) {
+      temp = codeProxy.newLocal(TypeId.OBJECT);
+    }
     for (int i = 0; i < len; i++) {
       codeProxy.loadConstant(aidx, i);
-      codeProxy.aget(codeProxy.getLocalRegister(closedLocals.get(i)).reg, clAry, aidx);
+      codeProxy.aget(temp, clAry, aidx);
+      codeProxy.cast(codeProxy.getLocalRegister(closedLocals.get(i)).reg, temp);
     }    
+    if (temp != null) {
+      codeProxy.freeLocal(temp);
+    }
     codeProxy.jump(methStart);
     
     codeProxy.doGenerate();    

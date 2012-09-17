@@ -5,9 +5,9 @@ import dee.lang.DeelangObject;
 public abstract class Block {  
   final Binding binding;
   final Object[] closedLocals;  
-  boolean inScope;
+  protected boolean inScope;
   
-  Block(DeelangObject self, Binding binding, Object[] locals) {
+  protected Block(DeelangObject self, Binding binding, Object[] locals) {
     this.binding = binding;
     this.closedLocals = locals;
     this.inScope = true;

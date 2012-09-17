@@ -253,14 +253,17 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         
         "extends com.roscopeco.deelang.runtime.Block",
         "public final V invoke(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding,java.lang.Object[],java.lang.Object[])\n"+
-        "                this:v2   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__$block0\n"+
-        "                    :v3   //dee.lang.DeelangObject\n"+
-        "                    :v4   //com.roscopeco.deelang.runtime.Binding\n"+
-        "                    :v5   //java.lang.Object[]\n"+
-        "                    :v6   //java.lang.Object[]\n"+
-        "CONST               |     |v1=0x00000000  // int:0   float:0.000000\n"+
-        "AGET                |     |v0=v5[v1]\n"+
-        "INVOKE_VIRTUAL      |     |v0.voidy()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.voidy()V\n"+
+        "                this:v4   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__$block0\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                    :v7   //java.lang.Object[]\n"+
+        "                    :v8   //java.lang.Object[]\n"+
+        "CONST               |     |v2=0x00000000  // int:0   float:0.000000\n"+
+        "AGET                |     |v3=v7[v2]\n"+
+        "MOVE                |     |v0 = v3\n"+
+        "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
+        "MOVE                |     |v1 = v0\n"+
+        "INVOKE_VIRTUAL      |     |v1.voidy()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.voidy()V\n"+
         "RETURN_VOID         |     |return");
   }
   
