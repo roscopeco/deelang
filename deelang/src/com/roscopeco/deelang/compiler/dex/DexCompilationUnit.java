@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 
 import org.antlr.runtime.tree.Tree;
 
 import com.google.dexmaker.Code;
 import com.google.dexmaker.DexMaker;
+import com.google.dexmaker.Label;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
@@ -23,6 +24,7 @@ import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
 import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.runtime.Binding;
+import com.roscopeco.deelang.runtime.Block;
 import com.roscopeco.deelang.runtime.CompiledScript;
 
 import dee.lang.DeelangFloat;
@@ -32,8 +34,9 @@ import dee.lang.DeelangString;
 
 public class DexCompilationUnit extends ASTVisitor {
   private DexMaker dexMaker;
-  private CodeProxy codeProxy;
-  private Binding binding;
+  CodeProxy codeProxy;
+  final Binding binding;
+  private final String sourceName;
   private final TypeId<? extends CompiledScript> compiledScriptTypeId;
   private final String compiledScriptName;
   private final Class<? extends DeelangObject> selfClz;
@@ -49,6 +52,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     this.binding = binding;
     this.selfClz = binding.getSelf().getClass();
+    this.sourceName = sourceName;
     
     dexMaker.declare(compiledScriptTypeId, sourceName, Modifier.PUBLIC, TypeId.get(superClass));
     
@@ -60,7 +64,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     // Declare run method and get a code proxy
     MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_BINDING);
-    codeProxy = new CodeProxy(dexMaker.declare(run, Modifier.PUBLIC));
+    codeProxy = new CodeProxy(this, dexMaker.declare(run, Modifier.PUBLIC));
   }
   
   public DexCompilationUnit(String sourceName, Binding binding) {
@@ -139,6 +143,8 @@ public class DexCompilationUnit extends ASTVisitor {
 
   protected static final TypeId<Binding> TYPEID_BINDING = TypeId.get(Binding.class);
   protected static final TypeId<CompiledScript> TYPEID_COMPILEDSCRIPT = TypeId.get(CompiledScript.class);
+  protected static final TypeId<Object[]> TYPEID_OBJECT_A = TypeId.get(Object[].class);
+  protected static final TypeId<Block> TYPEID_BLOCK = TypeId.get(Block.class);
   
   protected static final TypeId<DeelangObject> TYPEID_DL_OBJECT = TypeId.get(DeelangObject.class);
   protected static final TypeId<DeelangInteger> TYPEID_DL_INTEGER = TypeId.get(DeelangInteger.class);
@@ -149,6 +155,8 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final MethodId<Binding, Void> BINDING_SET_LOCAL = TYPEID_BINDING.getMethod(TypeId.VOID, "getLocal", TypeId.STRING, TypeId.OBJECT);
   
   protected static final MethodId<CompiledScript, Void> COMPILEDSCRIPT_INIT = TYPEID_COMPILEDSCRIPT.getConstructor(TYPEID_BINDING);
+  protected static final MethodId<Block, Void> BLOCK_INIT = TYPEID_BLOCK.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A);
+  
   protected static final MethodId<DeelangInteger, Void> DL_INTEGER_INIT = TYPEID_DL_INTEGER.getConstructor(TYPEID_BINDING, TypeId.INT);
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
   protected static final MethodId<DeelangString, Void> DL_STRING_INIT = TYPEID_DL_STRING.getConstructor(TYPEID_BINDING, TypeId.STRING);
@@ -172,7 +180,7 @@ public class DexCompilationUnit extends ASTVisitor {
    * a potentially large number of throwaway visitor objects when 
    * compiling e.g. METHOD_CALL nodes.
    */
-  protected abstract class BackPassFrame { }
+  protected static abstract class BackPassFrame { }
     
   /**
    * BackPassFrame for METH_CALL processing.
@@ -225,6 +233,8 @@ public class DexCompilationUnit extends ASTVisitor {
     int argc;   // arg count
     int argi;   // current arg, -1 for none.
     Argument<?>[] args;
+    BlockBpd block;
+    BlockBpd orBlock;
     
     protected MethCallBackPassData(String name) { 
       this.methName = name; 
@@ -238,6 +248,22 @@ public class DexCompilationUnit extends ASTVisitor {
   protected final class AssignLocalBackPassData extends BackPassFrame {
     TypeRegisterMapping<?> src;
   }
+  
+  /*
+   * This is used when we're processing a block, to put a bit of
+   * space between the calling MethCallBPD and anything that is done
+   * in the block. It's effectively a marker for a 'new scope'.
+   * 
+   * It just gives the block a clean slate to work to, so e.g. 
+   * method call arg types aren't checked against the calling method
+   * etc.
+   *
+   * A better way to do this might be to put the backpass stack on
+   * CodeProxy, and make CodeProxy a fully-fledged 'scope' object...
+   */
+  private static final class BackPassDataSpacer extends BackPassFrame { }
+  
+  private static final BackPassDataSpacer BACKPASSDATASPACER = new BackPassDataSpacer();
   
   private static final MethCallBackPassData.Argument<?>[] EMPTY_ARGS = new MethCallBackPassData.Argument[0];
 
@@ -283,17 +309,6 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
   
-  protected Local<? extends DeelangObject> getSelf() {
-    return codeProxy.getParameter(0, TYPEID_DL_OBJECT);
-  }
-  
-  /** 
-   * Get the runtime Binding parameter. 
-   */
-  protected Local<Binding> getRuntimeBindingRegister() {
-    return codeProxy.getParameter(1, TYPEID_BINDING);
-  }
-  
   private void generateIntLiteral(int value) {
     Local<DeelangInteger> ldl = null;
     
@@ -321,7 +336,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     if (ldl != null) {
       Local<Integer> li = codeProxy.newLocal(TypeId.INT);
-      Local<Binding> binding = getRuntimeBindingRegister();
+      Local<Binding> binding = codeProxy.getRuntimeBindingRegister();
       
       codeProxy.loadConstant(li, value);
       codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
@@ -376,7 +391,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     if (ldl != null) {
       Local<Double> ld = codeProxy.newLocal(TypeId.DOUBLE);
-      Local<Binding> binding = getRuntimeBindingRegister();
+      Local<Binding> binding = codeProxy.getRuntimeBindingRegister();
       
       codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
       codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
@@ -419,7 +434,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     if (ldl != null) {
       Local<Object> ld = codeProxy.newLocal(TypeId.OBJECT);
-      Local<Binding> binding = getRuntimeBindingRegister();
+      Local<Binding> binding = codeProxy.getRuntimeBindingRegister();
   
       String value = ast.getText();
       codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
@@ -468,76 +483,7 @@ public class DexCompilationUnit extends ASTVisitor {
       this.reg = codeProxy.newLocal(this.type = TypeId.get(jtype));
     }
   }
-  
-  private final HashMap<String, TypeRegisterMapping<?>> localsMap = new HashMap<String, TypeRegisterMapping<?>>();
-
-  protected boolean isLocalNameValid(String name) {
-    return (localsMap.containsKey(name) || (getBinding().getLocal(name) != null));
-  }
-  
-  /**
-   * Get the register for the named local. If this local does not
-   * have a register, one will be allocated. This does not look
-   * in the binding for the local - it is intended for use when
-   * assigning locals.
-   * 
-   * @param type The local's type
-   * @param name The local's name
-   * 
-   * @return The register for the local.
-   */
-  @SuppressWarnings("unchecked")
-  protected <T> TypeRegisterMapping<T> getOrAllocLocalRegister(Class<T> type, String name) {
-    TypeRegisterMapping<T> localMap;
-    if ((localMap = (TypeRegisterMapping<T>)localsMap.get(name)) == null) {
-      localsMap.put(name, localMap = new TypeRegisterMapping<T>(type));
-    } else {
-      // Make sure register can hold this type. Allocate a new register and ditch
-      // the old one if not. 
-      // Although we might be able to just reuse the register, this seems to generate
-      // problems when generating certain dex instructions if the local type doesn't
-      // match the actual type...
-      if (!localMap.jtype.isAssignableFrom(type)) {
-        localsMap.put(name, localMap = new TypeRegisterMapping<T>(type));
-      }
-    }
-    return localMap;
-  }
-
-  /**
-   * Get the register for the named local. If this local has not
-   * previously been assigned, this method will look in the supplied
-   * binding for it. If found there, code will be generated to allocate
-   * a local register, and fetch the initial value from the binding.
-   * 
-   * @param name The local name.
-   * 
-   * @return The register for the local.
-   */
-  @SuppressWarnings({"rawtypes"}) 
-  protected TypeRegisterMapping<?> getLocalRegister(String name) {
-    TypeRegisterMapping loc = localsMap.get(name);
     
-    if (loc == null) {
-      Object o;
-      if ((o = binding.getLocal(name)) != null) {
-        // first use of binding var - we need alloc it a register and copy it in...
-        Local<String> temp = codeProxy.newLocal(TypeId.STRING);
-        Local<Object> tempObj = codeProxy.newLocal(TypeId.OBJECT);
-        loc = getOrAllocLocalRegister(o.getClass(), name);
-        codeProxy.loadConstant(temp, name);
-        codeProxy.invokeInterface(BINDING_GET_LOCAL, tempObj, getRuntimeBindingRegister(), temp);
-        
-        // TODO this is using registers inefficiently...
-        codeProxy.cast(loc.reg, tempObj);
-        codeProxy.freeLocal(tempObj);
-        codeProxy.freeLocal(temp);          
-      }         
-    }
-    
-    return loc;
-  }
-  
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   protected void visitAssignLocal(Tree ast)
@@ -555,7 +501,7 @@ public class DexCompilationUnit extends ASTVisitor {
     if (bpd.src == null) {
       throw new CompilerBug("No RHS in local assignment");
     } else {
-      lhs = getOrAllocLocalRegister(bpd.src.jtype, name);
+      lhs = codeProxy.getOrAllocLocalRegister(bpd.src.jtype, name);
       codeProxy.move(lhs.reg, bpd.src.reg);
       codeProxy.freeLocal(bpd.src.reg);
     }
@@ -569,18 +515,20 @@ public class DexCompilationUnit extends ASTVisitor {
       bpd.src = lhs;
     }
   }
-
+  
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   protected void visitIdentifier(Tree ast)
       throws CompilerError {
     String name = ast.getText();
+        
+    // process the var load
     MethCallBackPassData mcbpd = getMethCallBackPassData();
     if (mcbpd == null) {
       AssignLocalBackPassData albpd = getAssignLocalBackPassData();
       if (albpd != null) {
         // is RHS in an assignment
-        TypeRegisterMapping reg = getLocalRegister(name);
+        TypeRegisterMapping reg = codeProxy.getLocalRegister(name);
         
         if (reg != null) {
           albpd.src = reg;
@@ -588,15 +536,16 @@ public class DexCompilationUnit extends ASTVisitor {
           throw new UnknownVariableException(ast.getText());
         }
       } else {
-        if (!isLocalNameValid(name)) {
+        if (!codeProxy.isLocalNameValid(name)) {
           throw new UnknownVariableException(ast.getText());
         }
       }
       
       // Local read but unused - generate nothing.
       // TODO will need to track this, for chaining...?
-    } else {      
-      TypeRegisterMapping reg = getLocalRegister(name);
+    } else {
+      // method arg
+      TypeRegisterMapping reg = codeProxy.getLocalRegister(name);
       
       if (reg != null) {
         MethCallBackPassData.Argument arg = mcbpd.new Argument(reg.jtype, reg.reg);
@@ -643,30 +592,76 @@ public class DexCompilationUnit extends ASTVisitor {
     return null;    
   }
 
+  private Method findMethodWithBlock(Class<?> clz, String name, MethCallBackPassData.Argument<?>[] args) {
+    do {
+      outer: for (Method m : clz.getMethods()) {
+        Class<?>[] paramTypes = m.getParameterTypes();
+        if (m.getName().equals(name) && paramTypes.length == args.length + 1) {
+          if (!paramTypes[0].equals(Block.class)) {
+            // not a block for first arg
+            continue outer;
+          }
+          
+          for (int i = 1; i <= args.length; i++) {
+            if (!paramTypes[i].isAssignableFrom(args[i].jtype)) {
+              // can't satisfy; loop again
+              continue outer;            
+            }
+          }
+          
+          // if here, we got a match...
+          return m;
+        }
+      }
+      
+      clz = clz.getSuperclass();
+    } while (clz != null);  // reached Object
+    
+    return null;    
+  }
+
   private static final TypeId<?>[] EMPTY_TIDS = new TypeId<?>[0]; 
   private static final Local<?>[] EMPTY_LOCALS = new Local<?>[0]; 
   
-  private TypeId<?>[] mapClassesToTypes(MethCallBackPassData.Argument<?>[] clzs) {
+  private TypeId<?>[] mapClassesToTypes(MethCallBackPassData.Argument<?>[] clzs, boolean hasBlock) {
     int len = clzs.length;
-    if (len == 0) {
+    if (len == 0 && !hasBlock) {
       return EMPTY_TIDS;
     } else {
-      TypeId<?>[] tids = new TypeId<?>[len];
-      for (int i = 0; i < len; i++) {
-        tids[i] = TypeId.get(clzs[i].jtype);
+      TypeId<?>[] tids;
+      if (!hasBlock) {
+        tids = new TypeId<?>[len];
+        for (int i = 0; i < len; i++) {
+          tids[i] = TypeId.get(clzs[i].jtype);
+        }
+      } else {
+        tids = new TypeId<?>[len+1];
+        tids[0] = TYPEID_BLOCK;
+        for (int i = 1; i <= len; i++) {
+          tids[i] = TypeId.get(clzs[i].jtype);
+        }
       }
       return tids;
     }
   }
   
-  private Local<?>[] mapBpdArgsToLocals(MethCallBackPassData.Argument<?>[] args) {
+  private Local<?>[] mapBpdArgsToLocals(MethCallBackPassData.Argument<?>[] args, Local<? extends Block> blockReg) {
     int len = args.length;
-    if (len == 0) {
+    if (len == 0 && blockReg == null) {
       return EMPTY_LOCALS;
     } else {
-      Local<?>[] locs = new Local<?>[len];
-      for (int i = 0; i < len; i++) {
-        locs[i] = args[i].getArgRegister();
+      Local<?>[] locs;
+      if (blockReg == null) {
+        locs = new Local<?>[len];
+        for (int i = 0; i < len; i++) {
+          locs[i] = args[i].getArgRegister();
+        }
+      } else {
+        locs = new Local<?>[len+1];
+        locs[0] = blockReg;
+        for (int i = 1; i <= len; i++) {
+          locs[i] = args[i].getArgRegister();
+        }
       }
       return locs;
     }    
@@ -691,7 +686,7 @@ public class DexCompilationUnit extends ASTVisitor {
     // Determine whether this is a self, chained or explicit receiver call
     if (receiverAST.getType() == DeeLangParser.SELF) {
       receiverClz = selfClz;
-      receiverReg = getSelf();
+      receiverReg = codeProxy.getSelf();
     } else if (receiverAST.getType() == DeeLangParser.CHAIN) {
       if (lastChainReceiver == null) {
         throw new CompilerError("Cannot chain void method"); 
@@ -701,7 +696,7 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     } else {
       String varName = receiverAST.getText();
-      TypeRegisterMapping loc = getLocalRegister(varName);
+      TypeRegisterMapping loc = codeProxy.getLocalRegister(varName);
       
       if (loc == null) {
         throw new UnknownVariableException(varName);
@@ -718,12 +713,22 @@ public class DexCompilationUnit extends ASTVisitor {
       visit(methodAST.getChild(i));
     }
     bpd = (MethCallBackPassData)backPassData.removeFirst();
+    boolean hasBlock = (bpd.block != null);
     MethCallBackPassData callerbpd = getMethCallBackPassData();
         
     // Find method to call
-    Method bindMethod = findMethod(receiverClz, method, bpd.args);
+    Method bindMethod;
+    if (hasBlock) {
+      bindMethod = findMethodWithBlock(receiverClz, method, bpd.args);
+    } else {
+      bindMethod = findMethod(receiverClz, method, bpd.args);
+    }
     if (bindMethod == null) {
-      throw new CompilerError("Cannot bind method call '" + receiverClz.getName() + "." + method + "' with arguments " + Arrays.toString(bpd.args));
+      if (hasBlock) {
+        throw new CompilerError("Cannot bind method call '" + receiverClz.getName() + "." + method + "' with block and arguments " + Arrays.toString(bpd.args));
+      } else {
+        throw new CompilerError("Cannot bind method call '" + receiverClz.getName() + "." + method + "' and arguments " + Arrays.toString(bpd.args));        
+      }
     }
     
     // Set up declaring class and return type
@@ -731,10 +736,16 @@ public class DexCompilationUnit extends ASTVisitor {
     TypeId<?> decType = TypeId.get(bindMethod.getDeclaringClass());
     TypeId<?> retType = TypeId.get(retClz = bindMethod.getReturnType());
     
+    // If we have a block, allocate it's register
+    Local blockReg = null;
+    if (hasBlock) {
+      blockReg = codeProxy.newLocal(bpd.block.blockTypeId);
+    }
+    
     // Map arguments
     // TODO looping twice here through same data... 
-    TypeId<?>[] argTypes = mapClassesToTypes(bpd.args);
-    Local<?>[] args = mapBpdArgsToLocals(bpd.args);
+    TypeId<?>[] argTypes = mapClassesToTypes(bpd.args, hasBlock);
+    Local<?>[] args = mapBpdArgsToLocals(bpd.args, blockReg);
     
     MethodId mid = decType.getMethod(retType, method, argTypes);
     
@@ -767,7 +778,8 @@ public class DexCompilationUnit extends ASTVisitor {
         if (void.class.equals(retClz)) {
           target = null;
         } else {
-          // Just transient (probably ignored) so immediately return the target to the pool.
+          // Just transient (probably chained) so immediately return the target to the pool.
+          // we cant ignore the return in case its part of a call chain...
           target = codeProxy.newLocal(retType);
           codeProxy.freeLocal(target);
         }
@@ -783,12 +795,28 @@ public class DexCompilationUnit extends ASTVisitor {
       lastChainReceiver = null;
     }
     
+    // Generate code to initialize Block instance if needed
+    if (hasBlock) {
+      ArrayList<String> closedLocals = bpd.block.closedLocals; 
+      int locsize = closedLocals.size();
+      Local<Integer> bllen = codeProxy.newLocal(TypeId.INT);
+      codeProxy.loadConstant(bllen, locsize);
+      codeProxy.newArray(codeProxy.blockLocalsLocal(), bllen);
+      for (int i = 0; i < locsize; i++) {
+        codeProxy.loadConstant(bllen, i);
+        codeProxy.aput(codeProxy.blockLocalsLocal(), bllen, codeProxy.getLocalRegister(closedLocals.get(i)).reg);        
+      }
+      codeProxy.newInstance(blockReg, bpd.block.blockTypeId.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), 
+          codeProxy.getParameter(0, TYPEID_DL_OBJECT), 
+          codeProxy.getParameter(1, TYPEID_BINDING), 
+          codeProxy.blockLocalsLocal());
+      codeProxy.freeLocal(bllen);
+    }
+    
     // Generate call insn
     codeProxy.invokeVirtual(mid, target, receiverReg, args);
     
     // Free arg registers for reuse
-    // TODO could probably get rid of indexed arg map now?
-    //      Failing that, copy args into a local before looping...
     // Return locals to the pool for reuse
     for (int i = 0; i < bpd.args.length; i++) {
       if (bpd.args[i].isTransient) {
@@ -796,7 +824,7 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     }
     
-    // TODO block support
+    // TODO Or block support
    
   }
 
@@ -818,17 +846,106 @@ public class DexCompilationUnit extends ASTVisitor {
       visit(ast.getChild(i));      
     }
   }
+  
+  // Keeps track of generated block numbers (incremental)
+  private int blockNum = 0;
+  
+  // Special back pass stack for Block gen.
+  // We can't use the same stack as for method call/assignment because
+  // we need the enclosing block to always be at the top of the stack,
+  // no matter what we're doing inside the block at the present time.
+  // (e.g. var could be accessed during assignment).
+  protected final class BlockBpd {
+    public final CodeProxy callerProxy;
+    public final ArrayList<String> closedLocals = new ArrayList<String>();
+    public final ArrayList<String> modifiedLocals = new ArrayList<String>();
+    public final TypeId<? extends Block> blockTypeId;
+    
+    protected BlockBpd(CodeProxy proxy, TypeId<? extends Block> blkTypeId) {
+      this.callerProxy = proxy;
+      this.blockTypeId = blkTypeId;
+    }    
+  }
+  
+  protected final ArrayDeque<BlockBpd> blockBackPassData = new ArrayDeque<BlockBpd>();
+  
+  protected BlockBpd getBlockBpd() {
+    return blockBackPassData.peekFirst();
+  }
 
+  private BlockBpd generateBlock(Tree ast) throws CompilerError {
+    backPassData.push(BACKPASSDATASPACER);
+    
+    TypeId<? extends Block> blkType = TypeId.get("Lcom/roscopeco/deelang/runtime/" + compiledScriptName + "$block" + blockNum++ + ";");
+    dexMaker.declare(blkType, sourceName, Modifier.PUBLIC | Modifier.FINAL, TYPEID_BLOCK);
+
+    blockBackPassData.push(new BlockBpd(codeProxy, blkType));
+    Code initCode = dexMaker.declare(blkType.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), Modifier.PUBLIC);
+    initCode.invokeDirect(BLOCK_INIT, null, initCode.getThis(blkType), 
+        initCode.getParameter(0, TYPEID_DL_OBJECT),
+        initCode.getParameter(1, TYPEID_BINDING),
+        initCode.getParameter(2, TYPEID_OBJECT_A));
+    initCode.returnVoid();
+    
+    MethodId<?, Void> invoke = blkType.getMethod(TypeId.VOID, "invoke", TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A, TYPEID_OBJECT_A);
+    codeProxy = new CodeProxy(this, dexMaker.declare(invoke, Modifier.PUBLIC | Modifier.FINAL));
+
+    // generate method code with suitable jump to preload
+    Label methStart = new Label();
+    Label preloadStart = new Label();
+    codeProxy.jump(preloadStart);
+    codeProxy.mark(methStart);
+    
+    visit(ast.getChild(0));
+    BlockBpd blbpd = blockBackPassData.pop();
+    
+    // TODO Writeback locals at end of method
+    // ... //
+    codeProxy.returnVoid();
+    
+    // preload locals at start of method
+    // TODO there must be a better way to handle this...
+    // Generate code to preload the closed locals
+    
+    // TODO this is gonna go wrong if the local's type is changed in the block!
+    Local<Integer> aidx = codeProxy.newLocal(TypeId.INT);
+    Local<Object[]> clAry = codeProxy.getParameter(2, TYPEID_OBJECT_A);
+    codeProxy.mark(preloadStart);
+    ArrayList<String> closedLocals = blbpd.closedLocals;
+    int len = closedLocals.size();
+    for (int i = 0; i < len; i++) {
+      codeProxy.loadConstant(aidx, i);
+      codeProxy.aget(codeProxy.getLocalRegister(closedLocals.get(i)).reg, clAry, aidx);
+    }    
+    codeProxy.jump(methStart);
+    
+    codeProxy.doGenerate();    
+    codeProxy = blbpd.callerProxy;
+    
+    // remove spacer
+    backPassData.pop();
+    
+    return blbpd;
+  }
+  
   @Override
   protected void visitBlock(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    MethCallBackPassData bpd = getMethCallBackPassData();
+    if (bpd == null) {
+      throw new CompilerBug("Block without method call");
+    }
+    bpd.block = generateBlock(ast);
   }
-
+  
   @Override
   protected void visitOrBlock(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    MethCallBackPassData bpd = getMethCallBackPassData();
+    if (bpd == null) {
+      throw new CompilerBug("Block without method call");
+    }
+    bpd.orBlock = generateBlock(ast);
   }
 
   @Override

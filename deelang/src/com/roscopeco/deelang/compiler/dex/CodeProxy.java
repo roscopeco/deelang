@@ -15,6 +15,11 @@ import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
 import com.google.dexmaker.UnaryOp;
 import com.roscopeco.deelang.compiler.CompilerBug;
+import com.roscopeco.deelang.compiler.dex.DexCompilationUnit.BlockBpd;
+import com.roscopeco.deelang.compiler.dex.DexCompilationUnit.TypeRegisterMapping;
+import com.roscopeco.deelang.runtime.Binding;
+
+import dee.lang.DeelangObject;
 
 /**
  * Proxy over the Dexmaker Code class. This simply caches all code generation
@@ -191,12 +196,89 @@ final class CodeProxy {
     }
   }
   
+  final class Mark implements Instruction {
+    final Label label;
+    
+    Mark(Label label) {
+      this.label = label;
+    }
+
+    @Override
+    public void generate() {
+      code.mark(label);
+    }
+  }
+  
+  final class Jump implements Instruction {
+    final Label label;
+    
+    Jump(Label label) {
+      this.label = label;
+    }
+
+    @Override
+    public void generate() {
+      code.jump(label);
+    }
+  }
+  
+  final class NewArray implements Instruction {
+    final Local<?> target;
+    final Local<Integer> length;
+    
+    NewArray(Local<?> target, Local<Integer> length) {
+      this.target = target;
+      this.length = length;
+    }
+
+    @Override
+    public void generate() {
+      code.newArray(target, length);
+    }
+  }
+  
+  final class Aget implements Instruction {
+    final Local<?> target;
+    final Local<?> array;
+    final Local<Integer> index;
+    
+    Aget(Local<?> target, Local<?> array, Local<Integer> index) {
+      this.target = target;
+      this.array = array;
+      this.index = index;
+    }
+
+    @Override
+    public void generate() {
+      code.aget(target, array, index);
+    }
+  }
+  
+  final class Aput implements Instruction {
+    final Local<?> array;
+    final Local<Integer> index;
+    final Local<?> source;
+    
+    Aput(Local<?> array, Local<Integer> index, Local<?> source) {
+      this.array = array;
+      this.index = index;
+      this.source = source;
+    }
+
+    @Override
+    public void generate() {
+      code.aput(array, index, source);
+    }
+  }
+  
   private final ReturnVoid RETURNVOID = new ReturnVoid();
   
-  Code code;
+  final DexCompilationUnit unit;
+  final Code code;
   final ArrayList<Instruction> insns = new ArrayList<Instruction>();
   
-  public CodeProxy(Code code) {
+  public CodeProxy(DexCompilationUnit unit, Code code) {
+    this.unit = unit;
     this.code = code;    
   }
   
@@ -240,6 +322,22 @@ final class CodeProxy {
     }
     typedPool.addFirst(l);
   }
+  
+  private Local<Object[]> blockLocalsLocal;
+  
+  /**
+   * Special case of newLocal that always returns the same local
+   * (after allocating it first time). This is used for block method
+   * arguments, of which there will only ever be one in any given
+   * scope at any given time. Therefore, it's safe to keep it and
+   * reuse it. 
+   */
+  public final Local<Object[]> blockLocalsLocal() {
+    if (blockLocalsLocal == null) {
+      blockLocalsLocal = newLocal(DexCompilationUnit.TYPEID_OBJECT_A);
+    }
+    return blockLocalsLocal;
+  }
 
   public final <T> Local<T> getParameter(int index, TypeId<T> type) {
     return code.getParameter(index, type);
@@ -250,9 +348,11 @@ final class CodeProxy {
   }
 
   public final void mark(Label label) {
+    insns.add(new Mark(label));
   }
 
   public final void jump(Label target) {
+    insns.add(new Jump(target));
   }
 
   public final void addCatchClause(TypeId<? extends Throwable> toCatch, Label catchClause) {
@@ -364,12 +464,15 @@ final class CodeProxy {
   }
 
   public final <T> void newArray(Local<T> target, Local<Integer> length) {
+    insns.add(new NewArray(target, length));
   }
 
   public final void aget(Local<?> target, Local<?> array, Local<Integer> index) {
+    insns.add(new Aget(target, array, index));
   }
 
   public final void aput(Local<?> array, Local<Integer> index, Local<?> source) {
+    insns.add(new Aput(array, index, source));
   }
 
   // instructions: return
@@ -387,5 +490,114 @@ final class CodeProxy {
   }
 
   public final void monitorExit(Local<?> monitor) {
+  }
+  
+  // LOCAL VAR MAPPING
+  // *****************
+  
+  private final HashMap<String, TypeRegisterMapping<?>> localsMap = new HashMap<String, TypeRegisterMapping<?>>();
+  
+  /**
+   * Returns true if the given name is actually mapped to a local register.
+   */
+  public boolean isLocalNameMapped(String name) {
+    return localsMap.containsKey(name);    
+  }
+  
+  /**
+   * Returns true if the given name is valid (i.e. it is mapped to a 
+   * register, or it exists in the binding).
+   */
+  public boolean isLocalNameValid(String name) {
+    return (isLocalNameMapped(name) || (unit.getBinding().getLocal(name) != null));
+  }
+
+  /**
+   * Get the register for the named local. If this local has not
+   * previously been assigned, this method will look in the supplied
+   * binding for it. If found there, code will be generated to allocate
+   * a local register, and fetch the initial value from the binding.
+   * 
+   * @param dexCompilationUnit TODO
+   * @param name The local name.
+   * @return The register for the local.
+   */
+  @SuppressWarnings({"rawtypes"}) 
+  public TypeRegisterMapping<?> getLocalRegister(String name) {
+    TypeRegisterMapping loc = localsMap.get(name);
+    
+    if (loc == null) {
+      /*
+       * mark this as used if we have a block bpd, and it's
+       * actually mapped in the caller. That way, we won't
+       * waste time preloading vars that could be loaded
+       * from the binding at the actual call-site.
+       */
+      BlockBpd blkbpd;
+      if ((blkbpd = unit.getBlockBpd()) != null) {
+        if (blkbpd.callerProxy.isLocalNameMapped(name)) {
+          blkbpd.closedLocals.add(name);
+          return getOrAllocLocalRegister(blkbpd.callerProxy.localsMap.get(name).jtype, name);
+        }
+      }    
+      
+      // nothing... try to get from the binding.
+      Object o;
+      if ((o = unit.binding.getLocal(name)) != null) {
+        // first use of binding var - we need alloc it a register and copy it in...
+        Local<String> temp = newLocal(TypeId.STRING);
+        Local<Object> tempObj = newLocal(TypeId.OBJECT);
+        loc = getOrAllocLocalRegister(o.getClass(), name);
+        loadConstant(temp, name);
+        invokeInterface(DexCompilationUnit.BINDING_GET_LOCAL, tempObj, getRuntimeBindingRegister(), temp);
+        
+        // TODO this is using registers inefficiently...
+        cast(loc.reg, tempObj);
+        freeLocal(tempObj);
+        freeLocal(temp);          
+      }         
+    }
+    
+    return loc;
+  }
+
+  /**
+   * Get the register for the named local. If this local does not
+   * have a register, one will be allocated. This does not look
+   * in the binding for the local - it is intended for use when
+   * assigning locals.
+   * 
+   * @param dexCompilationUnit TODO
+   * @param type The local's type
+   * @param name The local's name
+   * @return The register for the local.
+   */
+  @SuppressWarnings("unchecked")
+  public <T> TypeRegisterMapping<T> getOrAllocLocalRegister(Class<T> type, String name) {
+    TypeRegisterMapping<T> localMap;
+    if ((localMap = (TypeRegisterMapping<T>)localsMap.get(name)) == null) {
+      localsMap.put(name, localMap = unit.new TypeRegisterMapping<T>(type));
+    } else {
+      // Make sure register can hold this type. Allocate a new register and ditch
+      // the old one if not. 
+      // Although we might be able to just reuse the register, this seems to generate
+      // problems when generating certain dex instructions if the local type doesn't
+      // match the actual type...
+      if (!localMap.jtype.isAssignableFrom(type)) {
+        localsMap.put(name, localMap = unit.new TypeRegisterMapping<T>(type));
+      }
+    }
+    return localMap;
+  }
+
+  public Local<? extends DeelangObject> getSelf() {
+    return getParameter(0, DexCompilationUnit.TYPEID_DL_OBJECT);
+  }
+
+  /** 
+   * Get the runtime Binding parameter. 
+   */
+  public Local<Binding> getRuntimeBindingRegister() {
+    return getParameter(1, DexCompilationUnit.TYPEID_BINDING);
   }
 }

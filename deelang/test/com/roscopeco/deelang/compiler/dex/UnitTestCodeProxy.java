@@ -1,10 +1,11 @@
 package com.roscopeco.deelang.compiler.dex;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import org.junit.Before;
@@ -16,15 +17,21 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.dexmaker.Code;
 import com.google.dexmaker.FieldId;
+import com.google.dexmaker.Label;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Aget;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Aput;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Cast;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Invoke;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Jump;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.LoadConstant;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Mark;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Move;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.NewArray;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.NewInstance;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.ReturnVoid;
 
@@ -40,6 +47,9 @@ public class UnitTestCodeProxy {
   
   @Mock
   private Local<Object> mockLocal2;
+  
+  @Mock
+  private Local<Integer> mockIntLocal;
   
   @SuppressWarnings("rawtypes")
   @Mock
@@ -63,11 +73,13 @@ public class UnitTestCodeProxy {
   
   private CodeProxy proxy;
   private Object object;
+  private Label label;
   
   @Before
   public void setUp() {
-    proxy = new CodeProxy(mockCode);
+    proxy = new CodeProxy(null, mockCode);
     object = new Object();
+    label = new Label();
   }
   
   @Test
@@ -121,12 +133,37 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testMark() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.mark(label);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Mark.class)));
+
+    Mark ig = (Mark)i;
+    assertThat(ig.label, is(label));
+    
+    i.generate();
+    verify(mockCode).mark(label);
   }
 
   @Test
   public void testJump() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.jump(label);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Jump.class)));
+    
+    Jump ig = (Jump)i;
+
+    assertThat(ig.label, is(label));
+    
+    i.generate();
+    verify(mockCode).jump(label);
   }
 
   @Test
@@ -474,17 +511,61 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testNewArray() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.newArray(mockTarget, mockIntLocal);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(NewArray.class)));
+
+    NewArray ig = (NewArray)i;
+    
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.length, is(mockIntLocal));
+    
+    ig.generate();
+    verify(mockCode).newArray(mockTarget, mockIntLocal);
   }
 
   @Test
   public void testAget() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.aget(mockTarget, mockInstance, mockIntLocal);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Aget.class)));
+
+    Aget ig = (Aget)i;
+    
+    assertThat(ig.target, is(mockTarget));
+    assertThat(ig.array, is(mockInstance));
+    assertThat(ig.index, is(mockIntLocal));
+    
+    ig.generate();
+    verify(mockCode).aget(mockTarget, mockInstance, mockIntLocal);
   }
 
   @Test
   public void testAput() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.aput(mockInstance, mockIntLocal, mockTarget);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Aput.class)));
+
+    Aput ig = (Aput)i;
+    
+    assertThat(ig.array, is(mockInstance));
+    assertThat(ig.index, is(mockIntLocal));
+    assertThat(ig.source, is(mockTarget));
+    
+    ig.generate();
+    verify(mockCode).aput(mockInstance, mockIntLocal, mockTarget);
   }
 
   @Test

@@ -14,6 +14,7 @@ import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.runtime.Binding;
+import com.roscopeco.deelang.runtime.Block;
 import com.roscopeco.deelang.runtime.CompiledScript;
 import com.roscopeco.deelang.runtime.HashBinding;
 
@@ -49,6 +50,8 @@ public class CompilerFuncTestBase {
     public void voidy() { }
     public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); }
     public DeelangInteger quux(DeelangInteger a) { return a; }
+    public void blockNoArgs(Block b) { }
+    public void blockOneArg(Block b, DeelangInteger arg) { }    
   }
   
   public Binding getTestBinding() {
