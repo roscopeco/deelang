@@ -60,6 +60,7 @@ public class CompilerFuncTestBase {
     b.setLocal("foo", b.getSelf());
     b.setLocal("a", b.getSelf());
     b.setLocal("b", b.getSelf());
+    b.setLocal("zero", new DeelangInteger(b, 0));
     return b;
   }
   

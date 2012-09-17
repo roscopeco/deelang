@@ -492,6 +492,23 @@ public class DexCompilationUnit extends ASTVisitor {
     Tree expr = ast.getChild(1);
     TypeRegisterMapping lhs;
     
+    // If we're in a block, we need to know that we've modified this
+    // local if it's closed from the caller.
+    BlockBpd bbpd;
+    if ((bbpd = getBlockBpd()) != null) {
+      // We need to do this if the name is valid, not only if it's mapped.
+      // If it's valid but not loaded from the binding yet, we'll just have
+      // to set it when we get back to the caller, without loading it
+      // from the binding.
+      if (bbpd.callerProxy.isLocalNameValid(name)) {
+        // TODO this is pretty inefficient.....
+        if (!bbpd.closedLocals.contains(name)) {
+          bbpd.closedLocals.add(name);
+        }
+        bbpd.modifiedLocals.add(name);
+      }
+    }
+    
     // Set up back pass data, then visit kids to get expression
     AssignLocalBackPassData bpd;
     backPassData.addFirst(bpd = new AssignLocalBackPassData());
@@ -593,7 +610,7 @@ public class DexCompilationUnit extends ASTVisitor {
   }
 
   private Method findMethodWithBlock(Class<?> clz, String name, MethCallBackPassData.Argument<?>[] args) {
-    do {
+    do {      
       outer: for (Method m : clz.getMethods()) {
         Class<?>[] paramTypes = m.getParameterTypes();
         if (m.getName().equals(name) && paramTypes.length == args.length + 1) {
@@ -602,8 +619,8 @@ public class DexCompilationUnit extends ASTVisitor {
             continue outer;
           }
           
-          for (int i = 1; i <= args.length; i++) {
-            if (!paramTypes[i].isAssignableFrom(args[i].jtype)) {
+          for (int i = 0; i < args.length; i++) {
+            if (!paramTypes[i+1].isAssignableFrom(args[i].jtype)) {
               // can't satisfy; loop again
               continue outer;            
             }
@@ -615,7 +632,11 @@ public class DexCompilationUnit extends ASTVisitor {
       }
       
       clz = clz.getSuperclass();
-    } while (clz != null);  // reached Object
+
+      // TODO eventually will support boxing to allow calling any method
+      //      via type coercion. When that happens, this will need to continue
+      //      until clz == null.
+    } while (!clz.equals(Object.class));  // reached Object    
     
     return null;    
   }
@@ -638,7 +659,7 @@ public class DexCompilationUnit extends ASTVisitor {
         tids = new TypeId<?>[len+1];
         tids[0] = TYPEID_BLOCK;
         for (int i = 1; i <= len; i++) {
-          tids[i] = TypeId.get(clzs[i].jtype);
+          tids[i] = TypeId.get(clzs[i-1].jtype);
         }
       }
       return tids;
@@ -660,7 +681,7 @@ public class DexCompilationUnit extends ASTVisitor {
         locs = new Local<?>[len+1];
         locs[0] = blockReg;
         for (int i = 1; i <= len; i++) {
-          locs[i] = args[i].getArgRegister();
+          locs[i] = args[i-1].getArgRegister();
         }
       }
       return locs;
@@ -715,7 +736,7 @@ public class DexCompilationUnit extends ASTVisitor {
     bpd = (MethCallBackPassData)backPassData.removeFirst();
     boolean hasBlock = (bpd.block != null);
     MethCallBackPassData callerbpd = getMethCallBackPassData();
-        
+    
     // Find method to call
     Method bindMethod;
     if (hasBlock) {
@@ -824,6 +845,23 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     }
     
+    // Unmarshal modified locals back into locals
+    if (hasBlock) {
+      ArrayList<String> modLocals = bpd.block.modifiedLocals; 
+      int locsize = modLocals.size();
+      if (locsize > 0) {
+        Local<Integer> tempi = codeProxy.newLocal(TypeId.INT);
+        Local<Object> tempo = codeProxy.newLocal(TypeId.OBJECT);
+        for (int i = 0; i < locsize; i++) {
+          codeProxy.loadConstant(tempi, i);
+          codeProxy.aget(tempo, codeProxy.blockLocalsLocal(), tempi);
+          codeProxy.cast(codeProxy.getLocalRegister(modLocals.get(i)).reg, tempo);
+        }
+        codeProxy.freeLocal(tempi);
+        codeProxy.freeLocal(tempo);
+      }
+    }
+    
     // TODO Or block support
    
   }
@@ -898,11 +936,37 @@ public class DexCompilationUnit extends ASTVisitor {
     codeProxy.jump(preloadStart);
     codeProxy.mark(methStart);
     
-    visit(ast.getChild(0));
+    int ccount = ast.getChildCount();
+    for (int i = 0; i < ccount; i++) {
+      visit(ast.getChild(i));
+    }
     BlockBpd blbpd = blockBackPassData.pop();
     
-    // TODO Writeback locals at end of method
-    // ... //
+    // We will use the same array we were provided as a parameter with
+    // the input locals, just overwriting the first N values with
+    // whatever was modified. When breaking these parameters back out
+    // into the callers locals, we'll know how many to do based on
+    // the blbpd.modifiedLocals size...
+    //
+    // It is possible that the array isn't big enough (e.g. locals
+    // passed in were bound but not loaded from binding), so we need
+    // to check that and possibly realloc.    
+    ArrayList<String> modLocals = blbpd.modifiedLocals;
+    int len = modLocals.size();
+    Local<Integer> aidx = codeProxy.newLocal(TypeId.INT);
+    Local<Object[]> clAry = codeProxy.getParameter(2, TYPEID_OBJECT_A);
+    
+    if (len > blbpd.closedLocals.size()) {
+      // Array won't be big enough. Realloc it.
+      codeProxy.loadConstant(aidx, len);
+      codeProxy.newArray(clAry, aidx);
+    }
+    
+    for (int i = 0; i < len; i++) {
+      codeProxy.loadConstant(aidx, i);
+      codeProxy.aput(clAry, aidx, codeProxy.getLocalRegisterForUnmarshalling(modLocals.get(i)).reg);      
+    }
+    
     codeProxy.returnVoid();
     
     // preload locals at start of method
@@ -910,12 +974,10 @@ public class DexCompilationUnit extends ASTVisitor {
     // Generate code to preload the closed locals
     
     // TODO this is gonna go wrong if the local's type is changed in the block!
-    Local<Integer> aidx = codeProxy.newLocal(TypeId.INT);
-    Local<Object[]> clAry = codeProxy.getParameter(2, TYPEID_OBJECT_A);
     Local<Object> temp = null;
     codeProxy.mark(preloadStart);
     ArrayList<String> closedLocals = blbpd.closedLocals;
-    int len = closedLocals.size();
+    len = closedLocals.size();
     if (len > 0) {
       temp = codeProxy.newLocal(TypeId.OBJECT);
     }
@@ -927,6 +989,8 @@ public class DexCompilationUnit extends ASTVisitor {
     if (temp != null) {
       codeProxy.freeLocal(temp);
     }
+    codeProxy.freeLocal(aidx);
+    codeProxy.freeLocal(clAry);
     codeProxy.jump(methStart);
     
     codeProxy.doGenerate();    

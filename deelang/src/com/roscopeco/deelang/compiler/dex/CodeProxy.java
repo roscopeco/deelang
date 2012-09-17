@@ -562,6 +562,56 @@ final class CodeProxy {
   }
 
   /**
+   * Get the register for the named local. If the local does not have
+   * a register, this method will allocate one. It's intended ONLY
+   * for cases where we know a variable is valid, but may not have
+   * been loaded from the binding yet, and where we don't actually
+   * want to generate code to load it.
+   * 
+   * Note that this method <em>will</em> examine the binding for the
+   * type of the variable if it has to allocate the register, but
+   * will not generate any runtime code to load anything from the
+   * binding.
+   * 
+   * This is generally useful in cases where we just want a register
+   * for a known-valid variable, e.g. when unmarshalling modified 
+   * locals back from a block. It is important that the executed 
+   * block has been popped from the stack <em>before</em> calling
+   * this method, to allow filtering up of any modified locals.
+   * 
+   * Package private because of it's specific use and potentially
+   * unclear side effects :/ 
+   */
+  TypeRegisterMapping<?> getLocalRegisterForUnmarshalling(String name) {
+    @SuppressWarnings("rawtypes")
+    TypeRegisterMapping loc = localsMap.get(name);
+    
+    if (loc == null) {
+      /*
+       * mark this as used if we have a block bpd, and it's
+       * actually mapped in the caller. That way, we won't
+       * waste time preloading vars that could be loaded
+       * from the binding at the actual call-site.
+       */
+      BlockBpd blkbpd;
+      if ((blkbpd = unit.getBlockBpd()) != null) {
+        if (blkbpd.callerProxy.isLocalNameMapped(name)) {
+          blkbpd.modifiedLocals.add(name);
+          return getOrAllocLocalRegister(blkbpd.callerProxy.localsMap.get(name).jtype, name);
+        }
+      }    
+      
+      // nothing... try to get from the binding.
+      Object o;
+      if ((o = unit.binding.getLocal(name)) != null) {
+        loc = getOrAllocLocalRegister(o.getClass(), name);
+      }        
+    }
+    
+    return loc;
+  }
+
+  /**
    * Get the register for the named local. If this local does not
    * have a register, one will be allocated. This does not look
    * in the binding for the local - it is intended for use when
