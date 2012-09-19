@@ -1,6 +1,7 @@
 package dee.lang;
 
 import com.roscopeco.deelang.runtime.Binding;
+import com.roscopeco.deelang.runtime.Block;
 import com.roscopeco.deelang.vm.UnsupportedOperationError;
 
 /**
@@ -28,27 +29,6 @@ public class DeelangObject {
    */
   protected Binding getBinding() {
     return binding;
-  }
-  
-  /**
-   * Determine whether or not the current method call has an attached
-   * block in the Deelang code.
-   * 
-   * @return <code>true</code> if a block was supplied, <code>false</code> otherwise.
-   */
-  protected boolean hasBlock() {
-    // TODO implement hasBlock...
-    return false;
-  }
-  
-  /**
-   * Call out to the attached block, and return when it is done.
-   * 
-   * @return <code>true</code> if a block was executed, <code>false</code> otherwise.
-   */
-  protected boolean callBlock() {
-    // TODO implement callBlock
-    return false;
   }
   
   /* **** DEELANG RUNTIME **** */
@@ -85,7 +65,7 @@ public class DeelangObject {
   /**
    * <p>Implements the 'or' construct in Deelang code.</p>
    */
-  public void or() {
+  public void or(Block block) {
     // TODO implement this
   }
   

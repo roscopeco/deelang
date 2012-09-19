@@ -1,6 +1,7 @@
 package dee.lang;
 
 import com.roscopeco.deelang.runtime.Binding;
+import com.roscopeco.deelang.runtime.Block;
 
 /**
  * A Deelang Integer. 
@@ -26,12 +27,10 @@ public class DeelangInteger extends DeelangObject {
     return Integer.toString(integer);
   }
   
-  public void times() {
-    if (hasBlock()) {
-      int t = integer;
-      for (int i = 0; i < t; i++) {
-        callBlock();
-      }
+  public void times(Block block) {
+    int t = integer;
+    for (int i = 0; i < t; i++) {
+      block.invoke();
     }
   }
 

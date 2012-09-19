@@ -72,7 +72,7 @@ public class DeelangString extends DeelangObject {
   public DeelangObject __opMUL(DeelangObject other) {
     StringBuffer buf = new StringBuffer();
     int num = other.toI().integer;
-    String s = toS().string;
+    String s = string;
     
     for (int i = 0; i < num; i++) {
       buf.append(s);
