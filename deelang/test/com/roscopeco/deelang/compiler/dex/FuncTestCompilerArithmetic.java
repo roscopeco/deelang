@@ -57,21 +57,24 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void testLiteralLiteralLiteralSum() throws ParserError, CompilerError {
     runCodeComparisonTest("1+2-3",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "                this:v5   //DexCompiledScript__UUID__\n"+
-        "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.Binding\n"+
-        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v0.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "CONST               |     |v1=0x00000002  // int:2   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v2=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v0.__opADD(v2)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
-        "MOVE_RESULT         |     |v3=TEMP\n"+
-        "CONST               |     |v1=0x00000003  // int:3   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v4=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v4.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v3.__opSUB(v4)  //Ldee/lang/DeelangObject;.__opSUB(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "                this:v7   //DexCompiledScript__UUID__\n"+
+        "                    :v8   //dee.lang.DeelangObject\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v3=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v3.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.__opADD(v3)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "MOVE_RESULT         |     |v5=TEMP\n"+
+        "MOVE                |     |v0 = v5\n"+
+        "CHECK_CAST          |     |v0=(dee.lang.DeelangInteger) v0\n"+
+        "MOVE                |     |v4 = v0\n"+
+        "CONST               |     |v2=0x00000003  // int:3   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v6=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v6.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.__opSUB(v6)  //Ldee/lang/DeelangObject;.__opSUB(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
         "RETURN_VOID         |     |return");
   }
 
@@ -80,44 +83,73 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
     runCodeComparisonTest("1+2*3", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v5   //DexCompiledScript__UUID__\n"+
-        "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.Binding\n"+
-        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v0.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "CONST               |     |v1=0x00000002  // int:2   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v2=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "CONST               |     |v1=0x00000003  // int:3   float:0.000000\n"+
+        "                this:v7   //DexCompiledScript__UUID__\n"+
+        "                    :v8   //dee.lang.DeelangObject\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
         "NEW_INSTANCE        |     |v3=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v3.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v2.__opMUL(v3)  //Ldee/lang/DeelangObject;.__opMUL(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
-        "MOVE_RESULT         |     |v4=TEMP\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v0.__opADD(v4)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "INVOKE_DIRECT       |     |v3.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "CONST               |     |v2=0x00000003  // int:3   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v4=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v4.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v3.__opMUL(v4)  //Ldee/lang/DeelangObject;.__opMUL(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "MOVE_RESULT         |     |v6=TEMP\n"+
+        "MOVE                |     |v0 = v6\n"+
+        "CHECK_CAST          |     |v0=(dee.lang.DeelangInteger) v0\n"+
+        "MOVE                |     |v5 = v0\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.__opADD(v5)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
         "RETURN_VOID         |     |return");
   }
 
+  @Test
+  public void testLiteralLiteralAddAsMethodArg() throws ParserError, CompilerError {
+    runCodeComparisonTest("bar(3+2)",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v7   //DexCompiledScript__UUID__\n"+
+        "                    :v8   //dee.lang.DeelangObject\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v2=0x00000003  // int:3   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v3=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v3.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.__opADD(v3)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "MOVE_RESULT         |     |v5=TEMP\n"+
+        "MOVE                |     |v0 = v5\n"+
+        "CHECK_CAST          |     |v0=(dee.lang.DeelangInteger) v0\n"+
+        "MOVE                |     |v4 = v0\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v8.bar(v4)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar(Ldee/lang/DeelangInteger;)Ldee/lang/DeelangInteger;\n"+
+        "MOVE_RESULT         |     |v6=TEMP");
+  }
+  
   @Test
   public void testLiteralLiteralLiteralMulAddSumExplicitPrecedence() throws ParserError, CompilerError {
     runCodeComparisonTest("(1+2)*3",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v5   //DexCompiledScript__UUID__\n"+
-        "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.Binding\n"+
-        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v0.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "CONST               |     |v1=0x00000002  // int:2   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v2=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v0.__opADD(v2)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
-        "MOVE_RESULT         |     |v3=TEMP\n"+
-        "CONST               |     |v1=0x00000003  // int:3   float:0.000000\n"+
-        "NEW_INSTANCE        |     |v4=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v4.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v3.__opMUL(v4)  //Ldee/lang/DeelangObject;.__opMUL(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "                this:v7   //DexCompiledScript__UUID__\n"+
+        "                    :v8   //dee.lang.DeelangObject\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v3=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v3.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.__opADD(v3)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "MOVE_RESULT         |     |v5=TEMP\n"+
+        "MOVE                |     |v0 = v5\n"+
+        "CHECK_CAST          |     |v0=(dee.lang.DeelangInteger) v0\n"+
+        "MOVE                |     |v4 = v0\n"+
+        "CONST               |     |v2=0x00000003  // int:3   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v6=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v6.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.__opMUL(v6)  //Ldee/lang/DeelangObject;.__opMUL(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
         "RETURN_VOID         |     |return");
   }
   

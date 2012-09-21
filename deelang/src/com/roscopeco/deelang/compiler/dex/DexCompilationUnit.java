@@ -1146,17 +1146,20 @@ public class DexCompilationUnit extends ASTVisitor {
     AssignLocalBackPassData callerAlbpd;
     Local<DeelangObject> target;
     if ((callerMcbpd = getMethCallBackPassData()) != null) {
-      target = (Local<DeelangObject>)callerMcbpd.args[callerMcbpd.argi].reg;      
+      @SuppressWarnings("rawtypes")
+      MethCallBackPassData.Argument arg = callerMcbpd.args[callerMcbpd.argi] = callerMcbpd.new Argument(lhs.jtype);
+      target = arg.getArgRegister();
     } else {
       if ((callerAlbpd = getAssignLocalBackPassData()) != null) {
+        // TODO replace register if changing type...?
         target = (Local<DeelangObject>)callerAlbpd.src.reg;        
       } else {
         // just assign a new local
         trbpd = getTargetRegBackPassData();
         if (trbpd != null) {
           // someone higher up wants our target reg...
-          target = codeProxy.newLocal(TYPEID_DL_OBJECT);
-          setTargetReg(target, DeelangObject.class);
+          target = codeProxy.newLocal(lhs.type);
+          setTargetReg(target, lhs.jtype);
         } else {
           // don't store result anywhere, no-one's interested in it...
           // We can't optimise it away, in case the expression contained
@@ -1166,7 +1169,18 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     }
     
-    codeProxy.invokeVirtual(op, target, lhs.reg, rhs.reg);
+    if (target != null) {
+      Local<DeelangObject> temp = codeProxy.newLocal(TYPEID_DL_OBJECT);
+      codeProxy.invokeVirtual(op, temp, lhs.reg, rhs.reg);
+      
+      // cast result to type of the receiver. Part of the contract of the arithmetic
+      // methods is that this *must* succeed.
+      codeProxy.cast(target, temp);
+      codeProxy.freeLocal(temp);
+    } else {
+      // We're ignoring result anyway, no casting...
+      codeProxy.invokeVirtual(op, null, lhs.reg, rhs.reg);
+    }
   }
 
   @Override
