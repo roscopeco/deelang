@@ -160,7 +160,14 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final MethodId<DeelangInteger, Void> DL_INTEGER_INIT = TYPEID_DL_INTEGER.getConstructor(TYPEID_BINDING, TypeId.INT);
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
   protected static final MethodId<DeelangString, Void> DL_STRING_INIT = TYPEID_DL_STRING.getConstructor(TYPEID_BINDING, TypeId.STRING);
-      
+
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPADD = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opADD", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPSUB = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opSUB", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPMUL = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opMUL", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPDIV = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opDIV", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPMOD = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opMOD", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPPOW = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opPOW", TYPEID_DL_OBJECT);
+    
   /**
    * <p>Used to pass data back to higher tree nodes during the compile.
    * This is used in different ways for different AST types, for example
@@ -182,6 +189,18 @@ public class DexCompilationUnit extends ASTVisitor {
    */
   protected static abstract class BackPassFrame { }
     
+  /**
+   * A generic backpass frame that gets the target register for something.
+   *
+   * TODO Currently, only used for binary ops, but could replace some other
+   * backpass frames and other messy ways of tracking targets across
+   * expressions...
+   */
+  protected final class TargetRegBackPassData extends BackPassFrame {
+    @SuppressWarnings("rawtypes")
+    public TypeRegisterMapping reg;
+  }
+  
   /**
    * BackPassFrame for METH_CALL processing.
    */
@@ -244,6 +263,8 @@ public class DexCompilationUnit extends ASTVisitor {
 
   /**
    * BackPassFrame for ASSIGN_LOCAL processing.
+   * 
+   * TODO merge this with TargetRegBackPassData
    */
   protected final class AssignLocalBackPassData extends BackPassFrame {
     TypeRegisterMapping<?> src;
@@ -309,6 +330,59 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
   
+  /**
+   * Return the current TargetRegBackPassData on top of the backpass
+   * stack, or null if there is no frame/it isn't an TargetRegBackPassData.
+   */
+  protected TargetRegBackPassData getTargetRegBackPassData() {
+    BackPassFrame frame = backPassData.peekFirst();
+    if (frame == null) {
+      return null;
+    } else {
+      if (frame instanceof TargetRegBackPassData) {
+        return (TargetRegBackPassData)frame;
+      } else {
+        return null;
+      }
+    }
+  }
+  
+  /**
+   * Utility method to set the target register in the 
+   * TargetRegBackPassData at the top of the backpass stack,
+   * if there is one. 
+   * 
+   * Call this to inform any higher up expression that needs to
+   * know the target register you're using.
+   */
+  protected <T> boolean setTargetReg(Local<T> reg, Class<T> jtype) {
+    BackPassFrame f = backPassData.peekFirst();    
+    if (f != null && f instanceof TargetRegBackPassData) {
+      TargetRegBackPassData tr = (TargetRegBackPassData)f;
+      tr.reg = new TypeRegisterMapping<T>(jtype, reg);      
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+   * Utility method to set the target register in the 
+   * TargetRegBackPassData at the top of the backpass stack,
+   * if there is one. 
+   * 
+   * Call this to inform any higher up expression that needs to
+   * know the target register you're using.
+   */
+  protected <T> boolean setTargetReg(TypeRegisterMapping<T> mapping) {
+    BackPassFrame f = backPassData.peekFirst();    
+    if (f != null && f instanceof TargetRegBackPassData) {
+      TargetRegBackPassData tr = (TargetRegBackPassData)f;
+      tr.reg = mapping;
+      return true;
+    }
+    return false;
+  }
+  
   private void generateIntLiteral(int value) {
     Local<DeelangInteger> ldl = null;
     
@@ -324,9 +398,15 @@ public class DexCompilationUnit extends ASTVisitor {
         ldl = codeProxy.newLocal(TYPEID_DL_INTEGER);
         albpd.src = new TypeRegisterMapping<DeelangInteger>(DeelangInteger.class, ldl);
       } else {
-        //      this is just a literal that gets created
-        //      and never assigned or used. In that case, we 
-        //      simply optimise it away...
+        TargetRegBackPassData trbpd = getTargetRegBackPassData();
+        if (trbpd != null) {
+          // Create the local. It actually gets notified to the TRBPD below...
+          ldl = codeProxy.newLocal(TYPEID_DL_INTEGER);          
+        } else {
+          //      this is just a literal that gets created
+          //      and never assigned or used. In that case, we 
+          //      simply optimise it away...
+        }
       }      
     } else {
       MethCallBackPassData.Argument<DeelangInteger> arg = mcbpd.new Argument<DeelangInteger>(DeelangInteger.class);
@@ -341,6 +421,8 @@ public class DexCompilationUnit extends ASTVisitor {
       codeProxy.loadConstant(li, value);
       codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
       codeProxy.freeLocal(li);
+      
+      setTargetReg(ldl, DeelangInteger.class);
     }
   }
   
@@ -379,9 +461,15 @@ public class DexCompilationUnit extends ASTVisitor {
         ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);
         albpd.src = new TypeRegisterMapping<DeelangFloat>(DeelangFloat.class, ldl);
       } else {
-        //      this is just a literal that gets created
-        //      and never assigned or used. In that case, we 
-        //      simply optimise it away...
+        TargetRegBackPassData trbpd = getTargetRegBackPassData();
+        if (trbpd != null) {
+          // Create the local. It actually gets notified to the TRBPD below...
+          ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);          
+        } else {
+          //      this is just a literal that gets created
+          //      and never assigned or used. In that case, we 
+          //      simply optimise it away...
+        }
       }      
     } else {
       MethCallBackPassData.Argument<DeelangFloat> arg = mcbpd.new Argument<DeelangFloat>(DeelangFloat.class);
@@ -396,6 +484,8 @@ public class DexCompilationUnit extends ASTVisitor {
       codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
       codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
       codeProxy.freeLocal(ld);
+      
+      setTargetReg(ldl, DeelangFloat.class);
     }
   }
 
@@ -422,9 +512,15 @@ public class DexCompilationUnit extends ASTVisitor {
         ldl = codeProxy.newLocal(TYPEID_DL_STRING);
         albpd.src = new TypeRegisterMapping<DeelangString>(DeelangString.class, ldl);
       } else {
-        //      this is just a literal that gets created
-        //      and never assigned or used. In that case, we 
-        //      simply optimise it away...
+        TargetRegBackPassData trbpd = getTargetRegBackPassData();
+        if (trbpd != null) {
+          // Create the local. It actually gets notified to the TRBPD below...
+          ldl = codeProxy.newLocal(TYPEID_DL_STRING);          
+        } else {
+          //      this is just a literal that gets created
+          //      and never assigned or used. In that case, we 
+          //      simply optimise it away...
+        }
       }      
     } else {
       MethCallBackPassData.Argument<DeelangString> arg = mcbpd.new Argument<DeelangString>(DeelangString.class);
@@ -440,6 +536,8 @@ public class DexCompilationUnit extends ASTVisitor {
       codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
       codeProxy.newInstance(ldl, DL_STRING_INIT, binding, ld);
       codeProxy.freeLocal(ld);
+      
+      setTargetReg(ldl, DeelangString.class);
     }
   }
 
@@ -531,6 +629,8 @@ public class DexCompilationUnit extends ASTVisitor {
       // Assignment is being chained with another assignment, set that up...
       bpd.src = lhs;
     }
+    
+    setTargetReg(lhs);
   }
   
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -553,13 +653,18 @@ public class DexCompilationUnit extends ASTVisitor {
           throw new UnknownVariableException(ast.getText());
         }
       } else {
-        if (!codeProxy.isLocalNameValid(name)) {
-          throw new UnknownVariableException(ast.getText());
+        TargetRegBackPassData trbpd = getTargetRegBackPassData();
+        if (trbpd != null) {
+          // someone higher up needs the reg (e.g. this is arithmetic expr)
+          trbpd.reg = codeProxy.getLocalRegister(name);          
+        } else {
+          if (!codeProxy.isLocalNameValid(name)) {
+            throw new UnknownVariableException(ast.getText());
+          }
         }
       }
       
       // Local read but unused - generate nothing.
-      // TODO will need to track this, for chaining...?
     } else {
       // method arg
       TypeRegisterMapping reg = codeProxy.getLocalRegister(name);
@@ -806,12 +911,13 @@ public class DexCompilationUnit extends ASTVisitor {
         }
       }
     }
+    setTargetReg(target, retClz);
     
     // Save the register and type in case the next instruction is chained.
     // TODO don't think this will always work. Need to get test coverage on this...
     //      We may need a stack, or stash it somewhere else or something...
     if (target != null) {
-      lastChainReceiver = new TypeRegisterMapping(bindMethod.getReturnType(), target);
+      lastChainReceiver = new TypeRegisterMapping(retClz, target);
     } else {
       lastChainReceiver = null;
     }
@@ -1021,34 +1127,75 @@ public class DexCompilationUnit extends ASTVisitor {
     }
     bpd.orBlock = generateBlock(ast);
   }
-
-  @Override
-  protected void visitAdd(Tree ast) throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    
+  @SuppressWarnings("unchecked")
+  protected void visitArithmeticExpression(Tree ast, MethodId<DeelangObject, DeelangObject> op) 
+    throws CompilerError {
+    @SuppressWarnings("rawtypes")
+    TypeRegisterMapping lhs, rhs;
+    TargetRegBackPassData trbpd = new TargetRegBackPassData();
+    backPassData.push(trbpd);
+    visit(ast.getChild(0));
+    lhs = trbpd.reg;
+    visit(ast.getChild(1));
+    rhs = trbpd.reg;
+    backPassData.removeFirst();
+    
+    // find target register
+    MethCallBackPassData callerMcbpd;
+    AssignLocalBackPassData callerAlbpd;
+    Local<DeelangObject> target;
+    if ((callerMcbpd = getMethCallBackPassData()) != null) {
+      target = (Local<DeelangObject>)callerMcbpd.args[callerMcbpd.argi].reg;      
+    } else {
+      if ((callerAlbpd = getAssignLocalBackPassData()) != null) {
+        target = (Local<DeelangObject>)callerAlbpd.src.reg;        
+      } else {
+        // just assign a new local
+        trbpd = getTargetRegBackPassData();
+        if (trbpd != null) {
+          // someone higher up wants our target reg...
+          target = codeProxy.newLocal(TYPEID_DL_OBJECT);
+          setTargetReg(target, DeelangObject.class);
+        } else {
+          // don't store result anywhere, no-one's interested in it...
+          // We can't optimise it away, in case the expression contained
+          // method calls with side-effects...
+          target = null;
+        }
+      }
+    }
+    
+    codeProxy.invokeVirtual(op, target, lhs.reg, rhs.reg);
   }
 
   @Override
+  protected void visitAdd(Tree ast) throws CompilerError {
+    visitArithmeticExpression(ast, DL_OBJECT_OPADD);
+  }
+  
+  @Override
   protected void visitSub(Tree ast) throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    visitArithmeticExpression(ast, DL_OBJECT_OPSUB);
   }
 
   @Override
   protected void visitMul(Tree ast) throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    visitArithmeticExpression(ast, DL_OBJECT_OPMUL);
   }
 
   @Override
   protected void visitDiv(Tree ast) throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    visitArithmeticExpression(ast, DL_OBJECT_OPDIV);
   }
 
   @Override
   protected void visitMod(Tree ast) throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    visitArithmeticExpression(ast, DL_OBJECT_OPMOD);
   }
 
   @Override
   protected void visitPow(Tree ast) throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    visitArithmeticExpression(ast, DL_OBJECT_OPPOW);
   }
 }
