@@ -54,7 +54,7 @@ public class DexCompilationUnit extends ASTVisitor {
     this.selfClz = binding.getSelf().getClass();
     this.sourceName = sourceName;
     
-    dexMaker.declare(compiledScriptTypeId, sourceName, Modifier.PUBLIC, TypeId.get(superClass));
+    dexMaker.declare(compiledScriptTypeId, sourceName, Modifier.PUBLIC | Modifier.FINAL, TypeId.get(superClass));
     
     // Generate constructor
     MethodId<?, Void> init = compiledScriptTypeId.getConstructor(TYPEID_BINDING);
@@ -64,7 +64,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     // Declare run method and get a code proxy
     MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_BINDING);
-    codeProxy = new CodeProxy(this, dexMaker.declare(run, Modifier.PUBLIC));
+    codeProxy = new CodeProxy(this, dexMaker.declare(run, Modifier.PUBLIC | Modifier.FINAL));
   }
   
   public DexCompilationUnit(String sourceName, Binding binding) {
