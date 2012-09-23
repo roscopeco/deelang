@@ -22,7 +22,8 @@
 	</target>
 	<target name="_clean-doc">
 		<delete dir="${doc.dir}"/>
-	</target>
+		<delete dir="${doc.developer.dir}"/>
+			</target>
 	<target name="_clean-parser">
 		<delete>
 			<fileset dir="${gen.src.dir}" includes="**/*.java, **/*.tokens"/>
@@ -155,7 +156,7 @@
 		
 	<!-- Generate documentation -->
 	<target name="doc" description="Generate Javadoc documentation" depends="compile">
-		<javadoc access="protected" 
+		<javadoc access="public" 
 		     author="true" 
 		       destdir="${doc.dir}" 
 		       doctitle="DeeLang API" 
@@ -170,8 +171,26 @@
 		       splitindex="true" 
 		       use="true" 
 		       version="true">
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${main.classes.dir}"/>
 		</javadoc>
-		<copy file="LICENSE.html" todir="doc"/>
+		<javadoc access="protected" 
+		     author="true" 
+		       destdir="${doc.developer.dir}" 
+		       doctitle="DeeLang developer API" 
+		       nodeprecated="false" 
+		       nodeprecatedlist="false" 
+		       noindex="false" 
+		       nonavbar="false" 
+		       notree="false" 
+		       overview="README.html" 
+		       source="1.7" 
+		       sourcepath="src" 
+		       splitindex="true" 
+		       use="true" 
+		       version="true">
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${main.classes.dir}"/>
+		</javadoc>
+		<copy file="LICENSE.html" todir="${doc.dir}"/>
+		<copy file="LICENSE.html" todir="${doc.developer.dir}"/>
 	</target>
 </project>
