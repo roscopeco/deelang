@@ -112,10 +112,8 @@ public class Compiler {
   }
   
   /**
-   * Compile the script in the parsed AST (output from {@link Parser})
-   * to a {@link CompiledScript}, using a custom {@link ASTVisitor}. This
-   * allows you to hook into various stages of the compilation by overriding
-   * methods by providing your own state subclass.
+   * Compile the script in the supplied String by parsing it with {@link Parser}
+   * and then compiling with the supplied {@link ASTVisitor}.
    * 
    * @param unit An implementation of {@link ASTVisitor} to use during compilation.
    * @param ast The AST to compile.
