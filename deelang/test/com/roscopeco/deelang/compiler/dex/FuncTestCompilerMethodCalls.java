@@ -10,7 +10,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicFuncCallNoArgs() throws ParserError, CompilerError {
     runCodeComparisonTest("foo()", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v1   //DexCompiledScript__UUID__\n"+
         "                    :v2   //dee.lang.DeelangObject\n"+
         "                    :v3   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -23,7 +23,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicFuncCallOneArg() throws ParserError, CompilerError {
     runCodeComparisonTest("foo(1)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v2   //DexCompiledScript__UUID__\n"+
         "                    :v3   //dee.lang.DeelangObject\n"+
         "                    :v4   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -38,7 +38,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicFuncCallTwoArgs() throws ParserError, CompilerError {
     runCodeComparisonTest("foo(1,2)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -56,7 +56,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testNestedFuncCallOneArg() throws ParserError, CompilerError {
     runCodeComparisonTest("foo(bar(1))", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -73,7 +73,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testDoubleNestedFuncCallInnerTwoArgsInnerInnerOneArg() throws ParserError, CompilerError {
     runCodeComparisonTest("foo(bar(1, baz(2)))", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v4   //DexCompiledScript__UUID__\n"+
         "                    :v5   //dee.lang.DeelangObject\n"+
         "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -95,7 +95,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallNoArgs() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.foo()", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v5   //DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
         "                    :v7   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -114,7 +114,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallOneArg() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.bar(1)",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v7   //DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -136,7 +136,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallTwoArgs() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.bar(1,2)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v8   //DexCompiledScript__UUID__\n"+
         "                    :v9   //dee.lang.DeelangObject\n"+
         "                    :v10   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -161,7 +161,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testNestedMethToFuncCallOneArg() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.bar(quux(1))",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v7   //DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -185,7 +185,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testChainedMethodCall() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.boo().baz()", "" +
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v6   //DexCompiledScript__UUID__\n"+
         "                    :v7   //dee.lang.DeelangObject\n"+
         "                    :v8   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -206,7 +206,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicFuncNoArgsCallWithBlock() throws ParserError, CompilerError {
     runCodeComparisonTest("blockNoArgs() { voidy() }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -232,7 +232,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallNoArgsWithBlock() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.blockNoArgs() { foo.voidy() }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v7   //DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -285,7 +285,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallWithArgsWithBlock() throws ParserError, CompilerError {
     runCodeComparisonTest("foo.blockOneArg(1) { foo.voidy() }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v8   //DexCompiledScript__UUID__\n"+
         "                    :v9   //dee.lang.DeelangObject\n"+
         "                    :v10   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -327,7 +327,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testBasicMethCallNoArgsWithBlockModifiyingLoadedLocal() throws ParserError, CompilerError {
     runCodeComparisonTest("a = 2; foo.blockNoArgs() { a = 1 }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v9   //DexCompiledScript__UUID__\n"+
         "                    :v10   //dee.lang.DeelangObject\n"+
         "                    :v11   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -380,7 +380,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
   public void testREGRESSIONBasicMethCallNoArgsWithBlockModifiyingLocalDoesntMissLastStatement() throws ParserError, CompilerError {
     runCodeComparisonTest("a = 2; foo.blockNoArgs() { a = 1 ; bar(a) }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v9   //DexCompiledScript__UUID__\n"+
         "                    :v10   //dee.lang.DeelangObject\n"+
         "                    :v11   //com.roscopeco.deelang.runtime.Binding\n"+

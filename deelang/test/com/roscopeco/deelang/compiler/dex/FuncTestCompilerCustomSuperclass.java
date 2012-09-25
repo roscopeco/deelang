@@ -17,11 +17,6 @@ public class FuncTestCompilerCustomSuperclass extends CompilerFuncTestBase {
   @Test
   public void testCustomSuperclass() throws ParserError, CompilerError {
     runCodeComparisonTest("", null, CustomSuperclass.class, 
-        "extends com.roscopeco.deelang.compiler.dex.FuncTestCompilerCustomSuperclass$CustomSuperclass",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n" +
-        "                this:v0   //DexCompiledScript__UUID__\n"+
-        "                    :v1   //dee.lang.DeelangObject\n"+
-        "                    :v2   //com.roscopeco.deelang.runtime.Binding\n"+
-        "RETURN_VOID         |     |return");
+        "extends com.roscopeco.deelang.compiler.dex.FuncTestCompilerCustomSuperclass$CustomSuperclass");
   }
 }

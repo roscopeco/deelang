@@ -11,7 +11,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testPlainIdentifierIsOptimizedAway() throws Throwable {
     runCodeComparisonTest("a", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v0   //DexCompiledScript__UUID__\n"+
         "                    :v1   //dee.lang.DeelangObject\n"+
         "                    :v2   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -36,7 +36,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testLocalAssignmentFromMethod() throws Throwable {
     runCodeComparisonTest("a=baz()", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v2   //DexCompiledScript__UUID__\n"+
         "                    :v3   //dee.lang.DeelangObject\n"+
         "                    :v4   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -55,7 +55,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testLocalAssignmentFromLocal() throws Throwable {
     runCodeComparisonTest("a=b", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v5   //DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
         "                    :v7   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -73,7 +73,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testLocalAssignmentAsMethodArg() throws Throwable {
     runCodeComparisonTest("foo(a=3)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -93,7 +93,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
     //      Also, it's doing a lot of useless moves...
     runCodeComparisonTest("a=b=1; bar(a); bar(b)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -129,7 +129,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testLocalsBindCorrectlyFromLiterals() throws ParserError, CompilerError {
     runCodeComparisonTest("a=1; b=2; bar(a)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v4   //DexCompiledScript__UUID__\n"+
             "                    :v5   //dee.lang.DeelangObject\n"+
             "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -151,7 +151,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testLocalsBindCorrectlyFromMethods() throws Throwable {
     runCodeComparisonTest("a=baz(); b = 2; bar(a)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v4   //DexCompiledScript__UUID__\n"+
         "                    :v5   //dee.lang.DeelangObject\n"+
         "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+

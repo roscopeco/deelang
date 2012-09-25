@@ -10,7 +10,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testUnusedLiteralIsOptmizedAway() throws ParserError, CompilerError {
     runCodeComparisonTest("1", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v0   //DexCompiledScript__UUID__\n"+
             "                    :v1   //dee.lang.DeelangObject\n"+
             "                    :v2   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -22,7 +22,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testIntegerLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("a=1", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v3   //DexCompiledScript__UUID__\n"+
             "                    :v4   //dee.lang.DeelangObject\n"+
             "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -38,7 +38,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testHexLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("a=0xF",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v3   //DexCompiledScript__UUID__\n"+
             "                    :v4   //dee.lang.DeelangObject\n"+
             "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -54,7 +54,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testOctalLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("a=010",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v3   //DexCompiledScript__UUID__\n"+
             "                    :v4   //dee.lang.DeelangObject\n"+
             "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -71,7 +71,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testFloatLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("a=1.2", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v4   //DexCompiledScript__UUID__\n"+
             "                    :v5   //dee.lang.DeelangObject\n"+
             "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -89,7 +89,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
     // treated as a string...
     runCodeComparisonTest("a='o'", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
             "                this:v3   //DexCompiledScript__UUID__\n"+
             "                    :v4   //dee.lang.DeelangObject\n"+
             "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -106,7 +106,7 @@ public class FuncTestCompilerLiterals extends CompilerFuncTestBase {
   public void testStringLiteral() throws ParserError, CompilerError {
     runCodeComparisonTest("a=\"onetwothree\"", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+

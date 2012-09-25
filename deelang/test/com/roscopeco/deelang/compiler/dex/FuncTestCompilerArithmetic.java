@@ -9,7 +9,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   private void runComparison(String sumCode, String expMethod) throws ParserError, CompilerError {
     runCodeComparisonTest(sumCode, 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v3   //DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
         "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -82,7 +82,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void testLiteralLiteralLiteralMulAddSum() throws ParserError, CompilerError {
     runCodeComparisonTest("1+2*3", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v7   //DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -108,7 +108,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void testLiteralLiteralAddAsMethodArg() throws ParserError, CompilerError {
     runCodeComparisonTest("bar(3+2)",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v7   //DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
@@ -131,7 +131,7 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void testLiteralLiteralLiteralMulAddSumExplicitPrecedence() throws ParserError, CompilerError {
     runCodeComparisonTest("(1+2)*3",
         "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
         "                this:v7   //DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
