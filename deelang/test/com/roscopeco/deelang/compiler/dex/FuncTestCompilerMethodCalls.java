@@ -431,11 +431,42 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "RETURN_VOID         |     |return");
   }
   
+  @Test
+  public void testLiteralMethodCallInt() throws ParserError, CompilerError {
+    runCodeComparisonTest("1.toS()", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v3   //DexCompiledScript__UUID__\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v0.toS()  //Ldee/lang/DeelangObject;.toS()Ldee/lang/DeelangString;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "RETURN_VOID         |     |return");
+    }
+
+  @Test
+  public void testLiteralMethodCallString() throws ParserError, CompilerError {
+    runCodeComparisonTest("\"foo\".toS()", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v3   //DexCompiledScript__UUID__\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST_STRING        |     |v1=\"foo\"\n"+
+        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangString;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangString;.<init>(Lcom/roscopeco/deelang/runtime/Binding;Ljava/lang/String;)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v0.toS()  //Ldee/lang/DeelangString;.toS()Ldee/lang/DeelangString;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "RETURN_VOID         |     |return");
+    }
+
   // TODO more tests needed:
   /*
    * foo.bar().baz(quux().qix())
    * foo.field.bar()
-   * 1.bar()
    * 
    * Also, this case (should now work):
    * someLocal = 1

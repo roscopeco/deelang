@@ -810,26 +810,33 @@ public class DexCompilationUnit extends ASTVisitor {
     Local receiverReg;    
 
     // Determine whether this is a self, chained or explicit receiver call
-    if (receiverAST.getType() == DeeLangParser.SELF) {
+    switch (receiverAST.getType()) {
+    case DeeLangParser.SELF:
       receiverClz = selfClz;
       receiverReg = codeProxy.getSelf();
-    } else if (receiverAST.getType() == DeeLangParser.CHAIN) {
+      break;
+    case DeeLangParser.CHAIN:
       if (lastChainReceiver == null) {
         throw new CompilerError("Cannot chain void method"); 
       } else {
         receiverReg = lastChainReceiver.reg;
         receiverClz = lastChainReceiver.jtype;
       }
-    } else {
-      String varName = receiverAST.getText();
-      TypeRegisterMapping loc = codeProxy.getLocalRegister(varName);
+      break;
+    default:
+      // Either a literal, var load, or somee other kind of expression.
+      // just try to track target register and use that as receiver.
+      TargetRegBackPassData trbpd = new TargetRegBackPassData();
+      backPassData.addFirst(trbpd);
+      visit(receiverAST);
+      backPassData.removeFirst();
       
-      if (loc == null) {
-        throw new UnknownVariableException(varName);
+      if (trbpd.reg == null) {
+        throw new CompilerBug("Couldn't find method call receiver when calling '" + method + "'");
+      } else {
+        receiverClz = trbpd.reg.jtype;
+        receiverReg = trbpd.reg.reg;
       }
-      
-      receiverClz = loc.jtype;
-      receiverReg = loc.reg;            
     }
         
     // Set up back pass data, then visit kids to collate arg info
