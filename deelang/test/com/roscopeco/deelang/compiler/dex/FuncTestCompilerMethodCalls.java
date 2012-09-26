@@ -207,14 +207,16 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
     runCodeComparisonTest("blockNoArgs() { voidy() }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v3   //DexCompiledScript__UUID__\n"+
-        "                    :v4   //dee.lang.DeelangObject\n"+
-        "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                this:v4   //DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
         "CONST               |     |v1=0x00000000  // int:0   float:0.000000\n"+
         "NEW_ARRAY           |     |v2=new java.lang.Object[][v1]\n"+
         "NEW_INSTANCE        |     |v0=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v0.<init>(v4,v5,v2)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
-        "INVOKE_VIRTUAL      |     |v4.blockNoArgs(v0)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v6,v2)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_VIRTUAL      |     |v5.blockNoArgs(v0)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v0.inScope=v3  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
         "RETURN_VOID         |     |return",
         
         "extends com.roscopeco.deelang.runtime.Block",
@@ -233,11 +235,11 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
     runCodeComparisonTest("foo.blockNoArgs() { foo.voidy() }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v7   //DexCompiledScript__UUID__\n"+
-        "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                this:v8   //DexCompiledScript__UUID__\n"+
+        "                    :v9   //dee.lang.DeelangObject\n"+
+        "                    :v10   //com.roscopeco.deelang.runtime.Binding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v9.getLocal(v1)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v10.getLocal(v1)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -247,8 +249,10 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "CONST               |     |v5=0x00000000  // int:0   float:0.000000\n"+
         "APUT                |     |v6[v5]=v3\n"+
         "NEW_INSTANCE        |     |v4=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v4.<init>(v8,v9,v6)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_DIRECT       |     |v4.<init>(v9,v10,v6)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
         "INVOKE_VIRTUAL      |     |v3.blockNoArgs(v4)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v7=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v4.inScope=v7  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
         "RETURN_VOID         |     |return",
         
         "extends com.roscopeco.deelang.runtime.Block",
@@ -286,25 +290,27 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
     runCodeComparisonTest("foo.blockOneArg(1) { foo.voidy() }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v8   //DexCompiledScript__UUID__\n"+
-        "                    :v9   //dee.lang.DeelangObject\n"+
-        "                    :v10   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                this:v9   //DexCompiledScript__UUID__\n"+
+        "                    :v10   //dee.lang.DeelangObject\n"+
+        "                    :v11   //com.roscopeco.deelang.runtime.Binding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v10.getLocal(v1)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v11.getLocal(v1)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v3 = v0\n"+
         "CONST               |     |v5=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v4=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v4.<init>(v10,v5)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_DIRECT       |     |v4.<init>(v11,v5)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
         "CONST               |     |v5=0x00000001  // int:1   float:0.000000\n"+
         "NEW_ARRAY           |     |v7=new java.lang.Object[][v5]\n"+
         "CONST               |     |v5=0x00000000  // int:0   float:0.000000\n"+
         "APUT                |     |v7[v5]=v3\n"+
         "NEW_INSTANCE        |     |v6=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v6.<init>(v9,v10,v7)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_DIRECT       |     |v6.<init>(v10,v11,v7)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
         "INVOKE_VIRTUAL      |     |v3.blockOneArg(v6,v4)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockOneArg(Lcom/roscopeco/deelang/runtime/Block;Ldee/lang/DeelangInteger;)V\n"+
+        "CONST               |     |v8=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v6.inScope=v8  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
         "RETURN_VOID         |     |return",
         
         "extends com.roscopeco.deelang.runtime.Block",
@@ -328,15 +334,15 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
     runCodeComparisonTest("a = 2; foo.blockNoArgs() { a = 1 }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v9   //DexCompiledScript__UUID__\n"+
-        "                    :v10   //dee.lang.DeelangObject\n"+
-        "                    :v11   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                this:v10   //DexCompiledScript__UUID__\n"+
+        "                    :v11   //dee.lang.DeelangObject\n"+
+        "                    :v12   //com.roscopeco.deelang.runtime.Binding\n"+
         "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v1.<init>(v11,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v12,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
         "MOVE                |     |v3 = v1\n"+
         "CONST_STRING        |     |v4=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v11.getLocal(v4)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v12.getLocal(v4)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v5=TEMP\n"+
         "MOVE                |     |v0 = v5\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -346,8 +352,10 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "CONST               |     |v2=0x00000000  // int:0   float:0.000000\n"+
         "APUT                |     |v8[v2]=v3\n"+
         "NEW_INSTANCE        |     |v7=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v7.<init>(v10,v11,v8)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_DIRECT       |     |v7.<init>(v11,v12,v8)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
         "INVOKE_VIRTUAL      |     |v6.blockNoArgs(v7)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v9=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v7.inScope=v9  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
         "CONST               |     |v2=0x00000000  // int:0   float:0.000000\n"+
         "AGET                |     |v5=v8[v2]\n"+
         "MOVE                |     |v0 = v5\n"+
@@ -381,15 +389,15 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
     runCodeComparisonTest("a = 2; foo.blockNoArgs() { a = 1 ; bar(a) }", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
-        "                this:v9   //DexCompiledScript__UUID__\n"+
-        "                    :v10   //dee.lang.DeelangObject\n"+
-        "                    :v11   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                this:v10   //DexCompiledScript__UUID__\n"+
+        "                    :v11   //dee.lang.DeelangObject\n"+
+        "                    :v12   //com.roscopeco.deelang.runtime.Binding\n"+
         "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v1.<init>(v11,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v12,v2)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
         "MOVE                |     |v3 = v1\n"+
         "CONST_STRING        |     |v4=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v11.getLocal(v4)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v12.getLocal(v4)  //Lcom/roscopeco/deelang/runtime/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v5=TEMP\n"+
         "MOVE                |     |v0 = v5\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -399,8 +407,10 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "CONST               |     |v2=0x00000000  // int:0   float:0.000000\n"+
         "APUT                |     |v8[v2]=v3\n"+
         "NEW_INSTANCE        |     |v7=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v7.<init>(v10,v11,v8)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_DIRECT       |     |v7.<init>(v11,v12,v8)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
         "INVOKE_VIRTUAL      |     |v6.blockNoArgs(v7)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v9=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v7.inScope=v9  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
         "CONST               |     |v2=0x00000000  // int:0   float:0.000000\n"+
         "AGET                |     |v5=v8[v2]\n"+
         "MOVE                |     |v0 = v5\n"+
@@ -442,6 +452,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        // TODO this should bind to DeelangInteger.toS, not DeelangObject.toS... Wrong type being inferred???
         "INVOKE_VIRTUAL      |     |TEMP=v0.toS()  //Ldee/lang/DeelangObject;.toS()Ldee/lang/DeelangString;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "RETURN_VOID         |     |return");
@@ -462,6 +473,84 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "RETURN_VOID         |     |return");
     }
+
+  @Test
+  public void testBasicFuncNoArgsCallWithOrBlock() throws ParserError, CompilerError {
+    runCodeComparisonTest("voidy() or { voidy() }", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v4   //DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
+        "INVOKE_VIRTUAL      |     |v5.voidy()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.voidy()V\n"+
+        "CONST               |     |v1=0x00000000  // int:0   float:0.000000\n"+
+        "NEW_ARRAY           |     |v2=new java.lang.Object[][v1]\n"+
+        "NEW_INSTANCE        |     |v0=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v6,v2)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_VIRTUAL      |     |v5.or(v0)  //Ldee/lang/DeelangObject;.or(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v0.inScope=v3  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
+        "RETURN_VOID         |     |return",
+        
+        "extends com.roscopeco.deelang.runtime.Block",
+        "public final V invoke(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding,java.lang.Object[],java.lang.Object[])\n"+
+        "                this:v1   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__$block0\n"+
+        "                    :v2   //dee.lang.DeelangObject\n"+
+        "                    :v3   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                    :v4   //java.lang.Object[]\n"+
+        "                    :v5   //java.lang.Object[]\n"+
+        "INVOKE_VIRTUAL      |     |v2.voidy()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.voidy()V\n"+
+        "RETURN_VOID         |     |return");
+  }
+
+  @Test
+  public void testBasicFuncNoArgsCallWithBlockAndOrBlock() throws ParserError, CompilerError {
+    runCodeComparisonTest("blockNoArgs() { bar(4) } or { voidy() }", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding)\n"+
+        "                this:v4   //DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.Binding\n"+
+        "CONST               |     |v1=0x00000000  // int:0   float:0.000000\n"+
+        "NEW_ARRAY           |     |v2=new java.lang.Object[][v1]\n"+
+        "NEW_INSTANCE        |     |v0=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v6,v2)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_VIRTUAL      |     |v5.blockNoArgs(v0)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v0.inScope=v3  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
+        "CONST               |     |v1=0x00000000  // int:0   float:0.000000\n"+
+        "NEW_ARRAY           |     |v2=new java.lang.Object[][v1]\n"+
+        "NEW_INSTANCE        |     |v0=NEW Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block1;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v6,v2)  //Lcom/roscopeco/deelang/runtime/DexCompiledScript__UUID__$block1;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/Binding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_VIRTUAL      |     |v5.or(v0)  //Ldee/lang/DeelangObject;.or(Lcom/roscopeco/deelang/runtime/Block;)V\n"+
+        "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v0.inScope=v3  //Lcom/roscopeco/deelang/runtime/Block;.inScope Z\n"+
+        "RETURN_VOID         |     |return",
+        
+        "extends com.roscopeco.deelang.runtime.Block",
+        "public final V invoke(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding,java.lang.Object[],java.lang.Object[])\n"+
+        "                this:v3   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__$block0\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                    :v6   //java.lang.Object[]\n"+
+        "                    :v7   //java.lang.Object[]\n"+
+        "CONST               |     |v1=0x00000004  // int:4   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Lcom/roscopeco/deelang/runtime/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.bar(v0)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar(Ldee/lang/DeelangInteger;)Ldee/lang/DeelangInteger;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "RETURN_VOID         |     |return",
+        
+        "extends com.roscopeco.deelang.runtime.Block",
+        "public final V invoke(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.Binding,java.lang.Object[],java.lang.Object[])\n"+
+        "                this:v1   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__$block1\n"+
+        "                    :v2   //dee.lang.DeelangObject\n"+
+        "                    :v3   //com.roscopeco.deelang.runtime.Binding\n"+
+        "                    :v4   //java.lang.Object[]\n"+
+        "                    :v5   //java.lang.Object[]\n"+
+        "INVOKE_VIRTUAL      |     |v2.voidy()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.voidy()V\n"+
+        "RETURN_VOID         |     |return");
+  }
 
   // TODO more tests needed:
   /*

@@ -13,6 +13,7 @@ import org.antlr.runtime.tree.Tree;
 
 import com.google.dexmaker.Code;
 import com.google.dexmaker.DexMaker;
+import com.google.dexmaker.FieldId;
 import com.google.dexmaker.Label;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
@@ -150,6 +151,8 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final TypeId<DeelangInteger> TYPEID_DL_INTEGER = TypeId.get(DeelangInteger.class);
   protected static final TypeId<DeelangFloat> TYPEID_DL_FLOAT = TypeId.get(DeelangFloat.class);
   protected static final TypeId<DeelangString> TYPEID_DL_STRING = TypeId.get(DeelangString.class);
+  
+  protected static final FieldId<Block, Boolean> BLOCK_INSCOPE = TYPEID_BLOCK.getField(TypeId.BOOLEAN, "inScope");
 
   protected static final MethodId<Binding, Object> BINDING_GET_LOCAL = TYPEID_BINDING.getMethod(TypeId.OBJECT, "getLocal", TypeId.STRING);
   protected static final MethodId<Binding, Void> BINDING_SET_LOCAL = TYPEID_BINDING.getMethod(TypeId.VOID, "getLocal", TypeId.STRING, TypeId.OBJECT);
@@ -161,6 +164,8 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
   protected static final MethodId<DeelangString, Void> DL_STRING_INIT = TYPEID_DL_STRING.getConstructor(TYPEID_BINDING, TypeId.STRING);
 
+  protected static MethodId<DeelangObject, Void> DL_OBJECT_OR = TYPEID_DL_OBJECT.getMethod(TypeId.VOID, "or", TYPEID_BLOCK);
+  
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPADD = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opADD", TYPEID_DL_OBJECT);
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPSUB = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opSUB", TYPEID_DL_OBJECT);
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPMUL = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opMUL", TYPEID_DL_OBJECT);
@@ -846,7 +851,7 @@ public class DexCompilationUnit extends ASTVisitor {
       visit(methodAST.getChild(i));
     }
     bpd = (MethCallBackPassData)backPassData.removeFirst();
-    boolean hasBlock = (bpd.block != null);
+    boolean hasBlock = bpd.block != null;
     MethCallBackPassData callerbpd = getMethCallBackPassData();
     
     // Find method to call
@@ -929,26 +934,8 @@ public class DexCompilationUnit extends ASTVisitor {
       lastChainReceiver = null;
     }
     
-    // Generate code to initialize Block instance if needed
-    if (hasBlock) {
-      ArrayList<String> closedLocals = bpd.block.closedLocals; 
-      int locsize = closedLocals.size();
-      Local<Integer> bllen = codeProxy.newLocal(TypeId.INT);
-      codeProxy.loadConstant(bllen, locsize);
-      codeProxy.newArray(codeProxy.blockLocalsLocal(), bllen);
-      for (int i = 0; i < locsize; i++) {
-        codeProxy.loadConstant(bllen, i);
-        codeProxy.aput(codeProxy.blockLocalsLocal(), bllen, codeProxy.getLocalRegister(closedLocals.get(i)).reg);        
-      }
-      codeProxy.newInstance(blockReg, bpd.block.blockTypeId.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), 
-          codeProxy.getParameter(0, TYPEID_DL_OBJECT), 
-          codeProxy.getParameter(1, TYPEID_BINDING), 
-          codeProxy.blockLocalsLocal());
-      codeProxy.freeLocal(bllen);
-    }
-    
-    // Generate call insn
-    codeProxy.invokeVirtual(mid, target, receiverReg, args);
+    // Generate method call
+    generateMethodCall(mid, target, receiverReg, args, bpd.block, blockReg);    
     
     // Free arg registers for reuse
     // Return locals to the pool for reuse
@@ -958,9 +945,58 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     }
     
+    // Generate or call
+    if (bpd.orBlock != null) {
+      // If the actual call didn't have a block, but there is an or block,
+      // we wont have allocated a block register. Let's do that now...
+      if (blockReg == null) {
+        blockReg = codeProxy.newLocal(bpd.orBlock.blockTypeId);
+      }
+      generateMethodCall(DL_OBJECT_OR, null, codeProxy.getSelf(), new Local[] { blockReg }, bpd.orBlock, blockReg);
+    }   
+  }
+  
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private void generateMethodCall(MethodId mid, Local target, Local receiverReg, Local[] args, BlockBpd blockBpd, Local blockReg) {
+    // Generate code to initialize Block instance if needed
+    boolean hasBlock = blockBpd != null;
+    if (hasBlock) {
+      if (blockReg == null) {
+        throw new CompilerBug("blockReg cannot be null!");
+      }
+      
+      ArrayList<String> closedLocals = blockBpd.closedLocals; 
+      int locsize = closedLocals.size();
+      Local<Integer> bllen = codeProxy.newLocal(TypeId.INT);
+      codeProxy.loadConstant(bllen, locsize);
+      codeProxy.newArray(codeProxy.blockLocalsLocal(), bllen);
+      for (int i = 0; i < locsize; i++) {
+        codeProxy.loadConstant(bllen, i);
+        codeProxy.aput(codeProxy.blockLocalsLocal(), bllen, codeProxy.getLocalRegister(closedLocals.get(i)).reg);        
+      }
+      codeProxy.newInstance(blockReg, blockBpd.blockTypeId.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), 
+          codeProxy.getParameter(0, TYPEID_DL_OBJECT), 
+          codeProxy.getParameter(1, TYPEID_BINDING), 
+          codeProxy.blockLocalsLocal());
+      codeProxy.freeLocal(bllen);
+    }
+    
+    // Generate call insn
+    codeProxy.invokeVirtual(mid, target, receiverReg, args);
+    
+    // send block out of scope
+    // must do this before freeing locals, in case one of method args
+    // is a boolean (not possible yet, but when we autobox/unbox it could happen).
+    if (hasBlock) {
+      Local<Boolean> bool = codeProxy.newLocal(TypeId.BOOLEAN);
+      codeProxy.loadConstant(bool, false);
+      codeProxy.iput(BLOCK_INSCOPE, blockReg, bool);
+      codeProxy.freeLocal(bool);
+    }
+    
     // Unmarshal modified locals back into locals
     if (hasBlock) {
-      ArrayList<String> modLocals = bpd.block.modifiedLocals; 
+      ArrayList<String> modLocals = blockBpd.modifiedLocals; 
       int locsize = modLocals.size();
       if (locsize > 0) {
         Local<Integer> tempi = codeProxy.newLocal(TypeId.INT);
@@ -974,9 +1010,6 @@ public class DexCompilationUnit extends ASTVisitor {
         codeProxy.freeLocal(tempo);
       }
     }
-    
-    // TODO Or block support
-   
   }
 
   @Override
@@ -1128,9 +1161,10 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitOrBlock(Tree ast)
       throws CompilerError {
+    
     MethCallBackPassData bpd = getMethCallBackPassData();
     if (bpd == null) {
-      throw new CompilerBug("Block without method call");
+      throw new CompilerBug("Or Block without method call");
     }
     bpd.orBlock = generateBlock(ast);
   }

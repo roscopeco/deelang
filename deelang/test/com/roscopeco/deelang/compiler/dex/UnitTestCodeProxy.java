@@ -27,6 +27,7 @@ import com.roscopeco.deelang.compiler.dex.CodeProxy.Cast;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Invoke;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Iput;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Jump;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.LoadConstant;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Mark;
@@ -254,8 +255,8 @@ public class UnitTestCodeProxy {
     Instruction i = proxy.insns.get(0);
     assertThat(i, is(instanceOf(Iget.class)));
 
-    Iget<Object, Object> ig = (Iget<Object, Object>)i;  
-    assertThat(ig.target, is(mockLocal));
+    Iget<Object, Object> ig = (Iget<Object, Object>)i;
+    assertThat(ig.fieldId, is(mockFieldId));
     assertThat(ig.target, is(mockLocal));
     assertThat(ig.instance, is(mockLocal2));
     
@@ -265,7 +266,21 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testIput() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.iput(mockFieldId, mockLocal, mockLocal2);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Iput.class)));
+
+    Iput<Object, Object> ig = (Iput<Object, Object>)i;  
+    assertThat(ig.fieldId, is(mockFieldId));
+    assertThat(ig.instance, is(mockLocal));
+    assertThat(ig.source, is(mockLocal2));
+    
+    ig.generate();
+    verify(mockCode).iput(mockFieldId, mockLocal, mockLocal2);
   }
 
   @Test

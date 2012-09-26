@@ -94,6 +94,27 @@ final class CodeProxy {
     }
   }
   
+  final class Iput<D, V> implements Instruction {
+    final FieldId<D, V> fieldId;
+    final Local<D> instance;
+    final  Local<V> source;
+    
+    Iput(FieldId<D, V> fieldId, Local<D> instance, Local<V> source) {
+      this.fieldId = fieldId;
+      this.instance = instance;
+      this.source = source;
+    }
+
+    @Override
+    public final void generate() {
+      code.iput(fieldId, instance, source);
+    }
+    
+    public String toString() {
+      return "IPUT [" + instance + "." + fieldId + " = " + source + "]";
+    }
+  }
+  
   final class NewInstance<T> implements Instruction {
     final Local<T> target;
     final MethodId<T, Void> constructor;
@@ -410,6 +431,7 @@ final class CodeProxy {
   }
 
   public final <D, V> void iput(FieldId<D, V> fieldId, Local<D> instance, Local<V> source) {
+    insns.add(new Iput<D,V>(fieldId, instance, source));
   }
 
   public final <V> void sget(FieldId<?, V> fieldId, Local<V> target) {

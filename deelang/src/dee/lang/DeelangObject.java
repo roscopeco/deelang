@@ -66,7 +66,11 @@ public class DeelangObject {
    * <p>Implements the 'or' construct in Deelang code.</p>
    */
   public void or(Block block) {
-    // TODO implement this
+    // TODO this needs some kind of error flag support in the compiler.
+    //      (specifically, error flag can be supported in DeelangObject,
+    //      but we must *reset* it after the method invocation in the
+    //      compiler).
+    throw new DeelangRuntimeException("'or' blocks not yet supported");
   }
   
   /**
