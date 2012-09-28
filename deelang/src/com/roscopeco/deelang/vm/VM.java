@@ -323,6 +323,11 @@ public class VM {
       while (ctx.codeStrm.available() > 0) {
         step(ctx);
       }
+      
+      // Reset the code stream, to support multiple runs. 
+      // If an error occurs, this won't happen so the pc will be left
+      // where it was when the error happened.
+      ctx.codeStrm.reset();
     } catch (IOException e) {
       throw new InputError(e);
     }
