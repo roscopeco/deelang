@@ -1,11 +1,11 @@
-package com.roscopeco.deelang.compiler.dvm;
+package com.roscopeco.deelang.compiler.deevm;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.CompilerError;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 
 public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {

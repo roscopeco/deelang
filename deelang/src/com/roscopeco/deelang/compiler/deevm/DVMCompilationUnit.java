@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.dvm;
+package com.roscopeco.deelang.compiler.deevm;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

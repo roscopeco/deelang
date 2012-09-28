@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.dvm;
+package com.roscopeco.deelang.compiler.deevm;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 
 public class CompilerFuncTestBase {

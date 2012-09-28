@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.dvm;
+package com.roscopeco.deelang.compiler.deevm;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Test;
 
 import com.roscopeco.deelang.compiler.Compiler;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 
 import static org.junit.Assert.*;
 

@@ -8,7 +8,7 @@ import java.util.Scanner;
 import com.roscopeco.deelang.ScriptDumper;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 import com.roscopeco.deelang.parser.ParserError;
 
 /**

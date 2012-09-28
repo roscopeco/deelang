@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 
 import com.roscopeco.deelang.Opcodes;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 
 import dee.vm.lang.DeeLangFloat;
 import dee.vm.lang.DeeLangInteger;

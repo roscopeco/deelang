@@ -23,7 +23,7 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 
 import com.roscopeco.deelang.Opcodes;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 
 import dee.vm.lang.DeeLangFloat;
 import dee.vm.lang.DeeLangInteger;

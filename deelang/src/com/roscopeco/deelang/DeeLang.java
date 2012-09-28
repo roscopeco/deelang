@@ -20,7 +20,7 @@ package com.roscopeco.deelang;
 import com.roscopeco.deelang.UnsupportedOperationException;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
-import com.roscopeco.deelang.compiler.dvm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;

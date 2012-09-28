@@ -18,7 +18,7 @@ package com.roscopeco.deelang.compiler;
 
 import org.antlr.runtime.tree.Tree;
 
-import com.roscopeco.deelang.compiler.dvm.DVMCompilationUnit;
+import com.roscopeco.deelang.compiler.deevm.DVMCompilationUnit;
 import com.roscopeco.deelang.parser.DeeLangParser;
 
 /**

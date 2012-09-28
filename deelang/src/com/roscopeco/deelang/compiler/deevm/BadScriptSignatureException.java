@@ -1,4 +1,4 @@
-/* IllegalConstPoolTypeBug.java
+/* BadScriptSignatureException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,30 +14,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler.dvm;
+package com.roscopeco.deelang.compiler.deevm;
 
-import com.roscopeco.deelang.compiler.CompilerBug;
-
-public class IllegalConstPoolTypeBug extends CompilerBug {
+public class BadScriptSignatureException extends ScriptLoaderException {
 
   /**
    * 
    */
-  private static final long serialVersionUID = 3902888901866763172L;
+  private static final long serialVersionUID = -2458887925158184007L;
 
-  public IllegalConstPoolTypeBug() {
+  public BadScriptSignatureException() {
   }
 
-  public IllegalConstPoolTypeBug(String arg0, Throwable arg1) {
+  public BadScriptSignatureException(String arg0) {
+    super(arg0);
+  }
+
+  public BadScriptSignatureException(Throwable arg0) {
+    super(arg0);
+  }
+
+  public BadScriptSignatureException(String arg0, Throwable arg1) {
     super(arg0, arg1);
-  }
-
-  public IllegalConstPoolTypeBug(String arg0) {
-    super(arg0);
-  }
-
-  public IllegalConstPoolTypeBug(Throwable arg0) {
-    super(arg0);
   }
 
 }
