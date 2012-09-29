@@ -1,4 +1,4 @@
-/* UnknownConstPoolTypeException.java
+/* TooManyArgsError.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,28 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
-public class UnknownConstPoolTypeException extends ScriptLoaderException {
+import com.roscopeco.deelang.compiler.CompilerError;
+
+public class TooManyArgsError extends CompilerError {
 
   /**
    * 
    */
-  private static final long serialVersionUID = -2458887925158184007L;
+  private static final long serialVersionUID = 6320402036862175437L;
 
-  public UnknownConstPoolTypeException() {
+  public TooManyArgsError() {
   }
 
-  public UnknownConstPoolTypeException(String arg0) {
-    super(arg0);
-  }
-
-  public UnknownConstPoolTypeException(Throwable arg0) {
-    super(arg0);
-  }
-
-  public UnknownConstPoolTypeException(String arg0, Throwable arg1) {
+  public TooManyArgsError(String arg0, Throwable arg1) {
     super(arg0, arg1);
+  }
+
+  public TooManyArgsError(String arg0) {
+    super(arg0);
+  }
+
+  public TooManyArgsError(Throwable arg0) {
+    super(arg0);
   }
 
 }

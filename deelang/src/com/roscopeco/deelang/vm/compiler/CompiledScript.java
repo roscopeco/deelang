@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

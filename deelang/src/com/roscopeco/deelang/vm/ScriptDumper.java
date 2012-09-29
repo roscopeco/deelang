@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang;
+package com.roscopeco.deelang.vm;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
 
 /**
  * Dumps compiled scripts to strings.

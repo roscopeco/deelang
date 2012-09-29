@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.roscopeco.deelang.compiler.CompilerBug;
 
+import dee.lang.Binding;
 import dee.lang.DeelangObject;
 import dee.lang.DeelangRuntimeException;
 

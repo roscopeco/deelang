@@ -18,8 +18,6 @@ package com.roscopeco.deelang.compiler;
 
 import org.antlr.runtime.tree.Tree;
 
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
-import com.roscopeco.deelang.compiler.deevm.DVMCompilationUnit;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 
@@ -32,66 +30,8 @@ import com.roscopeco.deelang.parser.ParserError;
  * @author rosco
  * @created 16 Oct 2011
  */
-public class Compiler {
-  /**
-   * Convenience method to just compile an AST to DVM Bytecode
-   * and return the compiled script.
-   * 
-   * @param ast The AST to compile.
-   * @return The compiled script.
-   * @throws CompilerError If a compilation error occurs.
-   */
-  public static CompiledScript staticCompileDVM(Tree ast) throws CompilerError {
-    return new Compiler().compileDVM(ast);
-  }
-  
-  /**
-   * Convenience method to just parse and compile a string to DVM Bytecode
-   * and return the compiled script. This method uses the parser with 
-   * default options.
-   * 
-   * @param code The code to compile.
-   * @return The compiled script.
-   * @throws ParserError If a parse error occurs.
-   * @throws CompilerError If a compilation error occurs.
-   */
-  public static CompiledScript staticCompileDVM(String code) 
-      throws ParserError, CompilerError {
-    return staticCompileDVM(Parser.staticParse(code));
-  }
-  
+public class Compiler {  
   public Compiler() { }  
-  
-  /**
-   * Compile the script in the supplied String by parsing it with {@link Parser}
-   * and then compiling to a {@link CompiledScript}.  This is a convenience method 
-   * that calls through to {@link #compile(ASTVisitor, Tree)} with a 
-   * {@link DVMCompilationUnit}, and simply returns the compiled script.
-   * 
-   * @param code The Deelang code to compile.
-   * @return The compiled script
-   * @throws ParserError if an error occurs during parsing.
-   * @throws CompilerError If an error occurs during compilation.
-   */
-  public CompiledScript compileDVM(String code) throws ParserError, CompilerError {
-    return compileDVM(Parser.staticParse(code));
-  }
-  
-  /**
-   * Compile the script in the parsed AST (output from {@link Parser})
-   * to a DVM {@link CompiledScript}. This is a convenience method that calls
-   * through to {@link #compile(ASTVisitor, Tree)} with a 
-   * {@link DVMCompilationUnit}, and simply returns the compiled script.
-   * 
-   * @param ast The AST to compile.
-   * 
-   * @return The compiled script
-   * 
-   * @throws CompilerError If an error occurs during compilation.
-   */
-  public CompiledScript compileDVM(Tree ast) throws CompilerError {
-    return compile(new DVMCompilationUnit(), ast).buildScript();
-  }
   
   /**
    * Compile the script in the supplied String by parsing it with {@link Parser}

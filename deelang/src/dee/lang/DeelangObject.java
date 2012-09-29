@@ -1,7 +1,5 @@
 package dee.lang;
 
-import com.roscopeco.deelang.runtime.Binding;
-import com.roscopeco.deelang.runtime.Block;
 import com.roscopeco.deelang.vm.UnsupportedOperationError;
 
 /**

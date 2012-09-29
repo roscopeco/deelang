@@ -2,11 +2,13 @@ package com.roscopeco.deelang.runtime;
 
 import java.util.HashMap;
 
+import dee.lang.Binding;
 import dee.lang.DeelangObject;
 
 public class HashBinding implements Binding {
   private final HashMap<String, Object> binding = new HashMap<String, Object>();
   private DeelangObject self;
+  private boolean errorFlag;
   
   @Override
   public Object getLocal(String name) {
@@ -25,5 +27,20 @@ public class HashBinding implements Binding {
   
   public void setSelf(DeelangObject self) {
     this.self = self;
+  }
+
+  @Override
+  public void setErrorFlag() {
+    errorFlag = true;
+  }
+  
+  public void clearErrorFlag() {
+    errorFlag = false;
+  }
+  
+  public boolean checkAndClearErrorFlag() {
+    boolean r = errorFlag;
+    errorFlag = false;
+    return r;
   }
 }

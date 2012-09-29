@@ -1,4 +1,4 @@
-/* CodeUnderflowException.java
+/* BadScriptSignatureException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,27 +14,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
-public class CodeUnderflowException extends ScriptLoaderException {
+public class BadScriptSignatureException extends ScriptLoaderException {
 
   /**
    * 
    */
   private static final long serialVersionUID = -2458887925158184007L;
 
-  public CodeUnderflowException() {
+  public BadScriptSignatureException() {
   }
 
-  public CodeUnderflowException(String arg0) {
+  public BadScriptSignatureException(String arg0) {
     super(arg0);
   }
 
-  public CodeUnderflowException(Throwable arg0) {
+  public BadScriptSignatureException(Throwable arg0) {
     super(arg0);
   }
 
-  public CodeUnderflowException(String arg0, Throwable arg1) {
+  public BadScriptSignatureException(String arg0, Throwable arg1) {
     super(arg0, arg1);
   }
 

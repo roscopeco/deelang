@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
 
 public class UnitTestCompiledScript {
 

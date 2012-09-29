@@ -16,7 +16,6 @@
  */
 package dee.lang;
 
-import com.roscopeco.deelang.runtime.Binding;
 
 /**
  * A Deelang String. As in Java, strings are immutable.

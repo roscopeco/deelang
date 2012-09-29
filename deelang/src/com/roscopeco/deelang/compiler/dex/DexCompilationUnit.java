@@ -24,10 +24,11 @@ import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
 import com.roscopeco.deelang.parser.DeeLangParser;
-import com.roscopeco.deelang.runtime.Binding;
-import com.roscopeco.deelang.runtime.Block;
 import com.roscopeco.deelang.runtime.CompiledScript;
+import com.roscopeco.deelang.runtime.DexBlock;
 
+import dee.lang.Binding;
+import dee.lang.Block;
 import dee.lang.DeelangFloat;
 import dee.lang.DeelangInteger;
 import dee.lang.DeelangObject;
@@ -49,7 +50,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     // TODO UUID is probably overkill here, and may not be performant enough on Android?
     compiledScriptName = "DexCompiledScript" + UUID.randomUUID();
-    compiledScriptTypeId = TypeId.get("L" + compiledScriptName + ";");
+    compiledScriptTypeId = TypeId.get("Lcom/roscopeco/deelang/runtime/" + compiledScriptName + ";");
     
     this.binding = binding;
     this.selfClz = binding.getSelf().getClass();
@@ -121,11 +122,11 @@ public class DexCompilationUnit extends ASTVisitor {
     
     try {
       return (Class<? extends CompiledScript>)
-          dexMaker.generateAndLoad(loader, dexDir).loadClass(compiledScriptName);
+          dexMaker.generateAndLoad(loader, dexDir).loadClass("com.roscopeco.deelang.runtime." + compiledScriptName);
     } catch (IOException e) {
       throw new RuntimeException("IOException while loading generated class", e);
     } catch (ClassNotFoundException e) {
-      throw new RuntimeException("[BUG] Generated class not found in classloader : " + loader.toString(), e);
+      throw new CompilerBug("[BUG] Generated class not found in classloader : " + loader.toString(), e);
     }
   }
   
@@ -146,19 +147,20 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final TypeId<CompiledScript> TYPEID_COMPILEDSCRIPT = TypeId.get(CompiledScript.class);
   protected static final TypeId<Object[]> TYPEID_OBJECT_A = TypeId.get(Object[].class);
   protected static final TypeId<Block> TYPEID_BLOCK = TypeId.get(Block.class);
+  protected static final TypeId<DexBlock> TYPEID_DEXBLOCK = TypeId.get(DexBlock.class);
   
   protected static final TypeId<DeelangObject> TYPEID_DL_OBJECT = TypeId.get(DeelangObject.class);
   protected static final TypeId<DeelangInteger> TYPEID_DL_INTEGER = TypeId.get(DeelangInteger.class);
   protected static final TypeId<DeelangFloat> TYPEID_DL_FLOAT = TypeId.get(DeelangFloat.class);
   protected static final TypeId<DeelangString> TYPEID_DL_STRING = TypeId.get(DeelangString.class);
   
-  protected static final FieldId<Block, Boolean> BLOCK_INSCOPE = TYPEID_BLOCK.getField(TypeId.BOOLEAN, "inScope");
+  protected static final FieldId<DexBlock, Boolean> BLOCK_INSCOPE = TYPEID_DEXBLOCK.getField(TypeId.BOOLEAN, "inScope");
 
   protected static final MethodId<Binding, Object> BINDING_GET_LOCAL = TYPEID_BINDING.getMethod(TypeId.OBJECT, "getLocal", TypeId.STRING);
   protected static final MethodId<Binding, Void> BINDING_SET_LOCAL = TYPEID_BINDING.getMethod(TypeId.VOID, "getLocal", TypeId.STRING, TypeId.OBJECT);
   
   protected static final MethodId<CompiledScript, Void> COMPILEDSCRIPT_INIT = TYPEID_COMPILEDSCRIPT.getConstructor(TYPEID_BINDING);
-  protected static final MethodId<Block, Void> BLOCK_INIT = TYPEID_BLOCK.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A);
+  protected static final MethodId<DexBlock, Void> BLOCK_INIT = TYPEID_DEXBLOCK.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A);
   
   protected static final MethodId<DeelangInteger, Void> DL_INTEGER_INIT = TYPEID_DL_INTEGER.getConstructor(TYPEID_BINDING, TypeId.INT);
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
@@ -776,7 +778,7 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
   
-  private Local<?>[] mapBpdArgsToLocals(MethCallBackPassData.Argument<?>[] args, Local<? extends Block> blockReg) {
+  private Local<?>[] mapBpdArgsToLocals(MethCallBackPassData.Argument<?>[] args, Local<? extends DexBlock> blockReg) {
     int len = args.length;
     if (len == 0 && blockReg == null) {
       return EMPTY_LOCALS;
@@ -992,10 +994,8 @@ public class DexCompilationUnit extends ASTVisitor {
       codeProxy.loadConstant(bool, false);
       codeProxy.iput(BLOCK_INSCOPE, blockReg, bool);
       codeProxy.freeLocal(bool);
-    }
     
-    // Unmarshal modified locals back into locals
-    if (hasBlock) {
+      // Unmarshal modified locals back into locals
       ArrayList<String> modLocals = blockBpd.modifiedLocals; 
       int locsize = modLocals.size();
       if (locsize > 0) {
@@ -1043,9 +1043,9 @@ public class DexCompilationUnit extends ASTVisitor {
     public final CodeProxy callerProxy;
     public final ArrayList<String> closedLocals = new ArrayList<String>();
     public final ArrayList<String> modifiedLocals = new ArrayList<String>();
-    public final TypeId<? extends Block> blockTypeId;
+    public final TypeId<? extends DexBlock> blockTypeId;
     
-    protected BlockBpd(CodeProxy proxy, TypeId<? extends Block> blkTypeId) {
+    protected BlockBpd(CodeProxy proxy, TypeId<? extends DexBlock> blkTypeId) {
       this.callerProxy = proxy;
       this.blockTypeId = blkTypeId;
     }    
@@ -1060,8 +1060,8 @@ public class DexCompilationUnit extends ASTVisitor {
   private BlockBpd generateBlock(Tree ast) throws CompilerError {
     backPassData.push(BACKPASSDATASPACER);
     
-    TypeId<? extends Block> blkType = TypeId.get("Lcom/roscopeco/deelang/runtime/" + compiledScriptName + "$block" + blockNum++ + ";");
-    dexMaker.declare(blkType, sourceName, Modifier.PUBLIC | Modifier.FINAL, TYPEID_BLOCK);
+    TypeId<? extends DexBlock> blkType = TypeId.get("Lcom/roscopeco/deelang/runtime/" + compiledScriptName + "$block" + blockNum++ + ";");
+    dexMaker.declare(blkType, sourceName, Modifier.PUBLIC | Modifier.FINAL, TYPEID_DEXBLOCK);
 
     blockBackPassData.push(new BlockBpd(codeProxy, blkType));
     

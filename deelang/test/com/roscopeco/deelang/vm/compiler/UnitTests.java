@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import org.junit.runners.Suite;
 

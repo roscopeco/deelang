@@ -13,11 +13,11 @@ import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.runtime.Binding;
-import com.roscopeco.deelang.runtime.Block;
 import com.roscopeco.deelang.runtime.CompiledScript;
 import com.roscopeco.deelang.runtime.HashBinding;
 
+import dee.lang.Binding;
+import dee.lang.Block;
 import dee.lang.DeelangInteger;
 import dee.lang.DeelangObject;
 import dee.lang.DeelangString;

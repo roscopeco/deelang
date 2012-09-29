@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 
-import com.roscopeco.deelang.Opcodes;
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
 
-import dee.vm.lang.DeeLangFloat;
-import dee.vm.lang.DeeLangInteger;
-import dee.vm.lang.DeeLangObject;
+import dee.lang.Binding;
+import dee.lang.DeelangFloat;
+import dee.lang.DeelangInteger;
+import dee.lang.DeelangObject;
 
 /**
  * <p>RuntimeContext within which the VM runs scripts. The context
@@ -37,11 +37,11 @@ import dee.vm.lang.DeeLangObject;
  * @author rosco
  * @created 16 Oct 2011
  */
-public class RuntimeContext {
+public class RuntimeContext implements Binding {
   // TODO don't like this, highly couples vm and runtime...
   
-  public final DeeLangInteger ZERO = new DeeLangInteger(this, 0);
-  public final DeeLangFloat FZERO = new DeeLangFloat(this, 0d);
+  public final DeelangInteger ZERO = new DeelangInteger(this, 0);
+  public final DeelangFloat FZERO = new DeelangFloat(this, 0d);
   
   final VM vm;
   final CompiledScript script;
@@ -57,7 +57,7 @@ public class RuntimeContext {
   // stored here, just in case user asks for it back later via getLocal(name).
   final HashMap<String, Object> unusedLocals = new HashMap<String, Object>();
   
-  DeeLangObject self;
+  DeelangObject self;
   
   protected RuntimeContext(VM vm, CompiledScript script) {
     this.vm = vm;
@@ -68,11 +68,11 @@ public class RuntimeContext {
     this.pool = script.getConstPool();
   }
 
-  public DeeLangObject getSelf() {
+  public DeelangObject getSelf() {
     return self;
   }
 
-  public void setSelf(DeeLangObject self) {
+  public void setSelf(DeelangObject self) {
     this.self = self;
   }
 
@@ -163,9 +163,8 @@ public class RuntimeContext {
     
     try {
       strm.mark(6);
-      byte b;
 
-      switch (b = strm.readByte()) {
+      switch (strm.readByte()) {
       case Opcodes.JUMP_B:
         strm.skip(1);
         break;
@@ -177,7 +176,6 @@ public class RuntimeContext {
         break;
       default:
         // no jump means no block - return false
-        System.out.println(String.format("NO JUMP (got 0x%02x instead)", b));
         strm.reset();
         return false;
       }

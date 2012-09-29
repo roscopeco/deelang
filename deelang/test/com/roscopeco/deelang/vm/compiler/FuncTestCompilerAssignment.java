@@ -1,10 +1,10 @@
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.roscopeco.deelang.Opcodes;
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.vm.Opcodes;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
 
 public class FuncTestCompilerAssignment extends CompilerFuncTestBase {
   

@@ -1,13 +1,15 @@
 package com.roscopeco.deelang.runtime;
 
+import dee.lang.Binding;
+import dee.lang.Block;
 import dee.lang.DeelangObject;
 
-public abstract class Block {  
+public abstract class DexBlock implements Block {  
   final Binding binding;
   final Object[] closedLocals;  
-  protected boolean inScope;
+  public boolean inScope;
   
-  protected Block(DeelangObject self, Binding binding, Object[] locals) {
+  protected DexBlock(DeelangObject self, Binding binding, Object[] locals) {
     this.binding = binding;
     this.closedLocals = locals;
     this.inScope = true;

@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -9,11 +9,11 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.Tree;
 
-import com.roscopeco.deelang.Opcodes;
 import com.roscopeco.deelang.compiler.ASTVisitor;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
+import com.roscopeco.deelang.vm.Opcodes;
 
 /**
  * <p>A compilation unit. This encapsulates all data and visitor logic

@@ -16,7 +16,6 @@
  */
 package dee.lang;
 
-import com.roscopeco.deelang.runtime.Binding;
 
 /**
  * A Deelang floating-point number (equivalent to a Java Double).

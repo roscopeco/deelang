@@ -1,4 +1,4 @@
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,14 +6,14 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Test;
 
 import com.roscopeco.deelang.compiler.Compiler;
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
 
 import static org.junit.Assert.*;
 
 public class FuncTestCompiledScript {
   @Test
   public void testStoreLoadRoundTrip() throws Exception {
-    CompiledScript script = Compiler.staticCompileDVM("foo(a+b)");
+    CompiledScript script = new Compiler().compile(new DVMCompilationUnit(), "foo(a+b)").buildScript();
     
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     script.store(os);
@@ -28,8 +28,8 @@ public class FuncTestCompiledScript {
 
   @Test
   public void testEquals() throws Exception {
-    CompiledScript script = Compiler.staticCompileDVM("foo(a+b)");
-    CompiledScript other = Compiler.staticCompileDVM("foo(a+b)");
+    CompiledScript script = new Compiler().compile(new DVMCompilationUnit(), "foo(a+b)").buildScript();
+    CompiledScript other = new Compiler().compile(new DVMCompilationUnit(), "foo(a+b)").buildScript();
     
     assertTrue(script.equals(other));
   }

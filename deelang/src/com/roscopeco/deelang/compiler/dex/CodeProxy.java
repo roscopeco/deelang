@@ -17,8 +17,8 @@ import com.google.dexmaker.UnaryOp;
 import com.roscopeco.deelang.compiler.CompilerBug;
 import com.roscopeco.deelang.compiler.dex.DexCompilationUnit.BlockBpd;
 import com.roscopeco.deelang.compiler.dex.DexCompilationUnit.TypeRegisterMapping;
-import com.roscopeco.deelang.runtime.Binding;
 
+import dee.lang.Binding;
 import dee.lang.DeelangObject;
 
 /**

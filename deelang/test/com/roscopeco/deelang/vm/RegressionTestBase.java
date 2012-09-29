@@ -3,12 +3,15 @@ package com.roscopeco.deelang.vm;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.ParserError;
+import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
 
 public class RegressionTestBase {
   
+  final Compiler compiler = new Compiler();
+  
   public RuntimeContext createContext(String code) throws ParserError, CompilerError {
     VM vm = new VM();
-    return vm.createContext(Compiler.staticCompileDVM(code));
+    return vm.createContext(compiler.compile(new DVMCompilationUnit(), code).buildScript());
   }
   
   public RuntimeContext runTest(RuntimeContext ctx) {

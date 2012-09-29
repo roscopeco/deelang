@@ -1,4 +1,4 @@
-/* VM.java - The DeeLang Virtual Machine.
+/* VM.java - The Deelang Virtual Machine.
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -23,15 +23,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 
-import com.roscopeco.deelang.Opcodes;
-import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
 
-import dee.vm.lang.DeeLangFloat;
-import dee.vm.lang.DeeLangInteger;
-import dee.vm.lang.DeeLangString;
+import dee.lang.DeelangFloat;
+import dee.lang.DeelangInteger;
+import dee.lang.DeelangString;
 
 /**
- * The DeeLang Virtual Machine. 
+ * The Deelang Virtual Machine. 
  * 
  * @author rosco
  * @created 16 Oct 2011
@@ -124,10 +123,19 @@ public class VM {
    * @param errorWasSet True if errorFlag was set at end of previous instruction (used for 'or' invocation)
    */
   private final void doInvoke(RuntimeContext ctx, byte op, int index, byte argc, boolean errorWasSet) {
-    Object args[] = new Object[argc];
+    Object args[];
     
-    for (int i = argc - 1; i > -1; i--) {
-      args[i] = ctx.stack.removeFirst();
+    if (ctx.isBlockNext()) {
+      args = new Object[argc+1];
+      args[0] = new DeeVMBlock(ctx);
+      for (int i = argc; i > 0; i--) {
+        args[i] = ctx.stack.removeFirst();
+      }
+    } else {
+      args = new Object[argc];     
+      for (int i = argc - 1; i > -1; i--) {
+        args[i] = ctx.stack.removeFirst();
+      }
     }
     
     String name = (String)ctx.pool[index].getValue();
@@ -204,17 +212,17 @@ public class VM {
         case Opcodes.NOP:
           return;
         case Opcodes.IPUSH:
-          ctx.stack.addFirst(new DeeLangInteger(ctx, strm.readInt()));
+          ctx.stack.addFirst(new DeelangInteger(ctx, strm.readInt()));
           return;
         case Opcodes.FPUSH:
-          ctx.stack.addFirst(new DeeLangFloat(ctx, strm.readDouble()));
+          ctx.stack.addFirst(new DeelangFloat(ctx, strm.readDouble()));
           return;
         case Opcodes.SPUSH:
-          ctx.stack.addFirst(new DeeLangString(ctx, strm.readUTF()));
+          ctx.stack.addFirst(new DeelangString(ctx, strm.readUTF()));
           return;
         case Opcodes.IPUSHCONST_B:
           intOper = strm.readByte();
-          ctx.stack.addFirst(new DeeLangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
+          ctx.stack.addFirst(new DeelangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
           return;
         case Opcodes.FPUSHCONST_B:
           intOper = strm.readByte();
@@ -222,11 +230,11 @@ public class VM {
           return;
         case Opcodes.SPUSHCONST_B:
           intOper = strm.readByte();
-          ctx.stack.addFirst(new DeeLangString(ctx, (String)ctx.pool[intOper].getValue()));
+          ctx.stack.addFirst(new DeelangString(ctx, (String)ctx.pool[intOper].getValue()));
           return;
         case Opcodes.IPUSHCONST_W:
           intOper = strm.readShort();
-          ctx.stack.addFirst(new DeeLangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
+          ctx.stack.addFirst(new DeelangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
           return;
         case Opcodes.FPUSHCONST_W:
           intOper = strm.readShort();
@@ -234,11 +242,11 @@ public class VM {
           return;
         case Opcodes.SPUSHCONST_W:
           intOper = strm.readShort();
-          ctx.stack.addFirst(new DeeLangString(ctx, (String)ctx.pool[intOper].getValue()));
+          ctx.stack.addFirst(new DeelangString(ctx, (String)ctx.pool[intOper].getValue()));
           return;
         case Opcodes.IPUSHCONST_L:
           intOper = strm.readInt();
-          ctx.stack.addFirst(new DeeLangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
+          ctx.stack.addFirst(new DeelangInteger(ctx, (Integer)ctx.pool[intOper].getValue()));
           return;
         case Opcodes.FPUSHCONST_L:
           intOper = strm.readInt();
@@ -246,7 +254,7 @@ public class VM {
           return;
         case Opcodes.SPUSHCONST_L:
           intOper = strm.readInt();
-          ctx.stack.addFirst(new DeeLangString(ctx, (String)ctx.pool[intOper].getValue()));
+          ctx.stack.addFirst(new DeelangString(ctx, (String)ctx.pool[intOper].getValue()));
           return;
         case Opcodes.POP:
           ctx.stack.removeFirst();

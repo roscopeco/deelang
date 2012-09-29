@@ -1,4 +1,4 @@
-/* MaxLocalsExceededException.java
+/* MaxBlockSizeExceededException.java
  *
  * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
  *
@@ -14,29 +14,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License. 
  */
-package com.roscopeco.deelang.compiler.deevm;
+package com.roscopeco.deelang.vm.compiler;
 
 import com.roscopeco.deelang.compiler.CompilerError;
 
-public class MaxLocalsExceededException extends CompilerError {
+public class MaxConstPoolSizeExceededException extends CompilerError {
 
   /**
    * 
    */
-  private static final long serialVersionUID = -8762173612496462496L;
+  private static final long serialVersionUID = 3226134712870031490L;
 
-  public MaxLocalsExceededException() {
+  public MaxConstPoolSizeExceededException() {
   }
 
-  public MaxLocalsExceededException(String arg0, Throwable arg1) {
+  public MaxConstPoolSizeExceededException(String arg0, Throwable arg1) {
     super(arg0, arg1);
   }
 
-  public MaxLocalsExceededException(String arg0) {
+  public MaxConstPoolSizeExceededException(String arg0) {
     super(arg0);
   }
 
-  public MaxLocalsExceededException(Throwable arg0) {
+  public MaxConstPoolSizeExceededException(Throwable arg0) {
     super(arg0);
   }
 
