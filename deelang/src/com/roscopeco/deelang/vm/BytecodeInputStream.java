@@ -81,6 +81,9 @@ public class BytecodeInputStream extends InputStream {
     } else {
       pc = 0;
     }
+    
+    // invalidate mark
+    mark = -1;
   }
 
   @Override

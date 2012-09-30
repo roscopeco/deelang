@@ -6,8 +6,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  UnitTests.class,
-  FunctionalTests.class,
-  RegressionTests.class
+  com.roscopeco.deelang.vm.RegressionTests.class
 })
-public class AllTests { }
+public class RegressionTests { }
