@@ -109,6 +109,18 @@
 		<!-- Build nocli jar -->
 		<jar destfile="${bin.dir}/${jar.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
 
+		<!-- Build nocli-novm jar -->
+		<jar destfile="${bin.dir}/${jar.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
+		    <exclude name="com/roscopeco/deelang/compiler/commandline/**"/>
+		    <exclude name="com/roscopeco/deelang/vm/**"/>
+	    </jar>
+
+		<!--  Build dex-runtime jar -->
+		<jar destfile="${bin.dir}/${jar.dex.runtime.name}" basedir="${build.dir}">
+		    <include name="com/roscopeco/deelang/runtime/**"/>
+		    <include name="dee/**"/>
+	    </jar> 
+		
 		<!-- Add ANTLR runtime and Dexmaker and licenses and build complete jar -->
 		<!-- This jar gets the manifest with the Main-Class attribute, so it can run as a commandline compiler. -->
 		<unjar src="${lib.dir}/antlr-runtime-3.4.jar" dest="${build.dir}"/>
@@ -129,8 +141,11 @@
 		<!-- Build nocli complete jar -->
 		<jar destfile="${bin.dir}/${jar.complete.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
 		
-		<!--  Build novm-nocli -->
-		<delete dir="${build.dir}/dee/vm"/>
+		<!-- Build nocli-novm complete jar -->
+		<jar destfile="${bin.dir}/${jar.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
+		    <exclude name="com/roscopeco/deelang/compiler/commandline/**"/>
+		    <exclude name="com/roscopeco/deelang/vm/**"/>
+	    </jar>
 	</target>
 
 	<target name="test-jars" description="Ensure that generated Jars work as expected" depends="jar, compile-jartests">
