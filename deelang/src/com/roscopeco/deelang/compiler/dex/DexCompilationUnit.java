@@ -555,9 +555,15 @@ public class DexCompilationUnit extends ASTVisitor {
   }
 
   @Override
-  protected void visitChain(Tree ast)
-      throws CompilerError {
-    throw new CompilerBug("CHAIN visited");
+  protected void visitChain(Tree ast) throws CompilerError {
+    if (lastChainReceiver == null) {
+      throw new CompilerError("Cannot chain void method"); 
+    } else {
+      if (!setTargetReg(lastChainReceiver)) {
+        throw new CompilerBug("CHAIN encountered with no prior receiver");
+      }
+      lastChainReceiver = null;
+    }
   }
   
   /**
@@ -821,14 +827,6 @@ public class DexCompilationUnit extends ASTVisitor {
     case DeeLangParser.SELF:
       receiverClz = selfClz;
       receiverReg = codeProxy.getSelf();
-      break;
-    case DeeLangParser.CHAIN:
-      if (lastChainReceiver == null) {
-        throw new CompilerError("Cannot chain void method"); 
-      } else {
-        receiverReg = lastChainReceiver.reg;
-        receiverClz = lastChainReceiver.jtype;
-      }
       break;
     default:
       // Either a literal, var load, or somee other kind of expression.
