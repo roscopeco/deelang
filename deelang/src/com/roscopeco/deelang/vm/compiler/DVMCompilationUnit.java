@@ -407,8 +407,9 @@ public class DVMCompilationUnit extends ASTVisitor {
   
   @Override
   protected void visitAssignField(Tree ast) throws CompilerError {
-    String name = ast.getChild(0).getText();
-    visit(ast.getChild(1));
+    visit(ast.getChild(0));
+    String name = ast.getChild(1).getText();
+    visit(ast.getChild(2));
     try {
       writeSizedNoExtra(strm, Opcodes.PUTFIELD_B, Opcodes.PUTFIELD_W, Opcodes.PUTFIELD_L, 
           getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
