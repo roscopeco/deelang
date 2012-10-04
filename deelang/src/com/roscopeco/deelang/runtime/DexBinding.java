@@ -5,10 +5,12 @@ import java.util.HashMap;
 import dee.lang.Binding;
 import dee.lang.DeelangObject;
 
-public class HashBinding implements Binding {
+public class DexBinding implements Binding {
   private final HashMap<String, Object> binding = new HashMap<String, Object>();
   private DeelangObject self;
-  private boolean errorFlag;
+  
+  /* public to allow direct access from compiled scripts */
+  public boolean errorFlag;
   
   @Override
   public Object getLocal(String name) {

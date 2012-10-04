@@ -10,11 +10,11 @@ import dee.lang.DeelangRuntimeException;
 
 
 public abstract class CompiledScript implements Runnable {
-  protected final Binding binding;
+  protected final DexBinding binding;
   
   public static <T extends CompiledScript> T newInstance(Class<T> clz, Binding b) {
     try {
-      return clz.getConstructor(Binding.class).newInstance(b);
+      return clz.getConstructor(DexBinding.class).newInstance(b);
     } catch (InvocationTargetException e) {
       throw new DeelangRuntimeException(new CompilerBug("Exception thrown by generated <init>", e));
     } catch (IllegalAccessException e) {
@@ -26,11 +26,11 @@ public abstract class CompiledScript implements Runnable {
     }    
   }
   
-  public CompiledScript(Binding binding) {
+  public CompiledScript(DexBinding binding) {
     this.binding = binding;
   }
   
-  public Binding getBinding() {
+  public DexBinding getBinding() {
     return binding;
   }
   
@@ -47,5 +47,6 @@ public abstract class CompiledScript implements Runnable {
    * @param self The <code>self</code> object (should be <code>binding.getSelf()</code>). 
    * @param binding The {@link Binding} to use for the run.
    */
-  protected abstract void run(DeelangObject self, Binding binding);
+  /* N.B. Various things rely on this method signature's argument order! */
+  protected abstract void run(DeelangObject self, DexBinding binding);
 }

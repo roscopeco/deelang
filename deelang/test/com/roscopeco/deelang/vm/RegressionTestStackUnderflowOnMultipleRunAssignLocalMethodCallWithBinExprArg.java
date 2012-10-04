@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.roscopeco.deelang.compiler.Compiler;
-import com.roscopeco.deelang.runtime.HashBinding;
+import com.roscopeco.deelang.runtime.DexBinding;
 import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
 
 import dee.lang.Binding;
@@ -26,7 +26,7 @@ public class RegressionTestStackUnderflowOnMultipleRunAssignLocalMethodCallWithB
   private static final String CODE = "a = foo.timesTwo(3+2)";
 
   com.roscopeco.deelang.vm.compiler.CompiledScript deevmScript;
-  HashBinding dexBinding;
+  DexBinding dexBinding;
   VM deevm = new VM();
   RuntimeContext deeContext;
 

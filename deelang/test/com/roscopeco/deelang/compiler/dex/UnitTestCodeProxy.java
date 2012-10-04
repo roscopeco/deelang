@@ -16,6 +16,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.dexmaker.Code;
+import com.google.dexmaker.Comparison;
 import com.google.dexmaker.FieldId;
 import com.google.dexmaker.Label;
 import com.google.dexmaker.Local;
@@ -24,6 +25,7 @@ import com.google.dexmaker.TypeId;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Aget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Aput;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Cast;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.Compare;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Iget;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Instruction;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.Invoke;
@@ -232,7 +234,22 @@ public class UnitTestCodeProxy {
 
   @Test
   public void testCompare() {
-    // TODO implement this test
+    assertThat(proxy.insns.size(), is(0));
+    proxy.compare(Comparison.EQ, label, mockLocal, mockLocal2);
+    
+    assertThat(proxy.insns.size(), is(1));
+    
+    Instruction i = proxy.insns.get(0);
+    assertThat(i, is(instanceOf(Compare.class)));
+
+    Compare<Object> ig = (Compare<Object>)i;
+    assertThat(ig.comparison, is(Comparison.EQ));
+    assertThat(ig.trueLabel, is(label));
+    assertThat(ig.a, is(mockLocal));
+    assertThat(ig.b, is(mockLocal2));
+    
+    ig.generate();
+    verify(mockCode).compare(Comparison.EQ, label, mockLocal, mockLocal2);
   }
 
   @Test

@@ -14,7 +14,7 @@ import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.runtime.CompiledScript;
-import com.roscopeco.deelang.runtime.HashBinding;
+import com.roscopeco.deelang.runtime.DexBinding;
 
 import dee.lang.Binding;
 import dee.lang.Block;
@@ -62,7 +62,7 @@ public class CompilerFuncTestBase {
   }
   
   public Binding getTestBinding() {
-    HashBinding b = new HashBinding();
+    DexBinding b = new DexBinding();
     b.setSelf(new Foo(b));
     b.setLocal("foo", b.getSelf());
     b.setLocal("a", b.getSelf());

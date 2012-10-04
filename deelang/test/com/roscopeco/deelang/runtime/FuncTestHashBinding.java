@@ -10,7 +10,7 @@ import dee.lang.DeelangInteger;
 public class FuncTestHashBinding {
   @Test
   public void testGetSetLocal() {
-    HashBinding b = new HashBinding();
+    DexBinding b = new DexBinding();
 
     assertNull(b.getLocal("TEST"));
     
@@ -21,7 +21,7 @@ public class FuncTestHashBinding {
 
   @Test
   public void testGetSetSelf() {
-    HashBinding b = new HashBinding();
+    DexBinding b = new DexBinding();
 
     assertNull(b.getSelf());
     

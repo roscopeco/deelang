@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.antlr.runtime.tree.Tree;
 
 import com.google.dexmaker.Code;
+import com.google.dexmaker.Comparison;
 import com.google.dexmaker.DexMaker;
 import com.google.dexmaker.FieldId;
 import com.google.dexmaker.Label;
@@ -24,8 +25,10 @@ import com.roscopeco.deelang.compiler.CompilerBug;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
+import com.roscopeco.deelang.compiler.dex.CodeProxy.TypeRegisterMapping;
 import com.roscopeco.deelang.parser.DeeLangParser;
 import com.roscopeco.deelang.runtime.CompiledScript;
+import com.roscopeco.deelang.runtime.DexBinding;
 import com.roscopeco.deelang.runtime.DexBlock;
 
 import dee.lang.Binding;
@@ -42,7 +45,7 @@ public class DexCompilationUnit extends ASTVisitor {
   private final String sourceName;
   private final TypeId<? extends CompiledScript> compiledScriptTypeId;
   private final String compiledScriptName;
-  private final Class<? extends DeelangObject> selfClz;
+  private final Class<? extends DeelangObject> selfClz;  
 
   /* PUBLIC API */
   
@@ -60,13 +63,13 @@ public class DexCompilationUnit extends ASTVisitor {
     dexMaker.declare(compiledScriptTypeId, sourceName, Modifier.PUBLIC | Modifier.FINAL, TypeId.get(superClass));
     
     // Generate constructor
-    MethodId<?, Void> init = compiledScriptTypeId.getConstructor(TYPEID_BINDING);
+    MethodId<?, Void> init = compiledScriptTypeId.getConstructor(TYPEID_DEXBINDING);
     Code initCode = dexMaker.declare(init, Modifier.PUBLIC);
-    initCode.invokeDirect(COMPILEDSCRIPT_INIT, null, initCode.getThis(compiledScriptTypeId), initCode.getParameter(0, TYPEID_BINDING));
+    initCode.invokeDirect(COMPILEDSCRIPT_INIT, null, initCode.getThis(compiledScriptTypeId), initCode.getParameter(0, TYPEID_DEXBINDING));
     initCode.returnVoid();
     
     // Declare run method and get a code proxy
-    MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_BINDING);
+    MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_DEXBINDING);
     codeProxy = new CodeProxy(this, dexMaker.declare(run, Modifier.PUBLIC | Modifier.FINAL));
   }
   
@@ -145,6 +148,8 @@ public class DexCompilationUnit extends ASTVisitor {
   }
 
   protected static final TypeId<Binding> TYPEID_BINDING = TypeId.get(Binding.class);
+  protected static final TypeId<DexBinding> TYPEID_DEXBINDING = TypeId.get(DexBinding.class);
+  
   protected static final TypeId<CompiledScript> TYPEID_COMPILEDSCRIPT = TypeId.get(CompiledScript.class);
   protected static final TypeId<Object[]> TYPEID_OBJECT_A = TypeId.get(Object[].class);
   protected static final TypeId<Block> TYPEID_BLOCK = TypeId.get(Block.class);
@@ -156,12 +161,13 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final TypeId<DeelangString> TYPEID_DL_STRING = TypeId.get(DeelangString.class);
   
   protected static final FieldId<DexBlock, Boolean> BLOCK_INSCOPE = TYPEID_DEXBLOCK.getField(TypeId.BOOLEAN, "inScope");
+  protected static final FieldId<DexBinding, Boolean> DEXBINDING_ERRORFLAG = TYPEID_DEXBINDING.getField(TypeId.BOOLEAN, "errorFlag");
 
   protected static final MethodId<Binding, Object> BINDING_GET_LOCAL = TYPEID_BINDING.getMethod(TypeId.OBJECT, "getLocal", TypeId.STRING);
   protected static final MethodId<Binding, Void> BINDING_SET_LOCAL = TYPEID_BINDING.getMethod(TypeId.VOID, "getLocal", TypeId.STRING, TypeId.OBJECT);
   
-  protected static final MethodId<CompiledScript, Void> COMPILEDSCRIPT_INIT = TYPEID_COMPILEDSCRIPT.getConstructor(TYPEID_BINDING);
-  protected static final MethodId<DexBlock, Void> BLOCK_INIT = TYPEID_DEXBLOCK.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A);
+  protected static final MethodId<CompiledScript, Void> COMPILEDSCRIPT_INIT = TYPEID_COMPILEDSCRIPT.getConstructor(TYPEID_DEXBINDING);
+  protected static final MethodId<DexBlock, Void> BLOCK_INIT = TYPEID_DEXBLOCK.getConstructor(TYPEID_DL_OBJECT, TYPEID_DEXBINDING, TYPEID_OBJECT_A);
   
   protected static final MethodId<DeelangInteger, Void> DL_INTEGER_INIT = TYPEID_DL_INTEGER.getConstructor(TYPEID_BINDING, TypeId.INT);
   protected static final MethodId<DeelangFloat, Void> DL_FLOAT_INIT = TYPEID_DL_FLOAT.getConstructor(TYPEID_BINDING, TypeId.DOUBLE);
@@ -176,6 +182,9 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPMOD = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opMOD", TYPEID_DL_OBJECT);
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPPOW = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opPOW", TYPEID_DL_OBJECT);
     
+  // TODO all backPass stuff should probably move to CodeProxy now...
+  //          (i.e. backPassStack-per-scope).
+  
   /**
    * <p>Used to pass data back to higher tree nodes during the compile.
    * This is used in different ways for different AST types, for example
@@ -367,7 +376,7 @@ public class DexCompilationUnit extends ASTVisitor {
     BackPassFrame f = backPassData.peekFirst();    
     if (f != null && f instanceof TargetRegBackPassData) {
       TargetRegBackPassData tr = (TargetRegBackPassData)f;
-      tr.reg = new TypeRegisterMapping<T>(jtype, reg);      
+      tr.reg = codeProxy.new TypeRegisterMapping<T>(jtype, reg);      
       return true;
     }
     return false;
@@ -391,21 +400,6 @@ public class DexCompilationUnit extends ASTVisitor {
     return false;
   }
   
-  /**
-   * Utility method to save the given target as the receiver for future 
-   * chained calls.
-   */
-  protected <T> void saveChainReceiver(Local<T> target, Class<T> clz) {
-    // Save the register and type in case the next instruction is chained.
-    // TODO don't think this will always work. Need to get test coverage on this...
-    //      We may need a stack, or stash it somewhere else or something...
-    if (target != null) {
-      lastChainReceiver = new TypeRegisterMapping<T>(clz, target);
-    } else {
-      lastChainReceiver = null;
-    }
-  }
-  
   private void generateIntLiteral(int value) {
     Local<DeelangInteger> ldl = null;
     
@@ -419,7 +413,7 @@ public class DexCompilationUnit extends ASTVisitor {
         //      Currently we initialize in a temp register, then visitAssignLocal
         //      generates a move instruction...
         ldl = codeProxy.newLocal(TYPEID_DL_INTEGER);
-        albpd.src = new TypeRegisterMapping<DeelangInteger>(DeelangInteger.class, ldl);
+        albpd.src = codeProxy.new TypeRegisterMapping<DeelangInteger>(DeelangInteger.class, ldl);
       } else {
         TargetRegBackPassData trbpd = getTargetRegBackPassData();
         if (trbpd != null) {
@@ -439,7 +433,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     if (ldl != null) {
       Local<Integer> li = codeProxy.newLocal(TypeId.INT);
-      Local<Binding> binding = codeProxy.getRuntimeBindingRegister();
+      Local<DexBinding> binding = codeProxy.getRuntimeBindingRegister();
       
       codeProxy.loadConstant(li, value);
       codeProxy.newInstance(ldl, DL_INTEGER_INIT, binding, li);
@@ -482,7 +476,7 @@ public class DexCompilationUnit extends ASTVisitor {
         //      Currently we initialize in a temp register, then visitAssignLocal
         //      generates a move instruction...
         ldl = codeProxy.newLocal(TYPEID_DL_FLOAT);
-        albpd.src = new TypeRegisterMapping<DeelangFloat>(DeelangFloat.class, ldl);
+        albpd.src = codeProxy.new TypeRegisterMapping<DeelangFloat>(DeelangFloat.class, ldl);
       } else {
         TargetRegBackPassData trbpd = getTargetRegBackPassData();
         if (trbpd != null) {
@@ -502,7 +496,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     if (ldl != null) {
       Local<Double> ld = codeProxy.newLocal(TypeId.DOUBLE);
-      Local<Binding> binding = codeProxy.getRuntimeBindingRegister();
+      Local<DexBinding> binding = codeProxy.getRuntimeBindingRegister();
       
       codeProxy.loadConstant(ld, Double.parseDouble(ast.getText()));
       codeProxy.newInstance(ldl, DL_FLOAT_INIT, binding, ld);
@@ -533,7 +527,7 @@ public class DexCompilationUnit extends ASTVisitor {
         //      Currently we initialize in a temp register, then visitAssignLocal
         //      generates a move instruction...
         ldl = codeProxy.newLocal(TYPEID_DL_STRING);
-        albpd.src = new TypeRegisterMapping<DeelangString>(DeelangString.class, ldl);
+        albpd.src = codeProxy.new TypeRegisterMapping<DeelangString>(DeelangString.class, ldl);
       } else {
         TargetRegBackPassData trbpd = getTargetRegBackPassData();
         if (trbpd != null) {
@@ -553,7 +547,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     if (ldl != null) {
       Local<Object> ld = codeProxy.newLocal(TypeId.OBJECT);
-      Local<Binding> binding = codeProxy.getRuntimeBindingRegister();
+      Local<DexBinding> binding = codeProxy.getRuntimeBindingRegister();
   
       String value = ast.getText();
       codeProxy.loadConstant(ld, StringEscapeUtils.unescapeJava(value.substring(1,value.length()-1)));
@@ -572,42 +566,14 @@ public class DexCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitChain(Tree ast) throws CompilerError {
-    if (lastChainReceiver == null) {
+    TypeRegisterMapping<?> chainReceiver = codeProxy.getChainReceiver();
+    if (chainReceiver == null) {
       throw new CompilerError("Cannot chain void method"); 
     } else {
-      if (!setTargetReg(lastChainReceiver)) {
+      if (!setTargetReg(chainReceiver)) {
         throw new CompilerBug("CHAIN encountered with no prior receiver");
       }
-      lastChainReceiver = null;
-    }
-  }
-  
-  /**
-   * Holds a type and a register. Used to track types through
-   * the compiler (mostly types of locals).
-   */
-  protected final class TypeRegisterMapping<T> {
-    protected Local<T> reg;
-    protected Class<T> jtype;
-    protected TypeId<T> type;
-    
-    /**
-     * Used when just using this as a type/register mapping. 
-     * Doesn't allocate any registers.
-     */
-    protected TypeRegisterMapping(Class<T> jtype, Local<T> reg) {
-      this.jtype = jtype;
-      this.reg = reg;
-      this.type = TypeId.get(jtype);
-    }
-    
-    /**
-     * Used when mapping locals. Automatically allocates
-     * the register.
-     */
-    protected TypeRegisterMapping(Class<T> jtype) {
-      this.jtype = jtype;
-      this.reg = codeProxy.newLocal(this.type = TypeId.get(jtype));
+      codeProxy.clearChainReceiver();
     }
   }
     
@@ -757,8 +723,8 @@ public class DexCompilationUnit extends ASTVisitor {
     // Don't allow chaining at this point.
     // TODO allow field chaining. Need to be careful - can't necessarily just copy the
     //      assigned value to a temp reg, and allow it to be chained - what if field
-    //      value changes before chained expr runs? 
-    lastChainReceiver = null;
+    //      value changes before chained expr runs?
+    codeProxy.clearChainReceiver();
         
     // Ensure field is assignable from type
     if (!fClz.isAssignableFrom(trbpd.reg.jtype)) {
@@ -809,7 +775,7 @@ public class DexCompilationUnit extends ASTVisitor {
         // TODO this is inefficient. Should really be returning directly to the
         // LHS's register.
         target = codeProxy.newLocal(fType);
-        calleralbpd.src = new TypeRegisterMapping(fClz, target);
+        calleralbpd.src = codeProxy.new TypeRegisterMapping(fClz, target);
       } else {
         // Just transient (probably chained) so immediately return the target to
         // the pool. we cant ignore the return in case its part of a call chain...
@@ -818,7 +784,7 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     }
     setTargetReg(target, fClz);
-    saveChainReceiver(target, fClz);
+    codeProxy.saveChainReceiver(target, fClz);
     
     // Load the field
     codeProxy.iget(field, target, receiver);
@@ -927,11 +893,6 @@ public class DexCompilationUnit extends ASTVisitor {
     }    
   }
   
-  // NOTE: Any methods that make use of this field MUST make sure
-  //       they unconditionally clear it to prevent stale references
-  //       hanging around!
-  private TypeRegisterMapping<?> lastChainReceiver;
-  
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected void visitMethodCall(Tree ast)
@@ -947,7 +908,7 @@ public class DexCompilationUnit extends ASTVisitor {
     switch (receiverAST.getType()) {
     case DeeLangParser.SELF:
       receiverClz = selfClz;
-      receiverReg = codeProxy.getSelf();
+      receiverReg = codeProxy.getTypeCastSelfReg(selfClz);
       break;
     default:
       // Either a literal, var load, or somee other kind of expression.
@@ -994,7 +955,7 @@ public class DexCompilationUnit extends ASTVisitor {
     TypeId<?> decType = TypeId.get(bindMethod.getDeclaringClass());
     TypeId<?> retType = TypeId.get(retClz = bindMethod.getReturnType());
     
-    // If we have a block, allocate it's register
+    // If we have a block, allocate its register
     Local blockReg = null;
     if (hasBlock) {
       blockReg = codeProxy.newLocal(bpd.block.blockTypeId);
@@ -1031,7 +992,7 @@ public class DexCompilationUnit extends ASTVisitor {
           // TODO this is inefficient. Should really be returning directly to the
           //      LHS's register.
           target = codeProxy.newLocal(retType);
-          calleralbpd.src = new TypeRegisterMapping(retClz, target);
+          calleralbpd.src = codeProxy.new TypeRegisterMapping(retClz, target);
         }
       } else {
         if (void.class.equals(retClz)) {
@@ -1045,7 +1006,7 @@ public class DexCompilationUnit extends ASTVisitor {
       }
     }
     setTargetReg(target, retClz);    
-    saveChainReceiver(target, retClz);
+    codeProxy.saveChainReceiver(target, retClz);
     
     // Generate method call
     generateMethodCall(mid, target, receiverReg, args, bpd.block, blockReg);    
@@ -1065,7 +1026,26 @@ public class DexCompilationUnit extends ASTVisitor {
       if (blockReg == null) {
         blockReg = codeProxy.newLocal(bpd.orBlock.blockTypeId);
       }
+      
+      Local<Boolean> falseVal = codeProxy.newLocal(TypeId.BOOLEAN);
+      Local<Boolean> eflag = codeProxy.newLocal(TypeId.BOOLEAN);
+      Label afterOr = new Label();
+      
+      // Check if error flag is set, and run 'or' if so.
+      codeProxy.loadConstant(falseVal, false);
+      codeProxy.iget(DEXBINDING_ERRORFLAG, eflag, codeProxy.getRuntimeBindingRegister());
+      codeProxy.compare(Comparison.EQ, afterOr, eflag, falseVal);
+      
       generateMethodCall(DL_OBJECT_OR, null, codeProxy.getSelf(), new Local[] { blockReg }, bpd.orBlock, blockReg);
+      
+      // reset error flag
+      codeProxy.iput(DEXBINDING_ERRORFLAG, codeProxy.getRuntimeBindingRegister(), falseVal);
+      
+      // TODO minor bug here - an or block will only get put out of scope if it is actually executed.
+      //      Possibly doesn't matter, unless or is overriden to grab the block for later invocation...
+      codeProxy.freeLocal(falseVal);
+      codeProxy.freeLocal(eflag);      
+      codeProxy.mark(afterOr);
     }   
   }
   
@@ -1087,9 +1067,9 @@ public class DexCompilationUnit extends ASTVisitor {
         codeProxy.loadConstant(bllen, i);
         codeProxy.aput(codeProxy.blockLocalsLocal(), bllen, codeProxy.getLocalRegister(closedLocals.get(i)).reg);        
       }
-      codeProxy.newInstance(blockReg, blockBpd.blockTypeId.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), 
+      codeProxy.newInstance(blockReg, blockBpd.blockTypeId.getConstructor(TYPEID_DL_OBJECT, TYPEID_DEXBINDING, TYPEID_OBJECT_A), 
           codeProxy.getParameter(0, TYPEID_DL_OBJECT), 
-          codeProxy.getParameter(1, TYPEID_BINDING), 
+          codeProxy.getParameter(1, TYPEID_DEXBINDING), 
           codeProxy.blockLocalsLocal());
       codeProxy.freeLocal(bllen);
     }
@@ -1186,14 +1166,14 @@ public class DexCompilationUnit extends ASTVisitor {
     blockBackPassData.push(new BlockBpd(codeProxy, blkType));
     
     // Generate constructor
-    Code initCode = dexMaker.declare(blkType.getConstructor(TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A), Modifier.PUBLIC);
+    Code initCode = dexMaker.declare(blkType.getConstructor(TYPEID_DL_OBJECT, TYPEID_DEXBINDING, TYPEID_OBJECT_A), Modifier.PUBLIC);
     initCode.invokeDirect(BLOCK_INIT, null, initCode.getThis(blkType), 
         initCode.getParameter(0, TYPEID_DL_OBJECT),
-        initCode.getParameter(1, TYPEID_BINDING),
+        initCode.getParameter(1, TYPEID_DEXBINDING),
         initCode.getParameter(2, TYPEID_OBJECT_A));
     initCode.returnVoid();
     
-    MethodId<?, Void> invoke = blkType.getMethod(TypeId.VOID, "invoke", TYPEID_DL_OBJECT, TYPEID_BINDING, TYPEID_OBJECT_A, TYPEID_OBJECT_A);
+    MethodId<?, Void> invoke = blkType.getMethod(TypeId.VOID, "invoke", TYPEID_DL_OBJECT, TYPEID_DEXBINDING, TYPEID_OBJECT_A, TYPEID_OBJECT_A);
     codeProxy = new CodeProxy(this, dexMaker.declare(invoke, Modifier.PUBLIC | Modifier.FINAL));
 
     // generate method code with suitable jump to preload

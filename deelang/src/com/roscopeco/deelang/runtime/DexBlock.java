@@ -1,15 +1,14 @@
 package com.roscopeco.deelang.runtime;
 
-import dee.lang.Binding;
 import dee.lang.Block;
 import dee.lang.DeelangObject;
 
 public abstract class DexBlock implements Block {  
-  final Binding binding;
+  final DexBinding binding;
   final Object[] closedLocals;  
   public boolean inScope;
   
-  protected DexBlock(DeelangObject self, Binding binding, Object[] locals) {
+  protected DexBlock(DeelangObject self, DexBinding binding, Object[] locals) {
     this.binding = binding;
     this.closedLocals = locals;
     this.inScope = true;
@@ -23,5 +22,6 @@ public abstract class DexBlock implements Block {
   }
   
   // N.B. Args is not currently used, but may in future support block args
-  protected abstract void invoke(DeelangObject self, Binding binding, Object[] locals, Object[] args);
+  /* N.B. Various things rely on this method signature's argument order! */
+  protected abstract void invoke(DeelangObject self, DexBinding binding, Object[] locals, Object[] args);
 }
