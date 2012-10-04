@@ -896,7 +896,7 @@ LINE_COMMENT
 
 TERMINATOR
   : '\r'? '\n'
-  | ';'
+  | ';' '\r'? '\n'?
   ;
 
 WS
