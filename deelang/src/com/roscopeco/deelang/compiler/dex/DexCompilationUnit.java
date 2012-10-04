@@ -2,6 +2,7 @@ package com.roscopeco.deelang.compiler.dex;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
@@ -390,6 +391,21 @@ public class DexCompilationUnit extends ASTVisitor {
     return false;
   }
   
+  /**
+   * Utility method to save the given target as the receiver for future 
+   * chained calls.
+   */
+  protected <T> void saveChainReceiver(Local<T> target, Class<T> clz) {
+    // Save the register and type in case the next instruction is chained.
+    // TODO don't think this will always work. Need to get test coverage on this...
+    //      We may need a stack, or stash it somewhere else or something...
+    if (target != null) {
+      lastChainReceiver = new TypeRegisterMapping<T>(clz, target);
+    } else {
+      lastChainReceiver = null;
+    }
+  }
+  
   private void generateIntLiteral(int value) {
     Local<DeelangInteger> ldl = null;
     
@@ -600,7 +616,6 @@ public class DexCompilationUnit extends ASTVisitor {
   protected void visitAssignLocal(Tree ast)
       throws CompilerError {
     String name = ast.getChild(0).getText();
-    Tree expr = ast.getChild(1);
     TypeRegisterMapping lhs;
     
     // If we're in a block, we need to know that we've modified this
@@ -623,7 +638,9 @@ public class DexCompilationUnit extends ASTVisitor {
     // Set up back pass data, then visit kids to get expression
     AssignLocalBackPassData bpd;
     backPassData.addFirst(bpd = new AssignLocalBackPassData());
-    visit(expr);
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
     bpd = (AssignLocalBackPassData)backPassData.removeFirst();
     
     if (bpd.src == null) {
@@ -697,12 +714,62 @@ public class DexCompilationUnit extends ASTVisitor {
     throw new UnsupportedError("Not yet implemented");
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   protected void visitFieldAccess(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    // Load receiver and capture register
+    backPassData.addFirst(new TargetRegBackPassData());
+    visit(ast.getChild(0));
+    TargetRegBackPassData bpd = (TargetRegBackPassData)backPassData.removeFirst();
+    Local<?> receiver = bpd.reg.reg;
+    
+    // Find the field
+    String name = ast.getChild(1).getText();
+    FieldId field;
+    Class<?> fClz;
+    TypeId<?> fType;
+    try {
+      Field f = bpd.reg.jtype.getField(name);
+      field = bpd.reg.type.getField(fType = TypeId.get(fClz = f.getType()), name);
+    } catch (NoSuchFieldException e) {
+      throw new UnknownFieldException("Cannot bind field access '" + bpd.reg.jtype + "." + name +"' - No such field");
+    }
+    
+    // Figure out target register
+    // TODO This is mostly-duplicated in various places.
+    //      Refactoring it out would probably come at expense of less-specific error messages though...
+    Local target;
+    MethCallBackPassData callerbpd = getMethCallBackPassData();
+    if (callerbpd != null) {
+      MethCallBackPassData.Argument arg = callerbpd.args[callerbpd.argi] = callerbpd.new Argument(fClz);
+      target = arg.getArgRegister();
+    } else {
+      AssignLocalBackPassData calleralbpd = getAssignLocalBackPassData();
+      if (calleralbpd != null) {
+        // Set up the target but don't return it to the pool yet.
+        // The next insn generated should be the move done by AssignLocal,
+        // which might realloc registers. After that, this target
+        // can safely be reused and will be freed in visitAssignLocal.
+        //
+        // TODO this is inefficient. Should really be returning directly to the
+        // LHS's register.
+        target = codeProxy.newLocal(fType);
+        calleralbpd.src = new TypeRegisterMapping(fClz, target);
+      } else {
+        // Just transient (probably chained) so immediately return the target to
+        // the pool. we cant ignore the return in case its part of a call chain...
+        target = codeProxy.newLocal(fType);
+        codeProxy.freeLocal(target);
+      }
+    }
+    setTargetReg(target, fClz);
+    saveChainReceiver(target, fClz);
+    
+    // Load the field
+    codeProxy.iget(field, target, receiver);
   }
-
+  
   // TODO this is only returning FIRST match, not necessarily BEST match!
   private Method findMethod(Class<?> clz, String name, MethCallBackPassData.Argument<?>[] args) {
     do {
@@ -852,7 +919,6 @@ public class DexCompilationUnit extends ASTVisitor {
     }
     bpd = (MethCallBackPassData)backPassData.removeFirst();
     boolean hasBlock = bpd.block != null;
-    MethCallBackPassData callerbpd = getMethCallBackPassData();
     
     // Find method to call
     Method bindMethod;
@@ -863,9 +929,9 @@ public class DexCompilationUnit extends ASTVisitor {
     }
     if (bindMethod == null) {
       if (hasBlock) {
-        throw new CompilerError("Cannot bind method call '" + receiverClz.getName() + "." + method + "' with block and arguments " + Arrays.toString(bpd.args));
+        throw new UnknownMethodException("Cannot bind method call '" + receiverClz.getName() + "." + method + "' with block and arguments " + Arrays.toString(bpd.args));
       } else {
-        throw new CompilerError("Cannot bind method call '" + receiverClz.getName() + "." + method + "' and arguments " + Arrays.toString(bpd.args));        
+        throw new UnknownMethodException("Cannot bind method call '" + receiverClz.getName() + "." + method + "' and arguments " + Arrays.toString(bpd.args));        
       }
     }
     
@@ -889,6 +955,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     // Sort out where method return is going to go
     Local target;
+    MethCallBackPassData callerbpd = getMethCallBackPassData();
     if (callerbpd != null) {
       if (void.class.equals(retClz)) {
         throw new IllegalMethodCallException("Void method '"+method+"' passed as argument to '"+callerbpd.methName+"'");
@@ -923,16 +990,8 @@ public class DexCompilationUnit extends ASTVisitor {
         }
       }
     }
-    setTargetReg(target, retClz);
-    
-    // Save the register and type in case the next instruction is chained.
-    // TODO don't think this will always work. Need to get test coverage on this...
-    //      We may need a stack, or stash it somewhere else or something...
-    if (target != null) {
-      lastChainReceiver = new TypeRegisterMapping(retClz, target);
-    } else {
-      lastChainReceiver = null;
-    }
+    setTargetReg(target, retClz);    
+    saveChainReceiver(target, retClz);
     
     // Generate method call
     generateMethodCall(mid, target, receiverReg, args, bpd.block, blockReg);    
@@ -1025,6 +1084,15 @@ public class DexCompilationUnit extends ASTVisitor {
     
     for (int i = 0; i < argc; i++) {
       mcbpd.argi = i;
+      visit(ast.getChild(i));      
+    }
+  }
+  
+  @Override
+  protected void visitArg(Tree ast)
+      throws CompilerError {
+    int argc = ast.getChildCount();
+    for (int i = 0; i < argc; i++) {
       visit(ast.getChild(i));      
     }
   }

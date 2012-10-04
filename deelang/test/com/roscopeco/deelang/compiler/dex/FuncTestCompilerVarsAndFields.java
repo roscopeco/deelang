@@ -87,10 +87,7 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   
   @Test
   public void testLocalAssignmentChainedAssignment() throws Throwable {
-    // TODO this one needs more testing, especially on a device. Not entirely
-    //      sure if dalvik will like the way this shuffles the registers...
-    //
-    //      Also, it's doing a lot of useless moves...
+    // TODO This is doing a lot of useless moves...
     runCodeComparisonTest("a=b=1; bar(a); bar(b)", 
         "extends com.roscopeco.deelang.runtime.CompiledScript",
         "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
@@ -108,7 +105,94 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "RETURN_VOID         |     |return");
   }
+
+  /*
+   * Cant optimize this at the moment - needed for chaining!
+   *
+  @Test
+  public void testFieldFromLocalReceiverAccessIsOptimizedAway() throws Throwable {
+    runCodeComparisonTest("foo.a", 
+        "");
+  }
+  */
+
+  @Test(expected=UnknownFieldException.class)
+  public void testPrivateFieldFromLocalReceiverAccessThrows() throws Throwable {
+    runCodeComparisonTest("foo.privField", 
+        "");
+  }
+
+  @Test
+  public void testFieldFromLocalReceiverAccessAssignToLocal() throws Throwable {
+    runCodeComparisonTest("a = foo.a", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v7   //dee.lang.DeelangObject\n"+
+        "                    :v8   //dee.lang.Binding\n"+
+        "CONST_STRING        |     |v1=\"foo\"\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v8.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "MOVE                |     |v0 = v2\n"+
+        "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
+        "MOVE                |     |v3 = v0\n"+
+        "IGET                |     |v4=v3.a  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "MOVE                |     |v5 = v4\n"+
+        "RETURN_VOID         |     |return");
+  }
+
+  @Test
+  public void testFieldFromLocalReceiverAccessAsMethodArg() throws Throwable {
+    runCodeComparisonTest("foo(foo.a)",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v6   //dee.lang.DeelangObject\n"+
+        "                    :v7   //dee.lang.Binding\n"+
+        "CONST_STRING        |     |v1=\"foo\"\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v7.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "MOVE                |     |v0 = v2\n"+
+        "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
+        "MOVE                |     |v3 = v0\n"+
+        "IGET                |     |v4=v3.a  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_VIRTUAL      |     |v6.foo(v4)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo(Ldee/lang/DeelangInteger;)V\n"+
+        "RETURN_VOID         |     |return");
+  }
+
+  @Test
+  public void testFieldFromMethodCallAccessAssignToLocal() throws Throwable {
+    runCodeComparisonTest("a = boo().a", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v3   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //dee.lang.Binding\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.boo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v0=TEMP\n"+
+        "IGET                |     |v1=v0.a  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "MOVE                |     |v2 = v1\n"+
+        "RETURN_VOID         |     |return");
+  }
   
+  @Test
+  public void testFieldFromChainedCallAccessAssignToLocal() throws Throwable {
+    runCodeComparisonTest("a = boo().bar.boo2().a", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v6   //dee.lang.DeelangObject\n"+
+        "                    :v7   //dee.lang.Binding\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v6.boo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v0=TEMP\n"+
+        "IGET                |     |v1=v0.bar  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.boo2()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo2()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "IGET                |     |v3=v2.a  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "MOVE                |     |v4 = v3\n"+
+        "RETURN_VOID         |     |return");
+  }
+
   @Test
   public void testFieldFromLocalReceiverAssignment() throws Throwable {
     runCodeComparisonTest("foo.a=1", 

@@ -31,6 +31,7 @@ tokens {
   ASSIGN;
   METHOD_CALL;
   ARGS;
+  ARG;
   BLOCK;
   ORBLOCK;
   SELF;
@@ -297,8 +298,14 @@ orblock
 
 fragment
 argument_list
-  : LPAREN (expr (COMMA expr)*)? RPAREN -> ^(ARGS expr expr*)?
+  : LPAREN (argument (COMMA argument)*)? RPAREN -> ^(ARGS argument argument*)?
   ;
+  
+fragment
+argument
+  : expr
+    -> ^(ARG expr)
+  ; 
 
 class_identifier
   : rec=IDENTIFIER DOT id=IDENTIFIER -> ^(FIELD_ACCESS $rec $id)

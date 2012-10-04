@@ -39,6 +39,12 @@ public class CompilerFuncTestBase {
       super(binding);
     }
     
+    @SuppressWarnings("unused")
+    private DeelangObject privField; 
+    public DeelangInteger a;
+    public DeelangObject b;
+    public Foo bar;
+    
     public DeelangObject foo() { return null; }  
     public void foo(DeelangInteger a) { }
     public void foo(DeelangInteger a, DeelangInteger b) { }
@@ -51,7 +57,8 @@ public class CompilerFuncTestBase {
     public DeelangString baz(DeelangInteger a) { return new DeelangString(getBinding(), "BAZ"); }
     public DeelangInteger quux(DeelangInteger a) { return a; }
     public void blockNoArgs(Block b) { }
-    public void blockOneArg(Block b, DeelangInteger arg) { }    
+    public void blockOneArg(Block b, DeelangInteger arg) { }
+    public Foo boo2() { return this; }
   }
   
   public Binding getTestBinding() {

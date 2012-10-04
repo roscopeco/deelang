@@ -75,4 +75,18 @@ public class FuncTestCompilerAssignment extends CompilerFuncTestBase {
         new CompiledScript.ConstPoolField("a"),
     });
   }
+  
+  @Test
+  public void testREGRESSIONFieldFromMethodCallAccessAssignToLocalDoesntIgnoreChain() throws Throwable {
+    runCodeLocalsAndPoolComparisonTest("a = foo().a", new byte[] {
+        Opcodes.INVOKESELF_B,     0, 0,
+        Opcodes.GETFIELD_B,       1,
+        Opcodes.STORE,            0
+    }, new String[] {
+        "a"        
+    }, new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolMethod("foo"),
+        new CompiledScript.ConstPoolField("a")
+    });
+  }
 }

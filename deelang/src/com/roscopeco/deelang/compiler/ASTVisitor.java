@@ -58,6 +58,7 @@ public abstract class ASTVisitor {
   protected abstract void visitMethodCall(Tree ast) throws CompilerError;
   protected abstract void visitSelf(Tree ast) throws CompilerError;
   protected abstract void visitArgs(Tree ast) throws CompilerError;
+  protected abstract void visitArg(Tree ast) throws CompilerError;
   protected abstract void visitBlock(Tree ast) throws CompilerError;
   protected abstract void visitOrBlock(Tree ast) throws CompilerError;
   
@@ -146,6 +147,10 @@ public abstract class ASTVisitor {
 
     case DeeLangParser.ARGS:
       visitArgs(ast);
+      return;
+      
+    case DeeLangParser.ARG:
+      visitArg(ast);
       return;
       
     case DeeLangParser.BLOCK:

@@ -387,7 +387,11 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitAssignLocal(Tree ast) throws CompilerError {
     String name = ast.getChild(0).getText();
-    visit(ast.getChild(1));
+    
+    for (int i = 1; i < ast.getChildCount(); i++) {      
+      visit(ast.getChild(i));
+    }
+    
     try {
       strm.write(new byte[] { Opcodes.STORE, getOrAllocLocalSlot(name) });
     } catch (IOException e) {
@@ -409,7 +413,11 @@ public class DVMCompilationUnit extends ASTVisitor {
   protected void visitAssignField(Tree ast) throws CompilerError {
     visit(ast.getChild(0));
     String name = ast.getChild(1).getText();
-    visit(ast.getChild(2));
+    
+    for (int i = 2; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
+    
     try {
       writeSizedNoExtra(strm, Opcodes.PUTFIELD_B, Opcodes.PUTFIELD_W, Opcodes.PUTFIELD_L, 
           getOrAllocConstPoolIndex(name, CompiledScript.CONST_POOL_FIELD));
@@ -523,6 +531,15 @@ public class DVMCompilationUnit extends ASTVisitor {
     mcbpd.argc = (byte)ast.getChildCount();
     for (int i = 0; i < ast.getChildCount(); i++) {
       visit(ast.getChild(i));
+    }
+  }
+  
+  @Override
+  protected void visitArg(Tree ast)
+      throws CompilerError {
+    int argc = ast.getChildCount();
+    for (int i = 0; i < argc; i++) {
+      visit(ast.getChild(i));      
     }
   }
 

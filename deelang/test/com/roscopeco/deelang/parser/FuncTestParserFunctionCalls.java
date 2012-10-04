@@ -52,9 +52,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
   }
 /*
   @Test
@@ -94,13 +98,21 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(2));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(1).getText(), is("2"));
-    assertThat(tree.getChild(1).getChild(0).getChild(1).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(1).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(1).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(1).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(1).getChildCount(), is(1));
+    
+    assertThat(tree.getChild(1).getChild(0).getChild(1).getChild(0).getText(), is("2"));
+    assertThat(tree.getChild(1).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(1).getChild(0).getChildCount(), is(0));
   }
 /*  
   @Test
@@ -180,25 +192,33 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("METHOD_CALL"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.METHOD_CALL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(2));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+    
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("METHOD_CALL"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(2));
         
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("SELF"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.SELF));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getText(), is("bar"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChildCount(), is(1));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getText(), is("bar"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getText(), is("ARGS"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChildCount(), is(1));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
   }
 /*
   @Test
@@ -453,45 +473,61 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("METHOD_CALL"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.METHOD_CALL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(2));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+    
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("METHOD_CALL"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(2));
         
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("SELF"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.SELF));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getText(), is("bar"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChildCount(), is(1));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getText(), is("bar"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getText(), is("ARGS"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChildCount(), is(2));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChildCount(), is(2));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+    
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
         
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getText(), is("METHOD_CALL"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getType(), is(DeeLangParser.METHOD_CALL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChildCount(), is(2));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChildCount(), is(1));
+    
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getText(), is("METHOD_CALL"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChildCount(), is(2));
         
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getText(), is("SELF"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.SELF));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getText(), is("baz"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChildCount(), is(1));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getText(), is("baz"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getText(), is("ARGS"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChildCount(), is(1));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getText(), is("2"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).getChildCount(), is(0));    
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getChildCount(), is(1));    
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("2"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));    
   }
   
   /* ******** BLOCKS ******* */
@@ -557,9 +593,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -586,9 +626,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -619,9 +663,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -649,9 +697,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -682,9 +734,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -719,9 +775,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -756,9 +816,13 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
 
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(0));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("1"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
 
     assertThat(tree.getChild(1).getChild(1).getText(), is("BLOCK"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.BLOCK));
@@ -783,5 +847,55 @@ public class FuncTestParserFunctionCalls extends ParserFuncTestBase {
     assertThat(tree.getChild(1).getChild(1).getChild(4).getText(), is("qix"));
     assertThat(tree.getChild(1).getChild(1).getChild(4).getType(), is(DeeLangParser.IDENTIFIER));
     assertThat(tree.getChild(1).getChild(1).getChild(4).getChildCount(), is(0));
+  }
+  
+  @Test
+  public void testBasicFuncCallOneArgWithParensChained() throws Throwable {
+    CommonTree tree = runTest("foo(a.b.c)");
+
+    assertThat(tree.getText(), is("METHOD_CALL"));
+    assertThat(tree.getType(), is(DeeLangParser.METHOD_CALL));
+    assertThat(tree.getChildCount(), is(2));
+
+    assertThat(tree.getChild(0).getText(), is("SELF"));
+    assertThat(tree.getChild(0).getType(), is(DeeLangParser.SELF));
+    assertThat(tree.getChild(0).getChildCount(), is(0));
+    
+    assertThat(tree.getChild(1).getText(), is("foo"));
+    assertThat(tree.getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChildCount(), is(1));
+    
+    assertThat(tree.getChild(1).getChild(0).getText(), is("ARGS"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.ARGS));
+    assertThat(tree.getChild(1).getChild(0).getChildCount(), is(1));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getText(), is("ARG"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getType(), is(DeeLangParser.ARG));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChildCount(), is(2));
+    
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getText(), is("FIELD_ACCESS"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.FIELD_ACCESS));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getText(), is("a"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getText(), is("b"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(0).getChild(1).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getText(), is("FIELD_ACCESS"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getType(), is(DeeLangParser.FIELD_ACCESS));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChildCount(), is(2));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getText(), is("CHAIN"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getType(), is(DeeLangParser.CHAIN));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(0).getChildCount(), is(0));
+
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(1).getText(), is("c"));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getChild(0).getChild(1).getChild(1).getChildCount(), is(0));
+    
   }
 }
