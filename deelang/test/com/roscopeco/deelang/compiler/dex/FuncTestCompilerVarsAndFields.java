@@ -196,17 +196,72 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromLocalReceiverAssignment() throws Throwable {
     runCodeComparisonTest("foo.a=1", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
         "");
   }
 
   @Test
   public void testFieldFromMethodResultReceiverAssignment() throws Throwable {
-    runCodeComparisonTest("foo().a=1", "");
+    runCodeComparisonTest("boo().a=1", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v3   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //dee.lang.Binding\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.boo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v0=TEMP\n"+
+        "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v5,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "IPUT                |     |v0.a=v1  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "RETURN_VOID         |     |return");
   }
   
   @Test
   public void testFieldFromChainedCallAssignment() throws Throwable {
-    runCodeComparisonTest("foo().bar.baz().a=1", "");
+    runCodeComparisonTest("boo().bar.boo2().a=1", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v3   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v4   //dee.lang.DeelangObject\n"+
+        "                    :v5   //dee.lang.Binding\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v4.boo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v0=TEMP\n"+
+        "IGET                |     |v0=v0.bar  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v0.boo2()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo2()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v0=TEMP\n"+
+        "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v5,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "IPUT                |     |v0.a=v1  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "RETURN_VOID         |     |return");
+  }
+  
+  @Test
+  public void testFieldAssignmentAsMethodArg() throws Throwable {
+    runCodeComparisonTest("foo(foo.a=1)", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v7   //dee.lang.DeelangObject\n"+
+        "                    :v8   //dee.lang.Binding\n"+
+        "CONST_STRING        |     |v1=\"foo\"\n"+
+        "INVOKE_INTERFACE    |     |TEMP=v8.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "MOVE                |     |v0 = v2\n"+
+        "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
+        "MOVE                |     |v3 = v0\n"+
+        "CONST               |     |v5=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v4=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v4.<init>(v8,v5)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "IPUT                |     |v3.a=v4  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_VIRTUAL      |     |v7.foo(v4)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.foo(Ldee/lang/DeelangInteger;)V\n"+
+        "RETURN_VOID         |     |return");
+  }
+
+  @Test(expected=TypeException.class)
+  public void testFieldFromIncompatibleTypeAssignment() throws Throwable {
+    runCodeComparisonTest("foo.a=\"Hello\"", "");
   }
   
   @Test

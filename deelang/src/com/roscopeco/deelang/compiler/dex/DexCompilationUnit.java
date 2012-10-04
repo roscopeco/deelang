@@ -708,10 +708,64 @@ public class DexCompilationUnit extends ASTVisitor {
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   protected void visitAssignField(Tree ast)
       throws CompilerError {
-    throw new UnsupportedError("Not yet implemented");
+    // Load receiver and capture register
+    TargetRegBackPassData trbpd = new TargetRegBackPassData();
+    backPassData.addFirst(trbpd);
+    visit(ast.getChild(0));
+    //backPassData.removeFirst();   // don't remove this, leave it there for source reg    
+    Local<?> receiver = trbpd.reg.reg;
+    
+    // Find the field
+    String name = ast.getChild(1).getText();
+    FieldId field;
+    Class<?> fClz;
+    try {
+      Field f = trbpd.reg.jtype.getField(name);
+      field = trbpd.reg.type.getField(TypeId.get(fClz = f.getType()), name);
+    } catch (NoSuchFieldException e) {
+      throw new UnknownFieldException("Cannot bind field access '" + trbpd.reg.jtype + "." + name +"' - No such field");
+    }
+    
+    // Generate expr code and get source reg
+    for (int i = 2; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
+    backPassData.removeFirst();
+    
+    // Figure out whether we need to pass back a target register 
+    // (i.e. this is a method arg). If so, we'll just pass back the
+    // source register.
+    MethCallBackPassData callerbpd = getMethCallBackPassData();
+    if (callerbpd != null) {
+      callerbpd.args[callerbpd.argi] = callerbpd.new Argument(trbpd.reg.jtype, trbpd.reg.reg);
+    } else {
+      AssignLocalBackPassData calleralbpd = getAssignLocalBackPassData();
+      if (calleralbpd != null) {
+        calleralbpd.src = trbpd.reg;
+      } else {
+        TargetRegBackPassData innertrbpd = getTargetRegBackPassData();
+        if (innertrbpd != null) {
+          innertrbpd.reg = trbpd.reg;     
+        }
+      }
+    }
+    
+    // Don't allow chaining at this point.
+    // TODO allow field chaining. Need to be careful - can't necessarily just copy the
+    //      assigned value to a temp reg, and allow it to be chained - what if field
+    //      value changes before chained expr runs? 
+    lastChainReceiver = null;
+        
+    // Ensure field is assignable from type
+    if (!fClz.isAssignableFrom(trbpd.reg.jtype)) {
+      throw new TypeException("Field '" + field + "' not assignment-compatible with '" + trbpd.reg.jtype);
+    }
+    
+    codeProxy.iput(field, receiver, trbpd.reg.reg);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
