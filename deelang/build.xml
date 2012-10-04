@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="deelang" basedir="." default="build">
+	<property file="build.properties"/>
+
+	<taskdef name="antlr3" classname="org.apache.tools.ant.antlr.ANTLR3">
+		<classpath>
+			<pathelement path="lib/antlr3-ant.jar:lib/antlr-3.4-complete.jar"/>
+		</classpath>
+	</taskdef>
+
+	<!-- cleanup -->
+	<target name="_clean-jar">
+		<delete dir="${build.dir}"/>
+		<delete>
+			<fileset dir="${bin.dir}" includes="*.jar"/>
+		</delete>
+	</target>
+	<target name="_clean-classes">
+		<delete dir="${jartest.classes.dir}"/>
+		<delete dir="${test.classes.dir}"/>
+		<delete dir="${main.classes.dir}"/>
+	</target>
+	<target name="_clean-doc">
+		<delete dir="${doc.dir}"/>
+		<delete dir="${doc.developer.dir}"/>
+			</target>
+	<target name="_clean-parser">
+		<delete>
+			<fileset dir="${gen.src.dir}" includes="**/*.java, **/*.tokens"/>
+		</delete>
+	</target>
+
+	<!-- Main code -->
+	<target name="_make-gensrc">
+		<mkdir dir="${gen.src.dir}/com/roscopeco/deelang/parser"/>
+	</target>
+	<target name="_make-bindirs">
+		<mkdir dir="${main.classes.dir}"/>
+		<mkdir dir="${test.classes.dir}"/>
+		<mkdir dir="${jartest.classes.dir}"/>
+		<mkdir dir="${build.dir}"/>
+	</target>
+
+	<target name="generate-parser" description="Generate ANTLR3 parser" depends="_make-gensrc">
+		<antlr3 target="${main.src.dir}/com/roscopeco/deelang/parser/DeeLang.g" 
+			outputdirectory="${gen.src.dir}/com/roscopeco/deelang/parser"/>
+	</target>
+
+	<target name="compile-main" description="Compile the main code" depends="_make-bindirs, generate-parser">
+		<javac destdir="${main.classes.dir}" includeantruntime="false">
+			<src path="${main.src.dir}"/>
+			<src path="${gen.src.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar"/>
+		</javac>
+	</target>
+
+	<!-- Test code -->
+	<target name="compile-tests" description="Compile the test code" depends="_make-bindirs, compile-main">
+		<javac destdir="${test.classes.dir}" includeantruntime="false">
+			<src path="${test.src.dir}"/>
+		    <classpath>
+		        <pathelement location="${main.classes.dir}"/>
+			    <fileset dir="${lib.dir}">
+			        <include name="*.jar"/>
+			    </fileset>
+		    </classpath>
+		</javac>
+	</target>
+
+	<target name="compile-jartests" description="Compile the Jar test code" depends="_make-bindirs, compile-main">
+		<javac destdir="${jartest.classes.dir}" includeantruntime="false">
+			<src path="${jartest.src.dir}"/>
+			<classpath path="${lib.dir}/junit4-4.8.2.jar:${lib.dir}/antlr-runtime-3.4.jar:${main.classes.dir}"/>
+		</javac>
+	</target>
+	
+	<!-- Main targets -->
+	<target name="clean" description="Remove compiled classes" depends="_clean-jar, _clean-classes"/>
+	<target name="clobber" description="Remove all generated resources" depends="clean, _clean-doc, _clean-parser"/>
+	<target name="compile" description="Compile all code" depends="compile-main, compile-tests, compile-jartests"/>
+	<target name="test" description="Run JUnit4 tests" depends="compile-tests">
+		<junit printsummary="true" fork="true">
+		    <classpath>
+		        <pathelement location="${main.classes.dir}"/>
+		        <pathelement location="${test.classes.dir}"/>
+			    <fileset dir="${lib.dir}">
+			        <include name="*.jar"/>
+			    </fileset>
+		    </classpath>
+			<test name="com.roscopeco.deelang.AllTests"/>
+		</junit>
+	</target>
+	
+	<target name="jar" description="Create Deelang Jars" depends="_clean-jar, _make-bindirs, compile-main">
+		<!-- Build standard jar -->
+		<copy todir="${build.dir}">
+			<fileset dir="${main.classes.dir}">
+				<include name="**/*.class"/>
+				<exclude name="com/roscopeco/deelang/Main*.class"/>
+			</fileset>
+		</copy>
+		<copy todir="${build.dir}">
+			<fileset dir="${basedir}">
+				<include name="LICENSE.html"/>
+			</fileset>
+		</copy>
+		<jar destfile="${bin.dir}/${jar.name}" basedir="${build.dir}" includes="**/*"/>
+
+		<!-- Build nocli jar -->
+		<jar destfile="${bin.dir}/${jar.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
+
+		<!-- Build nocli-novm jar -->
+		<jar destfile="${bin.dir}/${jar.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
+		    <exclude name="com/roscopeco/deelang/compiler/commandline/**"/>
+		    <exclude name="com/roscopeco/deelang/vm/**"/>
+	    </jar>
+
+		<!--  Build dex-runtime jar -->
+		<jar destfile="${bin.dir}/${jar.dex.runtime.name}" basedir="${build.dir}">
+		    <include name="com/roscopeco/deelang/runtime/**"/>
+		    <include name="dee/**"/>
+	    </jar> 
+		
+		<!-- Add ANTLR runtime and Dexmaker and licenses and build complete jar -->
+		<!-- This jar gets the manifest with the Main-Class attribute, so it can run as a commandline compiler. -->
+		<unjar src="${lib.dir}/antlr-runtime-3.4.jar" dest="${build.dir}"/>
+		<unjar src="${lib.dir}/dexmaker-20120622.jar" dest="${build.dir}"/>
+		<delete dir="${build.dir}/org/antlr/runtime/debug"/>
+		<delete dir="${build.dir}/com/google/dexmaker/mockito"/>
+		<delete dir="${build.dir}/com/google/dexmaker/stock"/>
+		<delete dir="${build.dir}/mockito-extensions"/>				
+		<delete dir="${build.dir}/META-INF"/>
+		<copy todir="${build.dir}">
+			<fileset dir="${basedir}">
+				<include name="LICENSE.antlr"/>
+				<include name="LICENSE.dexmaker"/>
+			</fileset>
+		</copy>
+		<jar destfile="${bin.dir}/${jar.complete.name}" basedir="${build.dir}" includes="**/*" manifest="${main.src.dir}/manifest"/>
+
+		<!-- Build nocli complete jar -->
+		<jar destfile="${bin.dir}/${jar.complete.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
+		
+		<!-- Build nocli-novm complete jar -->
+		<jar destfile="${bin.dir}/${jar.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
+		    <exclude name="com/roscopeco/deelang/compiler/commandline/**"/>
+		    <exclude name="com/roscopeco/deelang/vm/**"/>
+	    </jar>
+	</target>
+
+	<target name="test-jars" description="Ensure that generated Jars work as expected" depends="jar, compile-jartests">
+		<!-- test non-complete withcli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${bin.dir}/${jar.name}:${test.classes.dir}"/>
+		</java>
+		<!-- test non-complete nocli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${bin.dir}/${jar.nocli.name}:${test.classes.dir}"/>
+		</java>
+		<!-- test complete withcli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${bin.dir}/${jar.complete.name}:${test.classes.dir}"/>
+		</java>
+		<!-- test complete nocli jar -->
+		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
+			<classpath path="${bin.dir}/${jar.complete.nocli.name}:${test.classes.dir}"/>
+		</java>
+	</target>
+
+	<target name="build" description="Perform a full, clean, tested build" depends="clean, compile, test, jar, test-jars"/>
+		
+	<!-- Generate documentation -->
+	<target name="doc" description="Generate Javadoc documentation" depends="compile">
+		<javadoc access="public" 
+		     author="true" 
+		       destdir="${doc.dir}" 
+		       doctitle="DeeLang API" 
+		       nodeprecated="false" 
+		       nodeprecatedlist="false" 
+		       noindex="false" 
+		       nonavbar="false" 
+		       notree="false" 
+		       overview="README.html" 
+		       source="1.7" 
+		       sourcepath="src" 
+		       splitindex="true" 
+		       use="true" 
+		       version="true">
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${main.classes.dir}"/>
+		</javadoc>
+		<javadoc access="protected" 
+		     author="true" 
+		       destdir="${doc.developer.dir}" 
+		       doctitle="DeeLang developer API" 
+		       nodeprecated="false" 
+		       nodeprecatedlist="false" 
+		       noindex="false" 
+		       nonavbar="false" 
+		       notree="false" 
+		       overview="README.html" 
+		       source="1.7" 
+		       sourcepath="src" 
+		       splitindex="true" 
+		       use="true" 
+		       version="true">
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${main.classes.dir}"/>
+		</javadoc>
+		<copy file="LICENSE.html" todir="${doc.dir}"/>
+		<copy file="LICENSE.html" todir="${doc.developer.dir}"/>
+	</target>
+</project>
