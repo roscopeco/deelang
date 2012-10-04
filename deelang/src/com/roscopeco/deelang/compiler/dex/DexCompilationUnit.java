@@ -1298,7 +1298,9 @@ public class DexCompilationUnit extends ASTVisitor {
     backPassData.push(trbpd);
     visit(ast.getChild(0));
     lhs = trbpd.reg;
-    visit(ast.getChild(1));
+    for (int i = 1; i < ast.getChildCount(); i++) { 
+      visit(ast.getChild(i));
+    }
     rhs = trbpd.reg;
     backPassData.removeFirst();
     

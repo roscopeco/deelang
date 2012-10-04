@@ -153,5 +153,55 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
         "RETURN_VOID         |     |return");
   }
   
+  public void doChainedSumTest(String op, String opMethod) throws ParserError, CompilerError {
+    runCodeComparisonTest("1" + op + "boo().bar.boo2().a",
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,dee.lang.Binding)\n"+
+        "                this:v4   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //dee.lang.Binding\n"+
+        "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v6,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v5.boo()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "IGET                |     |v2=v2.bar  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.bar Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v2.boo2()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.boo2()Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;\n"+
+        "MOVE_RESULT         |     |v2=TEMP\n"+
+        "IGET                |     |v3=v2.a  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.a Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v0."+opMethod+"(v3)  //Ldee/lang/DeelangObject;."+opMethod+"(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "RETURN_VOID         |     |return");
+  }
+  
+  @Test
+  public void REGRESSIONaddWithChainedField() throws ParserError, CompilerError {
+    doChainedSumTest("+", "__opADD");
+  }
+  
+  @Test
+  public void REGRESSIONsubWithChainedField() throws ParserError, CompilerError {
+    doChainedSumTest("-", "__opSUB");
+  }
+  
+  @Test
+  public void REGRESSIONmulWithChainedField() throws ParserError, CompilerError {
+    doChainedSumTest("*", "__opMUL");
+  }
+  
+  @Test
+  public void REGRESSIONdivWithChainedField() throws ParserError, CompilerError {
+    doChainedSumTest("/", "__opDIV");
+  }
+  
+  @Test
+  public void REGRESSIONmodWithChainedField() throws ParserError, CompilerError {
+    doChainedSumTest("%", "__opMOD");
+  }
+  
+  @Test
+  public void REGRESSIONpowWithChainedField() throws ParserError, CompilerError {
+    doChainedSumTest("^", "__opPOW");
+  }
+
   /* TODO More tests (e.g. vars/methods in arithmetic) */
 }

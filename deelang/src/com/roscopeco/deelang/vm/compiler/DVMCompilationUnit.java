@@ -585,8 +585,10 @@ public class DVMCompilationUnit extends ASTVisitor {
 
   @Override
   protected void visitAdd(Tree ast) throws CompilerError {
-    visit(ast.getChild(0));
-    visit(ast.getChild(1));
+    visit(ast.getChild(0));   
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -600,7 +602,9 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitSub(Tree ast) throws CompilerError {
     visit(ast.getChild(0));
-    visit(ast.getChild(1));
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }    
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -613,7 +617,9 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitMul(Tree ast) throws CompilerError {
     visit(ast.getChild(0));
-    visit(ast.getChild(1));
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -626,7 +632,9 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitDiv(Tree ast) throws CompilerError {
     visit(ast.getChild(0));
-    visit(ast.getChild(1));
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -639,7 +647,9 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitMod(Tree ast) throws CompilerError {
     visit(ast.getChild(0));
-    visit(ast.getChild(1));
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 
@@ -652,7 +662,9 @@ public class DVMCompilationUnit extends ASTVisitor {
   @Override
   protected void visitPow(Tree ast) throws CompilerError {
     visit(ast.getChild(0));
-    visit(ast.getChild(1));
+    for (int i = 1; i < ast.getChildCount(); i++) {
+      visit(ast.getChild(i));
+    }
     
     try {
       writeSizedOneExtra(strm, Opcodes.INVOKEDYNAMIC_B, Opcodes.INVOKEDYNAMIC_W, Opcodes.INVOKEDYNAMIC_L, 

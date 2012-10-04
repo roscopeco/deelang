@@ -110,4 +110,54 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
         new CompiledScript.ConstPoolMethod("__opMUL")
     });
   }
+  
+  public void doChainedFieldSumTest(String code, String op) throws ParserError, CompilerError {
+    runCodeAndPoolComparisonTest(code,
+    new byte[] {
+        Opcodes.IPUSHCONST_B, 0,
+        Opcodes.INVOKESELF_B, 1, 0,
+        Opcodes.GETFIELD_B, 2,
+        Opcodes.INVOKEDYNAMIC_B, 3, 0,
+        Opcodes.GETFIELD_B, 4,
+        Opcodes.INVOKEDYNAMIC_B, 5, 1,
+    },
+    new CompiledScript.ConstPoolEntry[] {
+        new CompiledScript.ConstPoolInt(1),
+        new CompiledScript.ConstPoolMethod("boo"),
+        new CompiledScript.ConstPoolField("bar"),
+        new CompiledScript.ConstPoolMethod("boo2"),
+        new CompiledScript.ConstPoolField("a"),
+        new CompiledScript.ConstPoolMethod(op),
+    });
+  }
+  
+  @Test
+  public void REGRESSIONtestAddWithChainedField() throws ParserError, CompilerError{
+    doChainedFieldSumTest("1+boo().bar.boo2().a", "__opADD");
+  }
+
+  @Test
+  public void REGRESSIONtestSubWithChainedField() throws ParserError, CompilerError{
+    doChainedFieldSumTest("1-boo().bar.boo2().a", "__opSUB");
+  }
+
+  @Test
+  public void REGRESSIONtestMulWithChainedField() throws ParserError, CompilerError{
+    doChainedFieldSumTest("1*boo().bar.boo2().a", "__opMUL");
+  }
+
+  @Test
+  public void REGRESSIONtestDivWithChainedField() throws ParserError, CompilerError{
+    doChainedFieldSumTest("1/boo().bar.boo2().a", "__opDIV");
+  }
+  
+  @Test
+  public void REGRESSIONtestModWithChainedField() throws ParserError, CompilerError{
+    doChainedFieldSumTest("1%boo().bar.boo2().a", "__opMOD");
+  }
+
+  @Test
+  public void REGRESSIONtestPowWithChainedField() throws ParserError, CompilerError{
+    doChainedFieldSumTest("1^boo().bar.boo2().a", "__opPOW");
+  }
 }
