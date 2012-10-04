@@ -16,6 +16,18 @@
  */
 package dee.lang;
 
+/**
+ * <p>A runtime code block. Blocks are passed to compatible methods
+ * at runtime by Deelang.</p>
+ * 
+ * <p>When defining an extension point in Java, if the first argument
+ * type is {@code Block}, Deelang will accept pass in the attached block
+ * from the Deelang code when the method is called. The method may then
+ * invoke the block at any point (and any number of times) by calling
+ * {@link #invoke()}.</p>
+ *  
+ * @author Ross Bamford
+ */
 public interface Block {  
   public void invoke();
 }

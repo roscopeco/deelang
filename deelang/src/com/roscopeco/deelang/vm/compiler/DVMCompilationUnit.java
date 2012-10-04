@@ -16,8 +16,12 @@ import com.roscopeco.deelang.compiler.UnsupportedError;
 import com.roscopeco.deelang.vm.Opcodes;
 
 /**
- * <p>A compilation unit. This encapsulates all data and visitor logic
- * for the script being compiled.</p>
+ * <p>A Dee VM compilation unit. This encapsulates all data and visitor
+ * logic for the script being compiled.</p>
+ * 
+ * <p>This class does not support compilation to DEX bytecode. That
+ * support is provided by the 
+ * {@link com.roscopeco.deelang.compiler.dex.DexCompilationUnit} class.</p>
  * 
  * <p>The DeeLang compiler uses the visitor pattern to compile the
  * AST into a compiled script, driving the actual visiting and calling
