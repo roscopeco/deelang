@@ -8,5 +8,6 @@ import org.junit.runner.RunWith;
 @Suite.SuiteClasses({
   UnitTests.class,
   FunctionalTests.class,
+  RegressionTests.class
 })
 public class AllTests { }

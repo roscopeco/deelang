@@ -22,7 +22,7 @@ package com.roscopeco.deelang.vm;
  * 
  * <p>Note that this class subclasses <code>java.lang.Error</code>, so
  * these errors are unchecked. Most exceptions thrown at runtime will
- * be subclasses of {@link deelang.DeeLangException}.</p>
+ * be subclasses of {@link dee.vm.lang.DeeLangException}.</p>
  * 
  * @author rosco
  * @created 27 Oct 2011

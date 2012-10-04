@@ -1,6 +1,6 @@
 /* DeeLang.g - ANTLR Combined grammar for DeeLang.
  *
- * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
+ * Copyright 2011, 2012 Ross Bamford (roscopeco AT gmail DOT com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ tokens {
   ASSIGN;
   METHOD_CALL;
   ARGS;
+  ARG;
   BLOCK;
   ORBLOCK;
   SELF;
@@ -221,16 +222,15 @@ expr
 assign_expr
   : class_identifier chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN expr
     -> class_identifier chained_call_or_field_expr*
-      ^(ASSIGN_FIELD $id expr)
+      ^(ASSIGN_FIELD CHAIN $id expr)
   | ci=class_identifier ASSIGN expr
-    -> IDENTIFIER[$ci.tree.getChild(0).getText()]
-      ^(ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(1).getText()] expr)
+    -> ^(ASSIGN_FIELD IDENTIFIER[$ci.tree.getChild(0).getText()] IDENTIFIER[$ci.tree.getChild(1).getText()] expr)
   | meth_call chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN expr
     -> meth_call chained_call_or_field_expr*
-      ^(ASSIGN_FIELD $id expr)
+      ^(ASSIGN_FIELD CHAIN $id expr)
   | LPAREN e1=expr RPAREN chained_call_or_field_expr* DOT id=IDENTIFIER ASSIGN e2=expr
     -> $e1 chained_call_or_field_expr*
-      ^(ASSIGN_FIELD $id $e2)
+      ^(ASSIGN_FIELD CHAIN $id $e2)
   | id=IDENTIFIER ASSIGN expr
     -> ^(ASSIGN_LOCAL IDENTIFIER expr)
   ;
@@ -298,8 +298,14 @@ orblock
 
 fragment
 argument_list
-  : LPAREN (expr (COMMA expr)*)? RPAREN -> ^(ARGS expr expr*)?
+  : LPAREN (argument (COMMA argument)*)? RPAREN -> ^(ARGS argument argument*)?
   ;
+  
+fragment
+argument
+  : expr
+    -> ^(ARG expr)
+  ; 
 
 class_identifier
   : rec=IDENTIFIER DOT id=IDENTIFIER -> ^(FIELD_ACCESS $rec $id)
@@ -890,7 +896,7 @@ LINE_COMMENT
 
 TERMINATOR
   : '\r'? '\n'
-  | ';'
+  | ';' '\r'? '\n'?
   ;
 
 WS

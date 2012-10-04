@@ -5,11 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.roscopeco.deelang.ScriptDumper;
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.ParserError;
+import com.roscopeco.deelang.vm.ScriptDumper;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
 
 /**
  * Command-line compiler for Deelang. 
@@ -73,7 +74,7 @@ public class Command {
   
   public void doCompile() throws IOException, ParserError, CompilerError {
     String code = new Scanner( new File(infile), "UTF-8" ).useDelimiter("\\A").next();
-    CompiledScript script = Compiler.staticCompile(code);
+    CompiledScript script = new Compiler().compile(new DVMCompilationUnit(), code).buildScript();
 
     if (dumpMode) {
       // Dump to STDOUT

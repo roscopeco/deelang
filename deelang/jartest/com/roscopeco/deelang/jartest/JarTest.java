@@ -16,24 +16,25 @@
  */
 package com.roscopeco.deelang.jartest;
 
-import com.roscopeco.deelang.compiler.CompiledScript;
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.ParserError;
 import com.roscopeco.deelang.vm.RuntimeContext;
 import com.roscopeco.deelang.vm.RuntimeError;
 import com.roscopeco.deelang.vm.VM;
+import com.roscopeco.deelang.vm.compiler.CompiledScript;
+import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
 
-import deelang.DeeLangInteger;
-import deelang.DeeLangObject;
+import dee.lang.DeelangInteger;
+import dee.lang.DeelangObject;
 
 public class JarTest {  
   static String code =
       "Quux.qix = 42\n" +
   		"3.times() { Quux.qix = Quux.qix + beezum }\n";
   
-  public static class QuuxObj extends DeeLangObject {
-    public DeeLangInteger qix;
+  public static class QuuxObj extends DeelangObject {
+    public DeelangInteger qix;
     
     public QuuxObj(RuntimeContext ctx) {
       super(ctx);
@@ -44,9 +45,9 @@ public class JarTest {
     CompiledScript script;
     
     try {
-      script = Compiler.staticCompile(code);
+      script = new Compiler().compile(new DVMCompilationUnit(), code).buildScript();
     } catch (CompilerError e) {
-      System.err.println("DeeLang Compiler Exception: " + e);
+      System.err.println("Deelang Compiler Exception: " + e);
       e.printStackTrace(System.err);
       Runtime.getRuntime().exit(-2);
       return;  
@@ -56,9 +57,9 @@ public class JarTest {
       QuuxObj quux;
       VM vm = new VM();
       RuntimeContext ctx = vm.createContext(script);
-      ctx.setSelf(new DeeLangObject(ctx));
+      ctx.setSelf(new DeelangObject(ctx));
       ctx.setLocal("Quux", quux = new QuuxObj(ctx));
-      ctx.setLocal("beezum", new DeeLangInteger(ctx, 10));
+      ctx.setLocal("beezum", new DeelangInteger(ctx, 10));
       vm.run(ctx);
       
       if (quux.qix.getInteger() != 72) {
@@ -69,7 +70,7 @@ public class JarTest {
         System.out.println("Passed; Quux.qix at end is 72");
       }
     } catch (RuntimeError e) {
-      System.err.println("DeeLang runtime exception: " + e);
+      System.err.println("Deelang runtime exception: " + e);
       e.printStackTrace(System.err);
       Runtime.getRuntime().exit(-3);
       return;

@@ -179,15 +179,19 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
 
     assertThat(tree.getChild(1).getText(), is("ASSIGN_FIELD"));
     assertThat(tree.getChild(1).getType(), is(DeeLangParser.ASSIGN_FIELD));
-    assertThat(tree.getChild(1).getChildCount(), is(2));
+    assertThat(tree.getChild(1).getChildCount(), is(3));
     
-    assertThat(tree.getChild(1).getChild(0).getText(), is("c"));
-    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getText(), is("CHAIN"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.CHAIN));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(0));
     
-    assertThat(tree.getChild(1).getChild(1).getText(), is("d"));
+    assertThat(tree.getChild(1).getChild(1).getText(), is("c"));
     assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
     assertThat(tree.getChild(1).getChild(1).getChildCount(), is(0));
+    
+    assertThat(tree.getChild(1).getChild(2).getText(), is("d"));
+    assertThat(tree.getChild(1).getChild(2).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(2).getChildCount(), is(0));
   }
   
   @Test
@@ -212,15 +216,19 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
 
     assertThat(tree.getChild(1).getText(), is("ASSIGN_FIELD"));
     assertThat(tree.getChild(1).getType(), is(DeeLangParser.ASSIGN_FIELD));
-    assertThat(tree.getChild(1).getChildCount(), is(2));
+    assertThat(tree.getChild(1).getChildCount(), is(3));
     
-    assertThat(tree.getChild(1).getChild(0).getText(), is("baz"));
-    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(1).getChild(0).getText(), is("CHAIN"));
+    assertThat(tree.getChild(1).getChild(0).getType(), is(DeeLangParser.CHAIN));
     assertThat(tree.getChild(1).getChild(0).getChildCount(), is(0));
     
-    assertThat(tree.getChild(1).getChild(1).getText(), is("2"));
-    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(1).getText(), is("baz"));
+    assertThat(tree.getChild(1).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
     assertThat(tree.getChild(1).getChild(1).getChildCount(), is(0));
+    
+    assertThat(tree.getChild(1).getChild(2).getText(), is("2"));
+    assertThat(tree.getChild(1).getChild(2).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(1).getChild(2).getChildCount(), is(0));
   }
 
   @Test
@@ -264,15 +272,19 @@ public class FuncTestParserAssignment extends ParserFuncTestBase {
 
     assertThat(tree.getChild(2).getText(), is("ASSIGN_FIELD"));
     assertThat(tree.getChild(2).getType(), is(DeeLangParser.ASSIGN_FIELD));
-    assertThat(tree.getChild(2).getChildCount(), is(2));
+    assertThat(tree.getChild(2).getChildCount(), is(3));
     
-    assertThat(tree.getChild(2).getChild(0).getText(), is("quux"));
-    assertThat(tree.getChild(2).getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
+    assertThat(tree.getChild(2).getChild(0).getText(), is("CHAIN"));
+    assertThat(tree.getChild(2).getChild(0).getType(), is(DeeLangParser.CHAIN));
     assertThat(tree.getChild(2).getChild(0).getChildCount(), is(0));
     
-    assertThat(tree.getChild(2).getChild(1).getText(), is("2"));
-    assertThat(tree.getChild(2).getChild(1).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(2).getChild(1).getText(), is("quux"));
+    assertThat(tree.getChild(2).getChild(1).getType(), is(DeeLangParser.IDENTIFIER));
     assertThat(tree.getChild(2).getChild(1).getChildCount(), is(0));
+    
+    assertThat(tree.getChild(2).getChild(2).getText(), is("2"));
+    assertThat(tree.getChild(2).getChild(2).getType(), is(DeeLangParser.DECIMAL_LITERAL));
+    assertThat(tree.getChild(2).getChild(2).getChildCount(), is(0));
   }
 
   @Test(expected=ParserError.class)
