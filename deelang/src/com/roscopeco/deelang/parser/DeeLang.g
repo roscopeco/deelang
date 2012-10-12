@@ -216,7 +216,7 @@ block_statement
 
 expr
   : assign_expr
-  | math_expr
+  | eql_expr
   ;
 
 assign_expr
@@ -235,6 +235,14 @@ assign_expr
     -> ^(ASSIGN_LOCAL IDENTIFIER expr)
   ;
 
+eql_expr
+  : cmp_expr ((NEQ^|EQ^|TEQ^) cmp_expr)*
+  ;
+  	
+cmp_expr
+  : math_expr ((LT^|GT^) math_expr)*
+  ;
+  
 math_expr
   : mult_expr ((ADD^|SUB^) mult_expr)*
   ;
@@ -248,7 +256,7 @@ pow_expr
   ;
 
 unary_expr
-  : NOT? atom
+  : (NOT^)? atom
   ;
 
 meth_call
@@ -361,6 +369,26 @@ MUL
   : '*'
   ;
 
+LT
+  : '<'
+  ;
+  	 
+GT
+  : '>'
+  ;
+  
+NEQ
+  : '!='
+  ;
+
+TEQ
+  : '==='
+  ;
+  
+EQ
+  : '=='
+  ;
+	 
 NOT
   : '!'
   ;

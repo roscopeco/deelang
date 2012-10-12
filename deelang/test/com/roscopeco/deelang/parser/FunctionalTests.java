@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
   FuncTestParserMemberAccess.class,
   FuncTestParserArithmetic.class,
   FuncTestParserAssignment.class,
+  FuncTestParserComparison.class,
   FuncTestParserMemberAssignment.class,
   FuncTestParserFunctionCalls.class,
   FuncTestParserMethodCalls.class,
