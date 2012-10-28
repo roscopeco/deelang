@@ -236,7 +236,7 @@ assign_expr
   ;
 
 eql_expr
-  : cmp_expr ((NEQ^|EQ^|TEQ^) cmp_expr)*
+  : cmp_expr ((NEQ^|EQ^) cmp_expr)*
   ;
   	
 cmp_expr
@@ -381,10 +381,6 @@ NEQ
   : '!='
   ;
 
-TEQ
-  : '==='
-  ;
-  
 EQ
   : '=='
   ;
