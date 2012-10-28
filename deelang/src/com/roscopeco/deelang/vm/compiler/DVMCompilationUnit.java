@@ -676,5 +676,30 @@ public class DVMCompilationUnit extends ASTVisitor {
     } catch (IOException e) {
       throw new OutputError(e);
     }
-  }  
+  }
+
+  @Override
+  protected void visitNot(Tree ast) throws CompilerError {
+    throw new UnsupportedError("Not yet implemented");
+  }
+
+  @Override
+  protected void visitEql(Tree ast) throws CompilerError {
+    throw new UnsupportedError("Not yet implemented");
+  }
+
+  @Override
+  protected void visitNeq(Tree ast) throws CompilerError {
+    throw new UnsupportedError("Not yet implemented");
+  }
+
+  @Override
+  protected void visitLtn(Tree ast) throws CompilerError {
+    throw new UnsupportedError("Not yet implemented");
+  }
+
+  @Override
+  protected void visitGtn(Tree ast) throws CompilerError {
+    throw new UnsupportedError("Not yet implemented");
+  }
 }

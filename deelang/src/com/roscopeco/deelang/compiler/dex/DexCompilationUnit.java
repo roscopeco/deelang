@@ -49,6 +49,7 @@ import com.roscopeco.deelang.runtime.DexBlock;
 
 import dee.lang.Binding;
 import dee.lang.Block;
+import dee.lang.DeelangBoolean;
 import dee.lang.DeelangFloat;
 import dee.lang.DeelangInteger;
 import dee.lang.DeelangObject;
@@ -199,6 +200,7 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static final TypeId<DeelangInteger> TYPEID_DL_INTEGER = TypeId.get(DeelangInteger.class);
   protected static final TypeId<DeelangFloat> TYPEID_DL_FLOAT = TypeId.get(DeelangFloat.class);
   protected static final TypeId<DeelangString> TYPEID_DL_STRING = TypeId.get(DeelangString.class);
+  protected static final TypeId<DeelangBoolean> TYPEID_DL_BOOLEAN = TypeId.get(DeelangBoolean.class);
   
   protected static final FieldId<DexBlock, Boolean> BLOCK_INSCOPE = TYPEID_DEXBLOCK.getField(TypeId.BOOLEAN, "inScope");
   protected static final FieldId<DexBinding, Boolean> DEXBINDING_ERRORFLAG = TYPEID_DEXBINDING.getField(TypeId.BOOLEAN, "errorFlag");
@@ -221,7 +223,13 @@ public class DexCompilationUnit extends ASTVisitor {
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPDIV = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opDIV", TYPEID_DL_OBJECT);
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPMOD = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opMOD", TYPEID_DL_OBJECT);
   protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPPOW = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opPOW", TYPEID_DL_OBJECT);
-    
+  
+  protected static MethodId<DeelangObject, DeelangBoolean> DL_OBJECT_OPEQL = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_BOOLEAN, "__opEQL", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangBoolean> DL_OBJECT_OPNEQ = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_BOOLEAN, "__opNEQ", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangBoolean> DL_OBJECT_OPGT = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_BOOLEAN, "__opGT", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangBoolean> DL_OBJECT_OPLT = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_BOOLEAN, "__opLT", TYPEID_DL_OBJECT);
+  protected static MethodId<DeelangObject, DeelangObject> DL_OBJECT_OPNOT = TYPEID_DL_OBJECT.getMethod(TYPEID_DL_OBJECT, "__opNOT");
+
   // TODO all backPass stuff should probably move to CodeProxy now...
   //          (i.e. backPassStack-per-scope).
   
@@ -1309,10 +1317,11 @@ public class DexCompilationUnit extends ASTVisitor {
     bpd.orBlock = generateBlock(ast);
   }
     
-  @SuppressWarnings("unchecked")
-  protected void visitArithmeticExpression(Tree ast, MethodId<DeelangObject, DeelangObject> op) 
-    throws CompilerError {
-    @SuppressWarnings("rawtypes")
+  // TODO visitArithmeticExpression and visitBinaryOperator are virtually identical.
+  //      refactor out the commonality...
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  protected void visitArithmeticExpression(Tree ast, MethodId<DeelangObject, DeelangObject> op)
+      throws CompilerError{
     TypeRegisterMapping lhs, rhs;
     TargetRegBackPassData trbpd = new TargetRegBackPassData();
     backPassData.push(trbpd);
@@ -1329,13 +1338,17 @@ public class DexCompilationUnit extends ASTVisitor {
     AssignLocalBackPassData callerAlbpd;
     Local<DeelangObject> target;
     if ((callerMcbpd = getMethCallBackPassData()) != null) {
-      @SuppressWarnings("rawtypes")
       MethCallBackPassData.Argument arg = callerMcbpd.args[callerMcbpd.argi] = callerMcbpd.new Argument(lhs.jtype);
       target = arg.getArgRegister();
     } else {
       if ((callerAlbpd = getAssignLocalBackPassData()) != null) {
         // TODO replace register if changing type...?
-        target = (Local<DeelangObject>)callerAlbpd.src.reg;        
+        if (callerAlbpd.src == null) {
+          callerAlbpd.src = codeProxy.new TypeRegisterMapping(lhs.jtype);
+          target = (Local<DeelangObject>)callerAlbpd.src.reg;
+        } else {
+          target = (Local<DeelangObject>)callerAlbpd.src.reg;
+        }
       } else {
         // just assign a new local
         trbpd = getTargetRegBackPassData();
@@ -1364,6 +1377,56 @@ public class DexCompilationUnit extends ASTVisitor {
       // We're ignoring result anyway, no casting...
       codeProxy.invokeVirtual(op, null, lhs.reg, rhs.reg);
     }
+  }
+  
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  protected void visitBinaryOperator(Tree ast, MethodId<DeelangObject, DeelangBoolean> op) 
+    throws CompilerError {
+    TypeRegisterMapping lhs, rhs;
+    TargetRegBackPassData trbpd = new TargetRegBackPassData();
+    backPassData.push(trbpd);
+    visit(ast.getChild(0));
+    lhs = trbpd.reg;
+    for (int i = 1; i < ast.getChildCount(); i++) { 
+      visit(ast.getChild(i));
+    }
+    rhs = trbpd.reg;
+    backPassData.removeFirst();
+    
+    // find target register
+    MethCallBackPassData callerMcbpd;
+    AssignLocalBackPassData callerAlbpd;
+    Local<DeelangBoolean> target;
+    if ((callerMcbpd = getMethCallBackPassData()) != null) {
+      MethCallBackPassData.Argument arg = callerMcbpd.args[callerMcbpd.argi] = callerMcbpd.new Argument(lhs.jtype);
+      target = arg.getArgRegister();
+    } else {
+      if ((callerAlbpd = getAssignLocalBackPassData()) != null) {
+        // TODO replace register if changing type...?
+        // TODO need more rigid type checking here!!
+        if (callerAlbpd.src == null) {
+          callerAlbpd.src = codeProxy.new TypeRegisterMapping(lhs.jtype);
+          target = (Local<DeelangBoolean>)callerAlbpd.src.reg;
+        } else {
+          target = (Local<DeelangBoolean>)callerAlbpd.src.reg;
+        }
+      } else {
+        // just assign a new local
+        trbpd = getTargetRegBackPassData();
+        if (trbpd != null) {
+          // someone higher up wants our target reg...
+          target = codeProxy.newLocal(lhs.type);
+          setTargetReg(target, lhs.jtype);
+        } else {
+          // don't store result anywhere, no-one's interested in it...
+          // We can't optimise it away, in case the expression contained
+          // method calls with side-effects...
+          target = null;
+        }
+      }
+    }
+    
+    codeProxy.invokeVirtual(op, target, lhs.reg, rhs.reg);
   }
 
   @Override
@@ -1394,5 +1457,30 @@ public class DexCompilationUnit extends ASTVisitor {
   @Override
   protected void visitPow(Tree ast) throws CompilerError {
     visitArithmeticExpression(ast, DL_OBJECT_OPPOW);
+  }
+
+  @Override
+  protected void visitNot(Tree ast) throws CompilerError {
+    throw new UnsupportedError("Negation is not yet implemented");
+  }
+
+  @Override
+  protected void visitEql(Tree ast) throws CompilerError {
+    visitBinaryOperator(ast, DL_OBJECT_OPEQL);
+  }
+
+  @Override
+  protected void visitNeq(Tree ast) throws CompilerError {
+    visitBinaryOperator(ast, DL_OBJECT_OPNEQ);
+  }
+
+  @Override
+  protected void visitLtn(Tree ast) throws CompilerError {
+    visitBinaryOperator(ast, DL_OBJECT_OPLT);
+  }
+
+  @Override
+  protected void visitGtn(Tree ast) throws CompilerError {
+    visitBinaryOperator(ast, DL_OBJECT_OPGT);
   }
 }

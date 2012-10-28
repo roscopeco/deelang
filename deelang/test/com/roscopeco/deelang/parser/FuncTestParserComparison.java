@@ -61,23 +61,6 @@ public class FuncTestParserComparison extends ParserFuncTestBase {
   }
   
   @Test
-  public void testBasicTEQExpr() throws Throwable {
-    CommonTree tree = runTest("1===2");
-
-    assertThat(tree.getText(), is("==="));
-    assertThat(tree.getType(), is(DeeLangParser.TEQ));
-    assertThat(tree.getChildCount(), is(2));
-    
-    assertThat(tree.getChild(0).getText(), is("1"));
-    assertThat(tree.getChild(0).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(0).getChildCount(), is(0));
-
-    assertThat(tree.getChild(1).getText(), is("2"));
-    assertThat(tree.getChild(1).getType(), is(DeeLangParser.DECIMAL_LITERAL));
-    assertThat(tree.getChild(1).getChildCount(), is(0));
-  }
-  
-  @Test
   public void testBasicNEQExpr() throws Throwable {
     CommonTree tree = runTest("1!=2");
 
@@ -137,14 +120,14 @@ public class FuncTestParserComparison extends ParserFuncTestBase {
 
   @Test
   public void testBasicCmpPrecedenceExpr2() throws Throwable {
-    CommonTree tree = runTest("a === c > 1*2+3");  // should be equiv to a == (c < ((1*2) + 3))
+    CommonTree tree = runTest("a == c > 1*2+3");  // should be equiv to a == (c > ((1*2) + 3))
 
     assertThat(tree.getChild(0).getText(), is("a"));
     assertThat(tree.getChild(0).getType(), is(DeeLangParser.IDENTIFIER));
     assertThat(tree.getChild(0).getChildCount(), is(0));
     
-    assertThat(tree.getText(), is("==="));
-    assertThat(tree.getType(), is(DeeLangParser.TEQ));
+    assertThat(tree.getText(), is("=="));
+    assertThat(tree.getType(), is(DeeLangParser.EQ));
     assertThat(tree.getChildCount(), is(2));
     
     assertThat(tree.getChild(1).getText(), is(">"));

@@ -209,6 +209,30 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void REGRESSIONpowWithChainedField() throws ParserError, CompilerError {
     doChainedSumTest("^", "__opPOW");
   }
+  
+  @Test
+  public void REGRESSIONassignArithmeticResultLocal() throws ParserError, CompilerError {
+    // TODO this case is wasteful with registers, generating a *lot* of unnecessary moves...
+    runCodeComparisonTest("a = 1+2", 
+        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
+        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "                    :v8   //dee.lang.DeelangObject\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "CONST               |     |v2=0x00000002  // int:2   float:0.000000\n"+
+        "NEW_INSTANCE        |     |v3=NEW Ldee/lang/DeelangInteger;\n"+
+        "INVOKE_DIRECT       |     |v3.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v1.__opADD(v3)  //Ldee/lang/DeelangObject;.__opADD(Ldee/lang/DeelangObject;)Ldee/lang/DeelangObject;\n"+
+        "MOVE_RESULT         |     |v5=TEMP\n"+
+        "MOVE                |     |v0 = v5\n"+
+        "CHECK_CAST          |     |v0=(dee.lang.DeelangInteger) v0\n"+
+        "MOVE                |     |v4 = v0\n"+
+        "MOVE                |     |v6 = v4\n"+
+        "RETURN_VOID         |     |return");
+  }
 
   /* TODO More tests (e.g. vars/methods in arithmetic) */
 }

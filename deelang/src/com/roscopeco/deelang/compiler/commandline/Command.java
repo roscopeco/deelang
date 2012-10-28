@@ -73,7 +73,9 @@ public class Command {
   }
   
   public void doCompile() throws IOException, ParserError, CompilerError {
-    String code = new Scanner( new File(infile), "UTF-8" ).useDelimiter("\\A").next();
+    Scanner scanner = new Scanner( new File(infile), "UTF-8" ); 
+    String code = scanner.useDelimiter("\\A").next();
+    scanner.close();
     CompiledScript script = new Compiler().compile(new DVMCompilationUnit(), code).buildScript();
 
     if (dumpMode) {

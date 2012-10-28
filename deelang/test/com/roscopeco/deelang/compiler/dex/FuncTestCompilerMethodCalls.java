@@ -115,7 +115,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "                    :v6   //dee.lang.DeelangObject\n"+
         "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v7.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v7.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -134,7 +134,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "                    :v8   //dee.lang.DeelangObject\n"+
         "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v9.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v9.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -156,7 +156,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "                    :v9   //dee.lang.DeelangObject\n"+
         "                    :v10   //com.roscopeco.deelang.runtime.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v10.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v10.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -181,7 +181,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "                    :v9   //dee.lang.DeelangObject\n"+
         "                    :v10   //com.roscopeco.deelang.runtime.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v10.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v10.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -208,7 +208,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "                    :v7   //dee.lang.DeelangObject\n"+
         "                    :v8   //com.roscopeco.deelang.runtime.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v8.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v8.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -263,7 +263,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "                    :v9   //dee.lang.DeelangObject\n"+
         "                    :v10   //com.roscopeco.deelang.runtime.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v10.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v10.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
         "MOVE                |     |v0 = v2\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -318,7 +318,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
 "                    :v10   //dee.lang.DeelangObject\n"+
 "                    :v11   //com.roscopeco.deelang.runtime.DexBinding\n"+
 "CONST_STRING        |     |v1=\"foo\"\n"+
-"INVOKE_INTERFACE    |     |TEMP=v11.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+"INVOKE_VIRTUAL      |     |TEMP=v11.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
 "MOVE_RESULT         |     |v2=TEMP\n"+
 "MOVE                |     |v0 = v2\n"+
 "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -366,7 +366,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "INVOKE_DIRECT       |     |v1.<init>(v12,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
         "MOVE                |     |v3 = v1\n"+
         "CONST_STRING        |     |v4=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v12.getLocal(v4)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v12.getLocal(v4)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v5=TEMP\n"+
         "MOVE                |     |v0 = v5\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
@@ -421,7 +421,7 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "INVOKE_DIRECT       |     |v1.<init>(v12,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
         "MOVE                |     |v3 = v1\n"+
         "CONST_STRING        |     |v4=\"foo\"\n"+
-        "INVOKE_INTERFACE    |     |TEMP=v12.getLocal(v4)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v12.getLocal(v4)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v5=TEMP\n"+
         "MOVE                |     |v0 = v5\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+

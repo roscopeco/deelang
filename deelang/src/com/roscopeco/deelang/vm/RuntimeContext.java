@@ -37,7 +37,7 @@ import dee.lang.DeelangObject;
  * @author rosco
  * @created 16 Oct 2011
  */
-public class RuntimeContext implements Binding {
+public class RuntimeContext extends Binding {
   // TODO don't like this, highly couples vm and runtime...
   
   public final DeelangInteger ZERO = new DeelangInteger(this, 0);

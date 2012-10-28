@@ -98,7 +98,7 @@ public class DeelangObject {
    * @return The result of the addition.
    */
   public DeelangObject __opADD(DeelangObject other) {
-    throw new UnsupportedOperationException("Plus not implemented for object");
+    throw new UnsupportedOperationException("Arithmetic on non-numeric type");
   }
   
   /**
@@ -112,7 +112,7 @@ public class DeelangObject {
    * @return The result of the subtraction.
    */
   public DeelangObject __opSUB(DeelangObject other) {
-    throw new UnsupportedOperationException("Plus not implemented for object");
+    throw new UnsupportedOperationException("Arithmetic on non-numeric type");
   }
   
   /**
@@ -126,7 +126,7 @@ public class DeelangObject {
    * @return The result of the multiplication.
    */
   public DeelangObject __opMUL(DeelangObject other) {
-    throw new UnsupportedOperationException("Plus not implemented for object");
+    throw new UnsupportedOperationException("Arithmetic on non-numeric type");
   }
   
   /**
@@ -140,7 +140,7 @@ public class DeelangObject {
    * @return The result of the division.
    */  
   public DeelangObject __opDIV(DeelangObject other) {
-    throw new UnsupportedOperationException("Plus not implemented for object");
+    throw new UnsupportedOperationException("Arithmetic on non-numeric type");
   }
   
   /**
@@ -154,7 +154,7 @@ public class DeelangObject {
    * @return The result of the operation.
    */
   public DeelangObject __opMOD(DeelangObject other) {
-    throw new UnsupportedOperationException("Plus not implemented for object");
+    throw new UnsupportedOperationException("Arithmetic on non-numeric type");
   }
   
   /**
@@ -168,7 +168,68 @@ public class DeelangObject {
    * @return The result of the operation.
    */
   public DeelangObject __opPOW(DeelangObject other) {
-    throw new UnsupportedOperationException("Plus not implemented for object");
+    throw new UnsupportedOperationException("Arithmetic on non-numeric type");
+  }
+
+  /**
+   * Compares this DeelangObject to {@code other} for equality. 
+   * By default, comparison is performed via the {@code equals} method.
+   * 
+   * @param other The object to compare to.
+   * @return DeelangBoolean {@code true} or {@code false}. 
+   */
+  public DeelangBoolean __opEQL(DeelangObject other) {
+    return binding.wrapBool(this.equals(other));
+  }
+  
+  /**
+   * Compares this DeelangObject to {@code other} for inequality. 
+   * By default, comparison is performed via the {@code equals} method.
+   * 
+   * @param other The object to compare to.
+   * @return DeelangBoolean {@code true} or {@code false}. 
+   */
+  public DeelangBoolean __opNEQ(DeelangObject other) {
+    return (DeelangBoolean)__opEQL(other).__opNOT();
+  }
+  
+  /**
+   * Determines whether this object is 'less-than' {@code other}. 
+   * Subclasses implement this in various ways. For {@code DeelangObject},
+   * this comparison always throws an {@code UnsupportedOperationException}.
+   * 
+   * @param other The object to compare to.
+   * @return DeelangBoolean {@code true} or {@code false}. 
+   */
+  public DeelangBoolean __opLT(DeelangObject other) {
+    throw new UnsupportedOperationException("Cannot compare DeelangObject");
+  }
+  
+  /**
+   * Determines whether this object is 'greater-than' {@code other}. 
+   * Subclasses implement this in various ways. For {@code DeelangObject},
+   * this comparison always throws an {@code UnsupportedOperationException}.
+   * 
+   * @param other The object to compare to.
+   * @return DeelangBoolean {@code true} or {@code false}. 
+   */
+  public DeelangBoolean __opGT(DeelangObject other) {
+    throw new UnsupportedOperationException("Cannot compare DeelangObject");
+  }
+  
+  /**
+   * Logically negate this object. The default implementation coerces the
+   * object to a boolean (using {@link #toB()}), and negates the result.
+   * <br/>
+   * For {@code DeelangObject} this operation always returns true. This
+   * may be somewhat unexpected - but since DeelangObject's {@code toB()}
+   * returns FALSE, the negation will always be TRUE. 
+   * 
+   * @param other The object to compare to.
+   * @return DeelangBoolean {@code true} or {@code false}. 
+   */
+  public DeelangObject __opNOT() {
+    return toB().__opNOT();
   }
   
   /* ** Type coercion ** */
@@ -207,4 +268,16 @@ public class DeelangObject {
   public DeelangFloat toF() {
     return new DeelangFloat(getBinding(), 0.0);
   }  
+  
+  public DeelangBoolean toB() {
+    return binding.FALSE;
+  }
+  
+  /**
+   * Coerces this DeelangObject to a DeelangString, then returns
+   * it's Java String representation.
+   */
+  public String toString() {
+    return toS().getString();
+  }
 }

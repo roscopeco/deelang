@@ -21,7 +21,7 @@ import java.util.HashMap;
 import dee.lang.Binding;
 import dee.lang.DeelangObject;
 
-public class DexBinding implements Binding {
+public class DexBinding extends Binding {
   private final HashMap<String, Object> binding = new HashMap<String, Object>();
   private DeelangObject self;
   

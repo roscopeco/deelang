@@ -33,15 +33,39 @@ package dee.lang;
  * 
  * @author Ross Bamford
  */
-public interface Binding {
-  public Object getLocal(String name);
-  public void setLocal(String name, Object value);
-  public DeelangObject getSelf();
+public abstract class Binding {
+  public final DeelangBoolean TRUE;
+  public final DeelangBoolean FALSE;
+  
+  protected Binding() {
+    TRUE = new DeelangBoolean(this, true);
+    FALSE = new DeelangBoolean(this, false);    
+  }
+  
+  public abstract Object getLocal(String name);
+  public abstract void setLocal(String name, Object value);
+  public abstract DeelangObject getSelf();
   
   /**
    * Set the runtime error flag. If this is set, and the current
    * method has an attached <em>or</em>-block, that block will
    * be executed when the method returns.
    */
-  public void setErrorFlag();  
+  public abstract void setErrorFlag();
+  
+  public final DeelangBoolean getTrue() {
+    return TRUE;
+  }
+  public final DeelangBoolean getFalse() {
+    return FALSE;
+  }
+  
+  /* Used by the runtime to wrap boolean values */
+  DeelangBoolean wrapBool(boolean bool) {
+    return bool ? TRUE : FALSE;
+  }
+  
+  DeelangString wrapStr(String string) {
+    return new DeelangString(this, string);
+  }
 }

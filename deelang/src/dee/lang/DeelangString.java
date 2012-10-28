@@ -25,7 +25,7 @@ package dee.lang;
  *
  */
 public class DeelangString extends DeelangObject {
-  private String string;
+  private final String string;
   
   public DeelangString(Binding binding) {
     super(binding);
@@ -53,7 +53,7 @@ public class DeelangString extends DeelangObject {
    */
   @Override
   public DeelangObject __opADD(DeelangObject other) {
-    return new DeelangString(getBinding(), string + other.toS());
+    return new DeelangString(binding, string + other.toS());
   }
 
   /**
@@ -73,7 +73,22 @@ public class DeelangString extends DeelangObject {
       buf.append(s);
     }
     
-    return new DeelangString(getBinding(), s);
+    return new DeelangString(binding, s);
+  }
+
+  /**
+   * Override equality. This implements the equals operator
+   * in Deelang.
+   */
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof DeelangString) {
+      return this.string.equals(((DeelangString) other).string);
+    } else if (other instanceof DeelangObject) {
+      return this.string.equals(((DeelangObject) other).toS().string);
+    } else {
+      return this.string.equals(other);
+    } 
   }
   
   /**
@@ -82,7 +97,7 @@ public class DeelangString extends DeelangObject {
    */
   @Override
   public DeelangInteger toI() {
-    return new DeelangInteger(getBinding(), Integer.parseInt(string));
+    return new DeelangInteger(binding, Integer.parseInt(string));
   }
 
   /**
@@ -91,7 +106,7 @@ public class DeelangString extends DeelangObject {
    */
   @Override
   public DeelangFloat toF() {
-    return new DeelangFloat(getBinding(), Double.parseDouble(string));
+    return new DeelangFloat(binding, Double.parseDouble(string));
   }
   
   /**
@@ -101,5 +116,9 @@ public class DeelangString extends DeelangObject {
   public DeelangString toS() {
     return this;
   }
-  
+
+  @Override
+  public DeelangBoolean toB() {
+    return "true".equals(string) ? binding.TRUE : binding.FALSE; 
+  }
 }

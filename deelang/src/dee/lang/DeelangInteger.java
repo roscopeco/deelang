@@ -52,9 +52,9 @@ public class DeelangInteger extends DeelangObject {
   @Override
   public DeelangObject __opADD(DeelangObject other) {
     if (other instanceof DeelangInteger) {
-      return new DeelangInteger(getBinding(), this.integer + ((DeelangInteger)other).integer);      
+      return new DeelangInteger(binding, this.integer + ((DeelangInteger)other).integer);      
     } else if (other instanceof DeelangFloat) {
-      return new DeelangFloat(getBinding(), this.integer + ((DeelangFloat)other).dbl);
+      return new DeelangFloat(binding, this.integer + ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
       throw new ArithmeticException();
@@ -64,9 +64,9 @@ public class DeelangInteger extends DeelangObject {
   @Override
   public DeelangObject __opSUB(DeelangObject other) {
     if (other instanceof DeelangInteger) {
-      return new DeelangInteger(getBinding(), this.integer - ((DeelangInteger)other).integer);      
+      return new DeelangInteger(binding, this.integer - ((DeelangInteger)other).integer);      
     } else if (other instanceof DeelangFloat) {
-      return new DeelangFloat(getBinding(), this.integer - ((DeelangFloat)other).dbl);
+      return new DeelangFloat(binding, this.integer - ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
       throw new ArithmeticException();
@@ -76,9 +76,9 @@ public class DeelangInteger extends DeelangObject {
   @Override
   public DeelangObject __opMUL(DeelangObject other) {
     if (other instanceof DeelangInteger) {
-      return new DeelangInteger(getBinding(), this.integer * ((DeelangInteger)other).integer);      
+      return new DeelangInteger(binding, this.integer * ((DeelangInteger)other).integer);      
     } else if (other instanceof DeelangFloat) {
-      return new DeelangFloat(getBinding(), this.integer * ((DeelangFloat)other).dbl);
+      return new DeelangFloat(binding, this.integer * ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
       throw new ArithmeticException();
@@ -88,9 +88,9 @@ public class DeelangInteger extends DeelangObject {
   @Override
   public DeelangObject __opDIV(DeelangObject other) {
     if (other instanceof DeelangInteger) {
-      return new DeelangInteger(getBinding(), this.integer / ((DeelangInteger)other).integer);      
+      return new DeelangInteger(binding, this.integer / ((DeelangInteger)other).integer);      
     } else if (other instanceof DeelangFloat) {
-      return new DeelangFloat(getBinding(), this.integer / ((DeelangFloat)other).dbl);
+      return new DeelangFloat(binding, this.integer / ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
       throw new ArithmeticException();
@@ -100,9 +100,9 @@ public class DeelangInteger extends DeelangObject {
   @Override
   public DeelangObject __opMOD(DeelangObject other) {
     if (other instanceof DeelangInteger) {
-      return new DeelangInteger(getBinding(), this.integer % ((DeelangInteger)other).integer);      
+      return new DeelangInteger(binding, this.integer % ((DeelangInteger)other).integer);      
     } else if (other instanceof DeelangFloat) {
-      return new DeelangFloat(getBinding(), this.integer % ((DeelangFloat)other).dbl);
+      return new DeelangFloat(binding, this.integer % ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
       throw new ArithmeticException();
@@ -112,11 +112,23 @@ public class DeelangInteger extends DeelangObject {
   @Override
   public DeelangObject __opPOW(DeelangObject other) {
     if (other instanceof DeelangInteger) {
-      return new DeelangInteger(getBinding(), this.integer ^ ((DeelangInteger)other).integer);      
+      return new DeelangInteger(binding, this.integer ^ ((DeelangInteger)other).integer);      
     } else {
       // TODO more type coercion...
       throw new ArithmeticException();
     }
+  }
+
+  @Override
+  public DeelangBoolean __opLT(DeelangObject other) {
+    // TODO Auto-generated method stub
+    return super.__opLT(other);
+  }
+
+  @Override
+  public DeelangBoolean __opGT(DeelangObject other) {
+    // TODO Auto-generated method stub
+    return super.__opGT(other);
   }
 
   /**
@@ -141,6 +153,26 @@ public class DeelangInteger extends DeelangObject {
    */
   @Override
   public DeelangFloat toF() {
-    return new DeelangFloat(getBinding(), new Integer(integer).doubleValue());
+    return new DeelangFloat(binding, new Integer(integer).doubleValue());
   }
+
+  @Override
+  public DeelangBoolean toB() {
+    return (integer == 0) ? binding.FALSE : binding.TRUE;
+  }
+
+  /**
+   * Override equality. This implements the equals operator
+   * in Deelang.
+   */
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof DeelangInteger) {
+      return this.integer == ((DeelangInteger) other).integer;
+    } else if (other instanceof DeelangObject) {
+      return this.integer == ((DeelangObject) other).toI().integer;
+    } else {
+      return false;
+    } 
+  }  
 }

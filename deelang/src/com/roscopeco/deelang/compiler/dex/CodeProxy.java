@@ -462,7 +462,7 @@ final class CodeProxy {
         Local<Object> tempObj = newLocal(TypeId.OBJECT);
         loc = getOrAllocLocalRegister(o.getClass(), name);
         loadConstant(temp, name);
-        invokeInterface(DexCompilationUnit.BINDING_GET_LOCAL, tempObj, getRuntimeBindingRegister(), temp);
+        invokeVirtual(DexCompilationUnit.BINDING_GET_LOCAL, tempObj, getRuntimeBindingRegister(), temp);
         
         // TODO this is using registers inefficiently...
         cast(loc.reg, tempObj);

@@ -69,6 +69,12 @@ public abstract class ASTVisitor {
   protected abstract void visitMod(Tree ast) throws CompilerError;
   protected abstract void visitPow(Tree ast) throws CompilerError;
   
+  protected abstract void visitNot(Tree ast) throws CompilerError;
+  protected abstract void visitEql(Tree ast) throws CompilerError;
+  protected abstract void visitNeq(Tree ast) throws CompilerError;
+  protected abstract void visitLtn(Tree ast) throws CompilerError;
+  protected abstract void visitGtn(Tree ast) throws CompilerError;
+  
   /* Helper to print debug info when assertions are on */
   private boolean debug(String log) {
     System.out.println(log);
@@ -181,6 +187,21 @@ public abstract class ASTVisitor {
     case DeeLangParser.POW:
       visitPow(ast);
       return;
+      
+    /* ********** COMPARISON ********** */
+    case DeeLangParser.EQ:
+      visitEql(ast);
+      return;
+    case DeeLangParser.NEQ:
+      visitNeq(ast);
+      return;
+    case DeeLangParser.LT:
+      visitLtn(ast);
+      return;
+    case DeeLangParser.GT:
+      visitGtn(ast);
+      return;
+      
     default:
       throw(new UnsupportedError("Unknown AST type: " + ast.getType()));
     }
