@@ -196,7 +196,7 @@ protected boolean checkIntLiteralRange(String text, int pos, int radix,
 	  throw e;
 	}
 }
-
+	
 start_rule
   :  script
   ;
@@ -271,6 +271,7 @@ boolean explicitReceiver = false;
     -> ^(METHOD_CALL literal func_call_expr)
   ;
 
+
 fragment
 chained_call_or_field_expr
   : chained_field_expr
@@ -333,7 +334,7 @@ atom
   | IDENTIFIER
   | class_identifier (chained_call_or_field_expr)*
   | meth_call (chained_call_or_field_expr)*
-  | LPAREN! expr RPAREN!
+  | LPAREN! expr RPAREN! (chained_call_or_field_expr)*
   ;
 
 terminator
