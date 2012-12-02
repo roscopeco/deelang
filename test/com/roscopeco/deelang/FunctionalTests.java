@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 @Suite.SuiteClasses({
   com.roscopeco.deelang.parser.FunctionalTests.class,
   com.roscopeco.deelang.compiler.dex.FunctionalTests.class,
-  com.roscopeco.deelang.vm.compiler.FunctionalTests.class,
-  com.roscopeco.deelang.runtime.FunctionalTests.class,
-  com.roscopeco.deelang.vm.FunctionalTests.class
+  com.roscopeco.deelang.compiler.deevm.FunctionalTests.class,
+  com.roscopeco.deelang.runtime.dex.FunctionalTests.class,
+  com.roscopeco.deelang.runtime.deevm.FunctionalTests.class
 })
 public class FunctionalTests { }

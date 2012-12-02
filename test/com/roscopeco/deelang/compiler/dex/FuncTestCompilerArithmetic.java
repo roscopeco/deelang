@@ -8,11 +8,11 @@ import com.roscopeco.deelang.parser.ParserError;
 public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   private void runComparison(String sumCode, String expMethod) throws ParserError, CompilerError {
     runCodeComparisonTest(sumCode, 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v3   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v3   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
-        "                    :v5   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v5   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -56,10 +56,10 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralLiteralSum() throws ParserError, CompilerError {
     runCodeComparisonTest("1+2-3",
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "                this:v7   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -81,11 +81,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralLiteralMulAddSum() throws ParserError, CompilerError {
     runCodeComparisonTest("1+2*3", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v7   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -107,11 +107,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralAddAsMethodArg() throws ParserError, CompilerError {
     runCodeComparisonTest("bar(3+2)",
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v8   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v8   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v9   //dee.lang.DeelangObject\n"+
-        "                    :v10   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v10   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v9\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -134,11 +134,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   @Test
   public void testLiteralLiteralLiteralMulAddSumExplicitPrecedence() throws ParserError, CompilerError {
     runCodeComparisonTest("(1+2)*3",
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v7   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -159,11 +159,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   
   public void doChainedSumTest(String op, String opMethod) throws ParserError, CompilerError {
     runCodeComparisonTest("1" + op + "boo().bar.boo2().a",
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v6   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v7   //dee.lang.DeelangObject\n"+
-        "                    :v8   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v8   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v1.<init>(v8,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -214,11 +214,11 @@ public class FuncTestCompilerArithmetic extends CompilerFuncTestBase {
   public void REGRESSIONassignArithmeticResultLocal() throws ParserError, CompilerError {
     // TODO this case is wasteful with registers, generating a *lot* of unnecessary moves...
     runCodeComparisonTest("a = 1+2", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v7   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v1.<init>(v9,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+

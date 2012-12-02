@@ -6,6 +6,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  com.roscopeco.deelang.vm.RegressionTests.class
+  com.roscopeco.deelang.runtime.deevm.RegressionTests.class
 })
 public class RegressionTests { }

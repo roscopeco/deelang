@@ -7,15 +7,16 @@ import java.util.Scanner;
 
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.DVMCompilationUnit;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.vm.ScriptDumper;
-import com.roscopeco.deelang.vm.compiler.CompiledScript;
-import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
+import com.roscopeco.deelang.runtime.deevm.ScriptDumper;
 
 /**
  * Command-line compiler for Deelang. 
  * 
  * @author rosco
+ * @deprectated To be removed (0.24)
  */
 public class Command {
   

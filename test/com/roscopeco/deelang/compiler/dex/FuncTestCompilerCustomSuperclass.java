@@ -4,8 +4,8 @@ import org.junit.Test;
 
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.runtime.CompiledScript;
-import com.roscopeco.deelang.runtime.DexBinding;
+import com.roscopeco.deelang.runtime.dex.CompiledScript;
+import com.roscopeco.deelang.runtime.dex.DexBinding;
 
 public class FuncTestCompilerCustomSuperclass extends CompilerFuncTestBase {
   public static abstract class CustomSuperclass extends CompiledScript {

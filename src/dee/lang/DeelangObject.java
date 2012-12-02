@@ -16,7 +16,7 @@
  */
 package dee.lang;
 
-import com.roscopeco.deelang.vm.UnsupportedOperationError;
+import com.roscopeco.deelang.runtime.UnsupportedOperationError;
 
 /**
  * <p>Base-class for Deelang objects.</p>

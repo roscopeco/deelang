@@ -18,12 +18,12 @@ package com.roscopeco.deelang.jartest;
 
 import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
+import com.roscopeco.deelang.compiler.deevm.CompiledScript;
+import com.roscopeco.deelang.compiler.deevm.DVMCompilationUnit;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.vm.RuntimeContext;
-import com.roscopeco.deelang.vm.RuntimeError;
-import com.roscopeco.deelang.vm.VM;
-import com.roscopeco.deelang.vm.compiler.CompiledScript;
-import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
+import com.roscopeco.deelang.runtime.RuntimeError;
+import com.roscopeco.deelang.runtime.deevm.RuntimeContext;
+import com.roscopeco.deelang.runtime.deevm.VM;
 
 import dee.lang.DeelangInteger;
 import dee.lang.DeelangObject;

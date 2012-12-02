@@ -10,11 +10,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testPlainIdentifierIsOptimizedAway() throws Throwable {
     runCodeComparisonTest("a", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v0   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v0   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v1   //dee.lang.DeelangObject\n"+
-        "                    :v2   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v2   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         // Should generate no code.
         "RETURN_VOID         |     |return");
   }
@@ -35,11 +35,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testLocalAssignmentFromMethod() throws Throwable {
     runCodeComparisonTest("a=baz()", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v4   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v4   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v5   //dee.lang.DeelangObject\n"+
-        "                    :v6   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v5\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -57,11 +57,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testLocalAssignmentFromLocal() throws Throwable {
     runCodeComparisonTest("a=b", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST_STRING        |     |v1=\"b\"\n"+
         "INVOKE_VIRTUAL      |     |TEMP=v7.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
@@ -75,11 +75,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testLocalAssignmentAsMethodArg() throws Throwable {
     runCodeComparisonTest("foo(a=3)", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v6\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -95,11 +95,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   public void testLocalAssignmentChainedAssignment() throws Throwable {
     // TODO This is doing a lot of useless moves...
     runCodeComparisonTest("a=b=1; bar(a); bar(b)", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v1.<init>(v7,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -134,11 +134,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromLocalReceiverAccessAssignToLocal() throws Throwable {
     runCodeComparisonTest("a = foo.a", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v6   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v7   //dee.lang.DeelangObject\n"+
-        "                    :v8   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v8   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST_STRING        |     |v1=\"foo\"\n"+
         "INVOKE_VIRTUAL      |     |TEMP=v8.getLocal(v1)  //Ldee/lang/Binding;.getLocal(Ljava/lang/String;)Ljava/lang/Object;\n"+
         "MOVE_RESULT         |     |v2=TEMP\n"+
@@ -153,11 +153,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromLocalReceiverAccessAsMethodArg() throws Throwable {
     runCodeComparisonTest("foo(foo.a)",
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v6   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v7   //dee.lang.DeelangObject\n"+
-        "                    :v8   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v8   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v7\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -175,11 +175,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromMethodCallAccessAssignToLocal() throws Throwable {
     runCodeComparisonTest("a = boo().a", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v6\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -193,11 +193,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromChainedCallAccessAssignToLocal() throws Throwable {
     runCodeComparisonTest("a = boo().bar.boo2().a", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v7   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v8\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -214,18 +214,18 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromLocalReceiverAssignment() throws Throwable {
     runCodeComparisonTest("foo.a=1", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
         "");
   }
 
   @Test
   public void testFieldFromMethodResultReceiverAssignment() throws Throwable {
     runCodeComparisonTest("boo().a=1", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v6\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -241,11 +241,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldFromChainedCallAssignment() throws Throwable {
     runCodeComparisonTest("boo().bar.boo2().a=1", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v6\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -264,11 +264,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testFieldAssignmentAsMethodArg() throws Throwable {
     runCodeComparisonTest("foo(foo.a=1)", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v7   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v7   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v8   //dee.lang.DeelangObject\n"+
-        "                    :v9   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v9   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v8\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
@@ -294,11 +294,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testLocalsBindCorrectlyFromLiterals() throws ParserError, CompilerError {
     runCodeComparisonTest("a=1; b=2; bar(a)", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-            "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+            "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+            "                this:v6   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
             "                    :v7   //dee.lang.DeelangObject\n"+
-            "                    :v8   //com.roscopeco.deelang.runtime.DexBinding\n"+
+            "                    :v8   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
             "CONST               |     |v2=0x00000001  // int:1   float:0.000000\n"+
             "NEW_INSTANCE        |     |v1=NEW Ldee/lang/DeelangInteger;\n"+
             "INVOKE_DIRECT       |     |v1.<init>(v8,v2)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -319,11 +319,11 @@ public class FuncTestCompilerVarsAndFields extends CompilerFuncTestBase {
   @Test
   public void testLocalsBindCorrectlyFromMethods() throws Throwable {
     runCodeComparisonTest("a=baz(); b = 2; bar(a)", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v6   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v6   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v7   //dee.lang.DeelangObject\n"+
-        "                    :v8   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v8   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "MOVE                |     |v0 = v7\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+

@@ -47,7 +47,7 @@
 	</target>
 
 	<target name="compile-main" description="Compile the main code" depends="_make-bindirs, generate-parser">
-		<javac destdir="${main.classes.dir}" includeantruntime="false">
+		<javac destdir="${main.classes.dir}" includeantruntime="false" source="1.6" target="1.6">
 			<src path="${main.src.dir}"/>
 			<src path="${gen.src.dir}"/>
 			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar"/>
@@ -112,12 +112,14 @@
 		<!-- Build nocli-novm jar -->
 		<jar destfile="${bin.dir}/${jar.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
 		    <exclude name="com/roscopeco/deelang/compiler/commandline/**"/>
-		    <exclude name="com/roscopeco/deelang/vm/**"/>
+		    <exclude name="com/roscopeco/deelang/compiler/deevm/**"/>
+		    <exclude name="com/roscopeco/deelang/runtime/deevm/**"/>
 	    </jar>
 
 		<!--  Build dex-runtime jar -->
 		<jar destfile="${bin.dir}/${jar.dex.runtime.name}" basedir="${build.dir}">
-		    <include name="com/roscopeco/deelang/runtime/**"/>
+		    <include name="com/roscopeco/deelang/runtime/*.class"/>
+		    <include name="com/roscopeco/deelang/runtime/dex/**"/>
 		    <include name="dee/**"/>
 	    </jar> 
 		
@@ -142,9 +144,10 @@
 		<jar destfile="${bin.dir}/${jar.complete.nocli.name}" basedir="${build.dir}" includes="**/*" excludes="com/roscopeco/deelang/compiler/commandline/**"/>
 		
 		<!-- Build nocli-novm complete jar -->
-		<jar destfile="${bin.dir}/${jar.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
+		<jar destfile="${bin.dir}/${jar.complete.nocli.novm.name}" basedir="${build.dir}" includes="**/*">
 		    <exclude name="com/roscopeco/deelang/compiler/commandline/**"/>
-		    <exclude name="com/roscopeco/deelang/vm/**"/>
+		    <exclude name="com/roscopeco/deelang/compiler/deevm/**"/>
+		    <exclude name="com/roscopeco/deelang/runtime/deevm/**"/>
 	    </jar>
 	</target>
 

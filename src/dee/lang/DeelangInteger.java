@@ -57,7 +57,7 @@ public class DeelangInteger extends DeelangObject {
       return new DeelangFloat(binding, this.integer + ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
-      throw new ArithmeticException();
+      throw new DeelangArithmeticException();
     }
   }
   
@@ -69,7 +69,7 @@ public class DeelangInteger extends DeelangObject {
       return new DeelangFloat(binding, this.integer - ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
-      throw new ArithmeticException();
+      throw new DeelangArithmeticException();
     }
   }
   
@@ -81,7 +81,7 @@ public class DeelangInteger extends DeelangObject {
       return new DeelangFloat(binding, this.integer * ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
-      throw new ArithmeticException();
+      throw new DeelangArithmeticException();
     }
   }
 
@@ -93,7 +93,7 @@ public class DeelangInteger extends DeelangObject {
       return new DeelangFloat(binding, this.integer / ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
-      throw new ArithmeticException();
+      throw new DeelangArithmeticException();
     }
   }
   
@@ -105,7 +105,7 @@ public class DeelangInteger extends DeelangObject {
       return new DeelangFloat(binding, this.integer % ((DeelangFloat)other).dbl);
     } else {
       // TODO more type coercion...
-      throw new ArithmeticException();
+      throw new DeelangArithmeticException();
     }
   }
   
@@ -115,7 +115,7 @@ public class DeelangInteger extends DeelangObject {
       return new DeelangInteger(binding, this.integer ^ ((DeelangInteger)other).integer);      
     } else {
       // TODO more type coercion...
-      throw new ArithmeticException();
+      throw new DeelangArithmeticException();
     }
   }
 

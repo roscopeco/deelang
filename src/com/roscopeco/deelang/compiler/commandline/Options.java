@@ -11,6 +11,8 @@ package com.roscopeco.deelang.compiler.commandline;
  * 
  * <p>Originally sourced from <a href='http://www.javaworld.com/javaworld/jw-08-2004/jw-0816-command.html' target="_blank">
  * http://www.javaworld.com/javaworld/jw-08-2004/jw-0816-command.html</a>. Copyright remains with the original author.</p>
+ * 
+ * @deprectated To be removed (0.24)
  */
 public class Options {
 

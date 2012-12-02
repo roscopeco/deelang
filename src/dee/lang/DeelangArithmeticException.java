@@ -1,0 +1,44 @@
+/* ArithmeticException.java
+ *
+ * Copyright 2011 Ross Bamford (roscopeco AT gmail DOT com)
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License. 
+ */
+package dee.lang;
+
+/**
+ * Thrown to indicate that an illegal arithmetic operation was 
+ * attempted.
+ * 
+ * @author rosco
+ * @created 3 September 2012
+ *
+ */
+public class DeelangArithmeticException extends DeelangRuntimeException {
+  private static final long serialVersionUID = 7106875001255689903L;
+
+  public DeelangArithmeticException() {
+  }
+
+  public DeelangArithmeticException(String message) {
+    super(message);
+  }
+
+  public DeelangArithmeticException(Throwable cause) {
+    super(cause);
+  }
+
+  public DeelangArithmeticException(String message, Throwable cause) {
+    super(message, cause);
+  }
+}

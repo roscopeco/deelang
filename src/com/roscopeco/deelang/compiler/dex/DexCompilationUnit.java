@@ -43,9 +43,9 @@ import com.roscopeco.deelang.compiler.StringEscapeUtils;
 import com.roscopeco.deelang.compiler.UnsupportedError;
 import com.roscopeco.deelang.compiler.dex.CodeProxy.TypeRegisterMapping;
 import com.roscopeco.deelang.parser.DeeLangParser;
-import com.roscopeco.deelang.runtime.CompiledScript;
-import com.roscopeco.deelang.runtime.DexBinding;
-import com.roscopeco.deelang.runtime.DexBlock;
+import com.roscopeco.deelang.runtime.dex.CompiledScript;
+import com.roscopeco.deelang.runtime.dex.DexBinding;
+import com.roscopeco.deelang.runtime.dex.DexBlock;
 
 import dee.lang.Binding;
 import dee.lang.Block;
@@ -62,7 +62,7 @@ import dee.lang.DeelangString;
  * 
  * <p>This class does not support compilation to Dee VM bytecode. That
  * support is provided by the 
- * {@link com.roscopeco.deelang.vm.compiler.DVMCompilationUnit} class.</p>
+ * {@link com.roscopeco.deelang.compiler.deevm.DVMCompilationUnit} class.</p>
  * 
  * <p>The DeeLang compiler uses the visitor pattern to compile the
  * AST into a compiled script, driving the actual visiting and calling
@@ -86,6 +86,7 @@ public class DexCompilationUnit extends ASTVisitor {
   private final String sourceName;
   private final TypeId<? extends CompiledScript> compiledScriptTypeId;
   private final String compiledScriptName;
+  private final String compiledScriptQName;
   private final Class<? extends DeelangObject> selfClz;  
 
   /* PUBLIC API */
@@ -95,7 +96,8 @@ public class DexCompilationUnit extends ASTVisitor {
     
     // TODO UUID is probably overkill here, and may not be performant enough on Android?
     compiledScriptName = "DexCompiledScript" + UUID.randomUUID();
-    compiledScriptTypeId = TypeId.get("Lcom/roscopeco/deelang/runtime/" + compiledScriptName + ";");
+    compiledScriptQName = "com/roscopeco/deelang/runtime/dex/" + compiledScriptName;
+    compiledScriptTypeId = TypeId.get("L" + compiledScriptQName + ";");
     
     this.binding = binding;
     this.selfClz = binding.getSelf().getClass();
@@ -112,6 +114,14 @@ public class DexCompilationUnit extends ASTVisitor {
     // Declare run method and get a code proxy
     MethodId<?, Void> run = compiledScriptTypeId.getMethod(TypeId.VOID, "run", TYPEID_DL_OBJECT, TYPEID_DEXBINDING);
     codeProxy = new CodeProxy(this, dexMaker.declare(run, Modifier.PUBLIC | Modifier.FINAL));
+  }
+  
+  protected String getCompiledScriptName() {
+    return compiledScriptName;
+  }
+  
+  protected String getCompiledScriptQName() {
+    return compiledScriptQName;
   }
   
   public DexCompilationUnit(String sourceName, Binding binding) {
@@ -167,7 +177,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     try {
       return (Class<? extends CompiledScript>)
-          dexMaker.generateAndLoad(loader, dexDir).loadClass("com.roscopeco.deelang.runtime." + compiledScriptName);
+          dexMaker.generateAndLoad(loader, dexDir).loadClass("com.roscopeco.deelang.runtime.dex." + compiledScriptName);
     } catch (IOException e) {
       throw new RuntimeException("IOException while loading generated class", e);
     } catch (ClassNotFoundException e) {
@@ -1208,7 +1218,7 @@ public class DexCompilationUnit extends ASTVisitor {
   private BlockBpd generateBlock(Tree ast) throws CompilerError {
     backPassData.push(BACKPASSDATASPACER);
     
-    TypeId<? extends DexBlock> blkType = TypeId.get("Lcom/roscopeco/deelang/runtime/" + compiledScriptName + "$block" + blockNum++ + ";");
+    TypeId<? extends DexBlock> blkType = TypeId.get("L" + compiledScriptQName + "$block" + blockNum++ + ";");
     dexMaker.declare(blkType, sourceName, Modifier.PUBLIC | Modifier.FINAL, TYPEID_DEXBLOCK);
 
     blockBackPassData.push(new BlockBpd(codeProxy, blkType));

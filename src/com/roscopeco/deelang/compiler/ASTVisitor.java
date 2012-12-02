@@ -18,8 +18,8 @@ package com.roscopeco.deelang.compiler;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.roscopeco.deelang.compiler.deevm.DVMCompilationUnit;
 import com.roscopeco.deelang.parser.DeeLangParser;
-import com.roscopeco.deelang.vm.compiler.DVMCompilationUnit;
 
 /**
  * <p>Abstract base-class to be implemented by classes that are 

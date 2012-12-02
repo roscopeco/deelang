@@ -8,11 +8,11 @@ import com.roscopeco.deelang.parser.ParserError;
 public class FuncTestCompilerComparison extends CompilerFuncTestBase {
   private void runComparison(String sumCode, String expMethod) throws ParserError, CompilerError {
     runCodeComparisonTest(sumCode, 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v3   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v3   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v4   //dee.lang.DeelangObject\n"+
-        "                    :v5   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v5   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
@@ -47,11 +47,11 @@ public class FuncTestCompilerComparison extends CompilerFuncTestBase {
   public void testLiteralLiteralEqlAssignment() throws ParserError, CompilerError {
     // TODO this could be more efficient with registers....
     runCodeComparisonTest("a = 1==2", 
-        "extends com.roscopeco.deelang.runtime.CompiledScript",
-        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.DexBinding)\n"+
-        "                this:v5   //com.roscopeco.deelang.runtime.DexCompiledScript__UUID__\n"+
+        "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
+        "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
+        "                this:v5   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
         "                    :v6   //dee.lang.DeelangObject\n"+
-        "                    :v7   //com.roscopeco.deelang.runtime.DexBinding\n"+
+        "                    :v7   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
         "INVOKE_DIRECT       |     |v0.<init>(v7,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+

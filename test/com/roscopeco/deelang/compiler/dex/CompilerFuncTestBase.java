@@ -13,8 +13,8 @@ import com.roscopeco.deelang.compiler.Compiler;
 import com.roscopeco.deelang.compiler.CompilerError;
 import com.roscopeco.deelang.parser.Parser;
 import com.roscopeco.deelang.parser.ParserError;
-import com.roscopeco.deelang.runtime.CompiledScript;
-import com.roscopeco.deelang.runtime.DexBinding;
+import com.roscopeco.deelang.runtime.dex.CompiledScript;
+import com.roscopeco.deelang.runtime.dex.DexBinding;
 
 import dee.lang.Binding;
 import dee.lang.Block;
@@ -59,6 +59,7 @@ public class CompilerFuncTestBase {
     public void blockNoArgs(Block b) { }
     public void blockOneArg(Block b, DeelangInteger arg) { }
     public Foo boo2() { return this; }
+    public void checkSubclassArgBinding(DeelangObject arg) { }
   }
   
   public Binding getTestBinding() {

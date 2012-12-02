@@ -32,7 +32,7 @@ import com.google.dexmaker.TypeId;
 import com.google.dexmaker.UnaryOp;
 import com.roscopeco.deelang.compiler.CompilerBug;
 import com.roscopeco.deelang.compiler.dex.DexCompilationUnit.BlockBpd;
-import com.roscopeco.deelang.runtime.DexBinding;
+import com.roscopeco.deelang.runtime.dex.DexBinding;
 
 import dee.lang.DeelangObject;
 

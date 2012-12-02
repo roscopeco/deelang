@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 @Suite.SuiteClasses({
   com.roscopeco.deelang.parser.UnitTests.class,
   com.roscopeco.deelang.compiler.dex.UnitTests.class,
-  com.roscopeco.deelang.vm.compiler.UnitTests.class,
-  com.roscopeco.deelang.runtime.UnitTests.class,
-  com.roscopeco.deelang.vm.UnitTests.class
+  com.roscopeco.deelang.compiler.deevm.UnitTests.class,
+  com.roscopeco.deelang.runtime.dex.UnitTests.class,
+  com.roscopeco.deelang.runtime.deevm.UnitTests.class
 })
 public class UnitTests { }
