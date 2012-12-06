@@ -126,7 +126,7 @@
 		<!-- Add ANTLR runtime and Dexmaker and licenses and build complete jar -->
 		<!-- This jar gets the manifest with the Main-Class attribute, so it can run as a commandline compiler. -->
 		<unjar src="${lib.dir}/antlr-runtime-3.4.jar" dest="${build.dir}"/>
-		<unjar src="${lib.dir}/dexmaker-20120622.jar" dest="${build.dir}"/>
+		<unjar src="${lib.dir}/dexmaker-1.0.jar" dest="${build.dir}"/>
 		<delete dir="${build.dir}/org/antlr/runtime/debug"/>
 		<delete dir="${build.dir}/com/google/dexmaker/mockito"/>
 		<delete dir="${build.dir}/com/google/dexmaker/stock"/>
@@ -154,11 +154,11 @@
 	<target name="test-jars" description="Ensure that generated Jars work as expected" depends="jar, compile-jartests">
 		<!-- test non-complete withcli jar -->
 		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${bin.dir}/${jar.name}:${test.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-1.0.jar:${bin.dir}/${jar.name}:${test.classes.dir}"/>
 		</java>
 		<!-- test non-complete nocli jar -->
 		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${bin.dir}/${jar.nocli.name}:${test.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-1.0.jar:${bin.dir}/${jar.nocli.name}:${test.classes.dir}"/>
 		</java>
 		<!-- test complete withcli jar -->
 		<java fork="true" failonerror="true" classname="com.roscopeco.deelang.jartest.JarTest"> 
@@ -189,7 +189,7 @@
 		       splitindex="true" 
 		       use="true" 
 		       version="true">
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${main.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-1.0.jar:${main.classes.dir}"/>
 		</javadoc>
 		<javadoc access="protected" 
 		     author="true" 
@@ -206,7 +206,7 @@
 		       splitindex="true" 
 		       use="true" 
 		       version="true">
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar:${main.classes.dir}"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-1.0.jar:${main.classes.dir}"/>
 		</javadoc>
 		<copy file="LICENSE.html" todir="${doc.dir}"/>
 		<copy file="LICENSE.html" todir="${doc.developer.dir}"/>
