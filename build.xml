@@ -50,7 +50,7 @@
 		<javac destdir="${main.classes.dir}" includeantruntime="false" source="1.6" target="1.6">
 			<src path="${main.src.dir}"/>
 			<src path="${gen.src.dir}"/>
-			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-20120622.jar"/>
+			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-1.0.jar"/>
 		</javac>
 	</target>
 
