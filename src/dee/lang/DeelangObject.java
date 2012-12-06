@@ -78,13 +78,15 @@ public class DeelangObject {
   
   /**
    * <p>Implements the 'or' construct in Deelang code.</p>
+   * 
+   * <p>This implementation simply calls the attached block -
+   * it is the responsibility of the calling code to check the
+   * error flag before invocation, and to reset it appropriately.</p>
    */
   public void or(Block block) {
-    // TODO this needs some kind of error flag support in the compiler.
-    //      (specifically, error flag can be supported in DeelangObject,
-    //      but we must *reset* it after the method invocation in the
-    //      compiler).
-    throw new DeelangRuntimeException("'or' blocks not yet supported");
+    // shouldn't need to check block not null, or without a block 
+    // shouldn't compile!
+    block.invoke();
   }
   
   /**

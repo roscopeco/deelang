@@ -1012,7 +1012,6 @@ public class DexCompilationUnit extends ASTVisitor {
     }
     
     // Map arguments
-    // TODO looping twice here through same data... 
     TypeId<?>[] argTypes = mapClassesToTypes(bindMethod.getParameterTypes());
     Local<?>[] args = mapBpdArgsToLocals(bpd.args, blockReg);
     
@@ -1058,6 +1057,18 @@ public class DexCompilationUnit extends ASTVisitor {
     setTargetReg(target, retClz);    
     codeProxy.saveChainReceiver(target, retClz);
     
+    // If we have an or block, we need to reset the error flag before the
+    // call. We do it this way because of the case where a previous method was called
+    // *without* an or block, but that *did* set the error flag. In that
+    // case, the old way (clearing the flag after calling 'or') would not have
+    // worked, and we'd still have a stale 'true' errorflag.
+    Local<Boolean> falseVal = null;
+    if (bpd.orBlock != null) {
+      falseVal = codeProxy.newLocal(TypeId.BOOLEAN);
+      codeProxy.loadConstant(falseVal, false);
+      codeProxy.iput(DEXBINDING_ERRORFLAG, codeProxy.getRuntimeBindingRegister(), falseVal);      
+    }
+    
     // Generate method call
     generateMethodCall(mid, target, receiverReg, args, bpd.block, blockReg);    
     
@@ -1077,19 +1088,14 @@ public class DexCompilationUnit extends ASTVisitor {
         blockReg = codeProxy.newLocal(bpd.orBlock.blockTypeId);
       }
       
-      Local<Boolean> falseVal = codeProxy.newLocal(TypeId.BOOLEAN);
       Local<Boolean> eflag = codeProxy.newLocal(TypeId.BOOLEAN);
       Label afterOr = new Label();
       
       // Check if error flag is set, and run 'or' if so.
-      codeProxy.loadConstant(falseVal, false);
       codeProxy.iget(DEXBINDING_ERRORFLAG, eflag, codeProxy.getRuntimeBindingRegister());
       codeProxy.compare(Comparison.EQ, afterOr, eflag, falseVal);
       
       generateMethodCall(DL_OBJECT_OR, null, codeProxy.getSelf(), new Local[] { blockReg }, bpd.orBlock, blockReg);
-      
-      // reset error flag
-      codeProxy.iput(DEXBINDING_ERRORFLAG, codeProxy.getRuntimeBindingRegister(), falseVal);
       
       // TODO minor bug here - an or block will only get put out of scope if it is actually executed.
       //      Possibly doesn't matter, unless or is overriden to grab the block for later invocation...

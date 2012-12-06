@@ -512,18 +512,18 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "MOVE                |     |v0 = v9\n"+
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
+        "CONST               |     |v2=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v10.errorFlag=v2  //Lcom/roscopeco/deelang/runtime/dex/DexBinding;.errorFlag Z\n"+
         "INVOKE_VIRTUAL      |     |v1.voidy()  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.voidy()V\n"+
-        "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
         "IGET                |     |v4=v10.errorFlag  //Lcom/roscopeco/deelang/runtime/dex/DexBinding;.errorFlag Z\n"+
-        "IF_EQ               |     |if v4 == v3 goto L0\n"+
+        "IF_EQ               |     |if v4 == v2 goto L0\n"+
         "CONST               |     |v5=0x00000000  // int:0   float:0.000000\n"+
         "NEW_ARRAY           |     |v6=new java.lang.Object[][v5]\n"+
-        "NEW_INSTANCE        |     |v2=NEW Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v9,v10,v6)  //Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/dex/DexBinding;[Ljava/lang/Object;)V\n"+
-        "INVOKE_VIRTUAL      |     |v9.or(v2)  //Ldee/lang/DeelangObject;.or(Ldee/lang/Block;)V\n"+
+        "NEW_INSTANCE        |     |v3=NEW Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;\n"+
+        "INVOKE_DIRECT       |     |v3.<init>(v9,v10,v6)  //Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/dex/DexBinding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_VIRTUAL      |     |v9.or(v3)  //Ldee/lang/DeelangObject;.or(Ldee/lang/Block;)V\n"+
         "CONST               |     |v7=0x00000000  // int:0   float:0.000000\n"+
-        "IPUT                |     |v2.inScope=v7  //Lcom/roscopeco/deelang/runtime/dex/DexBlock;.inScope Z\n"+
-        "IPUT                |     |v10.errorFlag=v3  //Lcom/roscopeco/deelang/runtime/dex/DexBinding;.errorFlag Z\n"+
+        "IPUT                |     |v3.inScope=v7  //Lcom/roscopeco/deelang/runtime/dex/DexBlock;.inScope Z\n"+
         "LABEL               |  LL0:\n"+
         "RETURN_VOID         |     |return",
         
@@ -553,23 +553,23 @@ public class FuncTestCompilerMethodCalls extends CompilerFuncTestBase {
         "CHECK_CAST          |     |v0=(com.roscopeco.deelang.compiler.dex.CompilerFuncTestBase$Foo) v0\n"+
         "MOVE                |     |v1 = v0\n"+
         "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
-        "NEW_ARRAY           |     |v4=new java.lang.Object[][v3]\n"+
+        "IPUT                |     |v10.errorFlag=v3  //Lcom/roscopeco/deelang/runtime/dex/DexBinding;.errorFlag Z\n"+
+        "CONST               |     |v4=0x00000000  // int:0   float:0.000000\n"+
+        "NEW_ARRAY           |     |v5=new java.lang.Object[][v4]\n"+
         "NEW_INSTANCE        |     |v2=NEW Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v9,v10,v4)  //Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/dex/DexBinding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_DIRECT       |     |v2.<init>(v9,v10,v5)  //Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block0;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/dex/DexBinding;[Ljava/lang/Object;)V\n"+
         "INVOKE_VIRTUAL      |     |v1.blockNoArgs(v2)  //Lcom/roscopeco/deelang/compiler/dex/CompilerFuncTestBase$Foo;.blockNoArgs(Ldee/lang/Block;)V\n"+
-        "CONST               |     |v5=0x00000000  // int:0   float:0.000000\n"+
-        "IPUT                |     |v2.inScope=v5  //Lcom/roscopeco/deelang/runtime/dex/DexBlock;.inScope Z\n"+
-        "CONST               |     |v5=0x00000000  // int:0   float:0.000000\n"+
+        "CONST               |     |v6=0x00000000  // int:0   float:0.000000\n"+
+        "IPUT                |     |v2.inScope=v6  //Lcom/roscopeco/deelang/runtime/dex/DexBlock;.inScope Z\n"+
         "IGET                |     |v6=v10.errorFlag  //Lcom/roscopeco/deelang/runtime/dex/DexBinding;.errorFlag Z\n"+
-        "IF_EQ               |     |if v6 == v5 goto L0\n"+
-        "CONST               |     |v3=0x00000000  // int:0   float:0.000000\n"+
-        "NEW_ARRAY           |     |v4=new java.lang.Object[][v3]\n"+
+        "IF_EQ               |     |if v6 == v3 goto L0\n"+
+        "CONST               |     |v4=0x00000000  // int:0   float:0.000000\n"+
+        "NEW_ARRAY           |     |v5=new java.lang.Object[][v4]\n"+
         "NEW_INSTANCE        |     |v2=NEW Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block1;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v9,v10,v4)  //Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block1;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/dex/DexBinding;[Ljava/lang/Object;)V\n"+
+        "INVOKE_DIRECT       |     |v2.<init>(v9,v10,v5)  //Lcom/roscopeco/deelang/runtime/dex/DexCompiledScript__UUID__$block1;.<init>(Ldee/lang/DeelangObject;Lcom/roscopeco/deelang/runtime/dex/DexBinding;[Ljava/lang/Object;)V\n"+
         "INVOKE_VIRTUAL      |     |v9.or(v2)  //Ldee/lang/DeelangObject;.or(Ldee/lang/Block;)V\n"+
         "CONST               |     |v7=0x00000000  // int:0   float:0.000000\n"+
         "IPUT                |     |v2.inScope=v7  //Lcom/roscopeco/deelang/runtime/dex/DexBlock;.inScope Z\n"+
-        "IPUT                |     |v10.errorFlag=v5  //Lcom/roscopeco/deelang/runtime/dex/DexBinding;.errorFlag Z\n"+
         "LABEL               |  LL0:\n"+
         "RETURN_VOID         |     |return",
         
