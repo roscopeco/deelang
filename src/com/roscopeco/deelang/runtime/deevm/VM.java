@@ -149,9 +149,23 @@ public class VM {
       receiver = ctx.stack.removeFirst();
     }
     
-    // special handling for 'or' - put errorFlag value back
+    // It is now the responsibility of the calling code to check the error
+    // flag before calling 'or' (for compatibility with the DEX compiler code).
+    // Therefore, we'll simply short-circuit out of here if the error flag wasn't
+    // set and this is an 'or' call, without ever invoking the method.
+    //
+    // Note that for consistency we do this *after* sorting out the arguments and
+    // receiver, otherwise we'd be leaving the stack in an inconsistent state.
     if ("or".equals(name)) {
-      ctx.errorFlag = errorWasSet;
+      if (!errorWasSet) {
+        assert debug("Short-circuited 'or' call with false errorFlag");
+        return;        
+      } else {
+        // Retain the old behaviour here, in case any overriden
+        // implementations are depending on it (they should still
+        // run as before).
+        ctx.errorFlag = errorWasSet;
+      }
     }
 
     assert debug("Invoking method '" + name + "' on " + receiver);
