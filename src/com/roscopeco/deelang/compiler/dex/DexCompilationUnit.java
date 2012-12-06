@@ -907,23 +907,15 @@ public class DexCompilationUnit extends ASTVisitor {
   private static final TypeId<?>[] EMPTY_TIDS = new TypeId<?>[0]; 
   private static final Local<?>[] EMPTY_LOCALS = new Local<?>[0]; 
   
-  private TypeId<?>[] mapClassesToTypes(MethCallBackPassData.Argument<?>[] clzs, boolean hasBlock) {
+  private TypeId<?>[] mapClassesToTypes(Class<?>[] clzs) {
     int len = clzs.length;
-    if (len == 0 && !hasBlock) {
+    if (len == 0) {
       return EMPTY_TIDS;
     } else {
       TypeId<?>[] tids;
-      if (!hasBlock) {
-        tids = new TypeId<?>[len];
-        for (int i = 0; i < len; i++) {
-          tids[i] = TypeId.get(clzs[i].jtype);
-        }
-      } else {
-        tids = new TypeId<?>[len+1];
-        tids[0] = TYPEID_BLOCK;
-        for (int i = 1; i <= len; i++) {
-          tids[i] = TypeId.get(clzs[i-1].jtype);
-        }
+      tids = new TypeId<?>[len];
+      for (int i = 0; i < len; i++) {
+        tids[i] = TypeId.get(clzs[i]);
       }
       return tids;
     }
@@ -1021,7 +1013,7 @@ public class DexCompilationUnit extends ASTVisitor {
     
     // Map arguments
     // TODO looping twice here through same data... 
-    TypeId<?>[] argTypes = mapClassesToTypes(bpd.args, hasBlock);
+    TypeId<?>[] argTypes = mapClassesToTypes(bindMethod.getParameterTypes());
     Local<?>[] args = mapBpdArgsToLocals(bpd.args, blockReg);
     
     MethodId mid = decType.getMethod(retType, method, argTypes);
@@ -1131,6 +1123,36 @@ public class DexCompilationUnit extends ASTVisitor {
           codeProxy.blockLocalsLocal());
       codeProxy.freeLocal(bllen);
     }
+    
+    // Cast args (possibly working around a Dexmaker limitation? Contacted Dexmaker project about this...
+    //
+    // Dexmaker (actually, DX) seems to generate the method call based on runtime arg types rather than
+    // declared types in the MethodID...
+    /*
+    List declaredArgTypes = mid.getParameters();
+    int argc = declaredArgTypes.size();
+    System.out.println("Processing call to: " + mid);
+    for (int i = 0; i < argc; i++) {
+      TypeId declType = (TypeId)declaredArgTypes.get(i);
+      TypeId rtType = args[i].getType();
+      
+      System.out.println("Arg " + i);
+      System.out.println("  Declared type: " + declType);
+      System.out.println("  Runtime type:  " + rtType);
+      
+      if (!rtType.equals(declType)) {
+        System.out.println("  WILL CAST!");
+        // need a cast, replace arg register...
+        Local declTypedReg = codeProxy.newLocal(declType);
+        Local rtTypedReg = args[i];
+        
+        codeProxy.cast(declTypedReg, rtTypedReg);
+        
+        args[i] = declTypedReg;
+        codeProxy.freeLocal(rtTypedReg);
+      }
+    }
+    */
     
     // Generate call insn
     codeProxy.invokeVirtual(mid, target, receiverReg, args);
