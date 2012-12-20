@@ -22,15 +22,6 @@ public class Command {
   
   private static final String USAGE = "Usage: java -jar deelang-complete.jar [-d] [-o outfile] <infile>";
 
-  static String code =
-    "Quux.qix = 42\n" +
-    "Quux.foo(Quux.qix, bar(3+4), beezum) {\n" +
-    "  booze() or {\n" +
-    "    puts(\"hello in orblock\")\n" +
-    "  }\n" +
-  "}\n" + 
-  "3.times() { puts(\"Hello\") }\n";
-
   private String infile;
   private String outfile;
   private boolean dumpMode = false;
@@ -94,6 +85,7 @@ public class Command {
    * @param args
    */
   public static void main(String[] args) {
+    System.err.println("NOTE: This command-line utility is DEPRECATED and will be removed in v0.24");
     try {
       new Command(args).doCompile();
     } catch (IOException e) {
