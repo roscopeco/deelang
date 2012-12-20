@@ -10,16 +10,17 @@ public class FuncTestCompilerComparison extends CompilerFuncTestBase {
     runCodeComparisonTest(sumCode, 
         "extends com.roscopeco.deelang.runtime.dex.CompiledScript",
         "public final V run(dee.lang.DeelangObject,com.roscopeco.deelang.runtime.dex.DexBinding)\n"+
-        "                this:v3   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
-        "                    :v4   //dee.lang.DeelangObject\n"+
-        "                    :v5   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
+        "                this:v4   //com.roscopeco.deelang.runtime.dex.DexCompiledScript__UUID__\n"+
+        "                    :v5   //dee.lang.DeelangObject\n"+
+        "                    :v6   //com.roscopeco.deelang.runtime.dex.DexBinding\n"+
         "CONST               |     |v1=0x00000001  // int:1   float:0.000000\n"+
         "NEW_INSTANCE        |     |v0=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v0.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "INVOKE_DIRECT       |     |v0.<init>(v6,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
         "CONST               |     |v1=0x00000002  // int:2   float:0.000000\n"+
         "NEW_INSTANCE        |     |v2=NEW Ldee/lang/DeelangInteger;\n"+
-        "INVOKE_DIRECT       |     |v2.<init>(v5,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
-        "INVOKE_VIRTUAL      |     |TEMP=v0."+expMethod+"(v2)  //Ldee/lang/DeelangObject;."+expMethod+"(Ldee/lang/DeelangObject;)Ldee/lang/DeelangBoolean;\n"+
+        "INVOKE_DIRECT       |     |v2.<init>(v6,v1)  //Ldee/lang/DeelangInteger;.<init>(Ldee/lang/Binding;I)V\n"+
+        "INVOKE_VIRTUAL      |     |TEMP=v0." + expMethod + "(v2)  //Ldee/lang/DeelangObject;." + expMethod + "(Ldee/lang/DeelangObject;)Ldee/lang/DeelangBoolean;\n"+
+        "MOVE_RESULT         |     |v3=TEMP\n"+
         "RETURN_VOID         |     |return");
   }
 

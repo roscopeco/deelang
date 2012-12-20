@@ -1359,17 +1359,18 @@ public class DexCompilationUnit extends ASTVisitor {
         }
       } else {
         // just assign a new local
-        trbpd = getTargetRegBackPassData();
-        if (trbpd != null) {
-          // someone higher up wants our target reg...
-          target = codeProxy.newLocal(lhs.type);
-          setTargetReg(target, lhs.jtype);
-        } else {
-          // don't store result anywhere, no-one's interested in it...
-          // We can't optimise it away, in case the expression contained
-          // method calls with side-effects...
-          target = null;
-        }
+        //
+        // TODO no longer optimizing here, setting ChainReceiver
+        // in case this is a parenthesized expression followed by a
+        // method call.
+        //
+        // This will be revisited when new transformation visitor is
+        // incorporated...
+        target = codeProxy.newLocal(lhs.type);
+        codeProxy.saveChainReceiver(target, lhs.jtype);
+        
+        // in case someone higher up wants our target reg...
+        setTargetReg(target, lhs.jtype);
       }
     }
     
@@ -1383,7 +1384,8 @@ public class DexCompilationUnit extends ASTVisitor {
       codeProxy.freeLocal(temp);
     } else {
       // We're ignoring result anyway, no casting...
-      codeProxy.invokeVirtual(op, null, lhs.reg, rhs.reg);
+      // codeProxy.invokeVirtual(op, null, lhs.reg, rhs.reg);
+      throw new CompilerBug("ArithmeticOperation with null target");
     }
   }
   
@@ -1420,17 +1422,16 @@ public class DexCompilationUnit extends ASTVisitor {
         }
       } else {
         // just assign a new local
-        trbpd = getTargetRegBackPassData();
-        if (trbpd != null) {
-          // someone higher up wants our target reg...
-          target = codeProxy.newLocal(lhs.type);
-          setTargetReg(target, lhs.jtype);
-        } else {
-          // don't store result anywhere, no-one's interested in it...
-          // We can't optimise it away, in case the expression contained
-          // method calls with side-effects...
-          target = null;
-        }
+        //
+        // TODO no longer optimizing here, setting lastChainReceiver
+        // in case this is a parenthesized expression followed by a
+        // method call.
+        //
+        // This will be revisited when new transformation visitor is
+        // incorporated...
+        target = codeProxy.newLocal(lhs.type);
+        codeProxy.saveChainReceiver(target, lhs.jtype);
+        setTargetReg(target, lhs.jtype);
       }
     }
     
