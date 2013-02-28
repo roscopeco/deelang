@@ -79,7 +79,7 @@
 	<target name="clobber" description="Remove all generated resources" depends="clean, _clean-doc, _clean-parser"/>
 	<target name="compile" description="Compile all code" depends="compile-main, compile-tests, compile-jartests"/>
 	<target name="test" description="Run JUnit4 tests" depends="compile-tests">
-		<junit printsummary="true" fork="true">
+		<junit printsummary="true" fork="true" haltonfailure="on">
 		    <classpath>
 		        <pathelement location="${main.classes.dir}"/>
 		        <pathelement location="${test.classes.dir}"/>
