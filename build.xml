@@ -47,7 +47,7 @@
 	</target>
 
 	<target name="compile-main" description="Compile the main code" depends="_make-bindirs, generate-parser">
-		<javac destdir="${main.classes.dir}" includeantruntime="false" source="1.6" target="1.6">
+		<javac destdir="${main.classes.dir}" includeantruntime="false" source="1.8" target="1.8">
 			<src path="${main.src.dir}"/>
 			<src path="${gen.src.dir}"/>
 			<classpath path="${lib.dir}/antlr-runtime-3.4.jar:${lib.dir}/dexmaker-1.0.jar"/>
@@ -80,7 +80,7 @@
 	<target name="compile" description="Compile all code" depends="compile-main, compile-tests, compile-jartests"/>
 	<target name="test" description="Run JUnit4 tests" depends="compile-tests">
 		<junit printsummary="true" fork="true" haltonfailure="on" showoutput="on">
-		    <jvmarg value="-XX:-UseSplitVerifier"/>
+			<formatter type="plain" usefile="false" />
 		    <classpath>
 		        <pathelement location="${main.classes.dir}"/>
 		        <pathelement location="${test.classes.dir}"/>

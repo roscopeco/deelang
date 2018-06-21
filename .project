@@ -20,4 +20,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.deved.antlride.core.nature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>main</name>
+			<type>2</type>
+			<locationURI>bin/main</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
