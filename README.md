@@ -1,3 +1,5 @@
+> **note**: This repository is archived and development / support is discontinued. The world has moved on and this repository fell into disrepair!
+
 Deelang - An embeddable scripting language for Android and Java
 ===============================================================
 
